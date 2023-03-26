@@ -1,0 +1,117 @@
+package me.athlaeos.enchantssquared.commands;
+
+import me.athlaeos.enchantssquared.config.ConfigManager;
+import me.athlaeos.enchantssquared.enchantments.CosmeticGlintEnchantment;
+import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
+import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
+import me.athlaeos.enchantssquared.utility.ChatUtils;
+import me.athlaeos.enchantssquared.utility.EntityUtils;
+import me.athlaeos.enchantssquared.utility.ItemUtils;
+import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class EnchantCommand implements Command {
+	private final String enchant_success;
+	private final String enchant_failed;
+	private final String invalid_number;
+	private final String enchant_warning;
+	private final String enchant_description;
+
+	public EnchantCommand(){
+		enchant_success = ConfigManager.getInstance().getConfig("translations.yml").get().getString("enchant_successful");
+		enchant_failed = ConfigManager.getInstance().getConfig("translations.yml").get().getString("enchant_failed");
+		invalid_number = ConfigManager.getInstance().getConfig("translations.yml").get().getString("warning_invalid_number");
+		enchant_warning = ConfigManager.getInstance().getConfig("translations.yml").get().getString("enchant_warning");
+		enchant_description = ConfigManager.getInstance().getConfig("translations.yml").get().getString("enchant_description");
+	}
+
+	@Override
+	public boolean execute(CommandSender sender, String[] args) {
+		if (args.length <= 1) return false;
+		if (!(sender instanceof Player) && args.length < 4) {
+			sender.sendMessage(ChatUtils.chat("&cOnly players may do this"));
+			return true;
+		}
+		Collection<Player> targets = new HashSet<>();
+		if (args.length >= 4){
+			targets.addAll(EntityUtils.selectPlayers(sender, args[3]));
+		} else {
+			targets.add((Player) sender);
+		}
+		String chosenEnchant = args[1].toUpperCase();
+
+		int chosenLevel = 1;
+		if (args.length >= 3){
+			try {
+				chosenLevel = Integer.parseInt(args[2]);
+				if (chosenLevel > 20){
+					sender.sendMessage(ChatUtils.chat(enchant_warning));
+				}
+			} catch (IllegalArgumentException e){
+				sender.sendMessage(ChatUtils.chat(invalid_number));
+				return true;
+			}
+		}
+
+		boolean success = false;
+		for (Player p : targets){
+			ItemStack inHandItem = p.getInventory().getItemInMainHand();
+			if (!ItemUtils.isAirOrNull(inHandItem)) {
+				if (inHandItem.getType() == Material.BOOK){
+					inHandItem.setType(Material.ENCHANTED_BOOK);
+				}
+				CustomEnchantManager.getInstance().removeEnchant(inHandItem, chosenEnchant);
+				CustomEnchantManager.getInstance().addEnchant(inHandItem, chosenEnchant, chosenLevel);
+				success = true;
+			}
+		}
+		sender.sendMessage(ChatUtils.chat(success ? enchant_success : enchant_failed));
+		return true;
+	}
+
+	@Override
+	public String[] getRequiredPermission() {
+		return new String[]{"es.enchant"};
+	}
+
+	@Override
+	public String getFailureMessage() {
+		return "&c/es enchant [enchantment] <level>";
+	}
+
+	@Override
+	public String[] getHelpEntry() {
+		return new String[]{
+				ChatUtils.chat("&8&m                                             "),
+				ChatUtils.chat("&d/es enchant [enchantment] <level>"),
+				ChatUtils.chat("&7" + enchant_description),
+				ChatUtils.chat("&7> &des.enchant")
+		};
+	}
+
+	@Override
+	public List<String> getSubcommandArgs(CommandSender sender, String[] args) {
+		if (args.length == 2){
+			List<String> returns = new ArrayList<>();
+			for (String c : CustomEnchantManager.getInstance().getAllEnchants().values().stream().map(CustomEnchant::getType).collect(Collectors
+					.toList())){
+				returns.add(c.toLowerCase());
+			}
+			return returns;
+		}
+		if (args.length == 3){
+			return Arrays.asList(
+					"1",
+					"2",
+					"3",
+					"...");
+		}
+		return null;
+	}
+}

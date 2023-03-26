@@ -1,0 +1,101 @@
+# Set any of enchant_notification to '' to disable them
+enchant_notifications:
+  application_withering: '&0Withered target'
+  application_poisoning: '&2Poisoned target'
+  application_stunning: '&9Stunned target'
+  application_blinding: '&0Blinded target'
+  application_nausea: '&5Nauseated target'
+  application_weakness: '&8Weakened target'
+  application_slowness: '&9Slowed target'
+  activation_deflect_projectile: '&8Projectile deflected!'
+
+enchantment_menu:
+  title: '&a&lCustom Enchantments' # Title of the menu
+  name: '%name%' # Name of the item
+  lore: # Lore of the item
+    - '%description%'
+    - '&eRarity: &7%weight%'
+    - '&eMax Level: &7%lv_roman%'
+    - '&eCompatible with: &7%compatible_with%'
+  max_length: 40 # Max length of each line of lore, anything exceeding this will be moved to the next line.
+  button_nextpage: # Names and descriptions of the next/previous page buttons. If no previous or next page is
+    # available, they will not be visible.
+    # Since the plugin has less than 45 enchantments by default, these buttons will not appear unless a custom
+    # plugin expanding on this plugin's enchantments has been added.
+    icon: ARROW
+    name: '&7Next Page'
+    lore:
+      - '&8Currently on page &e%page%'
+  button_prevpage:
+    icon: ARROW
+    name: '&7Previous Page'
+    lore:
+      - '&8Currently on page &e%page%'
+
+# Warning when player attempts to combine items, but the item would have too many enchants as a result
+warning_allowed_enchants_exceeded: '&cYou''ve exceeded the allowed amount of enchants: 5'
+# (1.14+) Warning when player clears items enchants with grindstone
+warning_grindstone_clear_all: '&cWarning! Using a grindstone also clears your custom enchants.'
+
+# Warning sent out if player uses invalid command
+warning_invalid_command: '&cInvalid command'
+
+# Warning sent out if player doesn't use a number in a command where a number is required
+warning_invalid_number: '&cInvalid number'
+
+# Warning sent out if player uses command they don't have permission for
+warning_no_permission: '&cYou do not have permission to use this command'
+
+# Confirmation message when reloading
+reload_successful: '&aReload complete!'
+
+# Confirmation message when enchanting an item using the '/es enchant' command
+enchant_successful: '&aEnchant successful!'
+# Failure message when enchanting an item using the '/es enchant' command and the player isn't holding an item
+enchant_failed: '&cYou have to be holding an item to enchant'
+# Warning message when enchanting an item using the '/es enchant' command and the player uses a level that is very high
+enchant_warning: '&cUsing very high enchant levels may cause extreme lag or be unstable with some enchants (ex. Shockwave)'
+# Description message within the '/es help' command of the enchant command
+enchant_description: 'Used to enchant any item with any custom enchant'
+
+# Description message within the '/es help' command of the help command
+help_description: 'Shows a summary of all commands for EnchantsSquared'
+
+# Description message within the '/es help' command of the reload command
+reload_description: 'Reloads all configs into the game'
+
+# Confirmation message when removing a line of lore/enchant with the '/es remove'
+remove_enchant_successful: '&aLore removed!'
+# Failure message when removing a line of lore/enchant off an item that has no lore
+remove_enchant_failed: '&cItem has no enchants'
+# Description message within the '/es help' command of the remove enchant command
+remove_enchant_description: 'Removes a line of lore/enchant from a held item. Line number starts at 1'
+
+# Confirmation message when giving an enchanted item
+give_item_successful: '&aItem given!'
+# Error message when the player enters an invalid item ID
+error_invalid_item: '&cInvalid item ID'
+# Error message when the player doesn't enter enough or the proper arguments for the custom enchants and vanilla enchants
+error_invalid_syntax: '&cInvalid syntax: %reason%'
+# Reason 1 part of error_invalid_syntax, when no (valid) level was given
+reason_invalid_level: '&cInvalid/no level given'
+# Reason 2 part of error_invalid_syntax, when no (valid) enchantment was given
+reason_invalid_enchant: '&cInvalid enchantment given'
+# Description message within the '/es help' command of the give enchanted item command
+give_item_description: 'Adds an item with the given enchantments to a player''s inventory'
+
+debug_description: 'Enables/disables debug mode, which sends status messages to the player that help the developer fix possible issues'
+
+# Description message withing the '/es help' command of the enchant list command
+list_description: 'Shows a list of all enabled enchants as well as a description'
+# Translation of "weight" or rarity within the '/es list' command
+eslist_weight: '&eRarity: &7'
+# Translation of "max level" within the '/es list' command
+max_level_translation: '&eMax Level: &7%lv_roman%'
+# Translation of "compatible items" within the '/es list' command
+compatible_item_translation: '&eCompatible Items: &7'
+# Description message within the '/es help' command of the enchant menu command
+menu_description: 'Shows a list of all enabled enchants in a handy GUI'
+# Error message when the the command sender enters a player name of a player that isn't online
+error_player_not_found: '&cPlayer not found'
+error_invalid_targeter: '&cMalformed target selector'

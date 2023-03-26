@@ -1,0 +1,46 @@
+name: EnchantsSquared
+version: '2.0'
+main: me.athlaeos.enchantssquared.EnchantsSquared
+api-version: 1.14
+website: https://discord.gg/dUwtmYV
+softdepend: [ ValhallaMMO, ValhallaTrinkets, WorldGuard, Jobs ]
+loadbefore: [ WorldGuard, ValhallaMMO ]
+authors: [ Athlaeos ]
+description: Now rewritten, EnchantsSquared is a plugin adding in many new enchantments with the intent to mimic vanilla as closely as possible. With special ValhallaMMO integration!
+
+commands:
+  enchantssquared:
+    description: base command for Enchants Squared command
+    aliases: [es]
+  esanvil:
+    description: allows bedrock users to combine custom enchantments on items, at a higher level cost
+    aliases: [ea]
+
+permissions:
+  es.reload:
+    default: op
+    description: Permission to reload plugin
+  es.help:
+    default: true
+    description: Permission to use the /es help command
+  es.nocooldowns:
+    default: op
+    description: When using an enchant that normally has a cooldown, it will not go on cooldown
+  es.list:
+    default: op
+    description: Permission to use the /es help command
+  es.menu:
+    default: op
+    description: Permission to use the /es menu command
+  es.noregionrestrictions:
+    default: op
+    description: 'WORLDGUARD ONLY: When using an enchant within a WorldGuard flagged area against this enchant, it is not blocked'
+  es.enchant:
+    default: op
+    description: Admin command to enchant any item with a custom enchant
+  es.enchant.insertenchantmenthere:
+    default: op
+    description: Requires a player to have a specific enchant permission to be able to obtain it through enchanting
+  es.debug:
+    default: op
+    description: Allows access to the /es debug command
