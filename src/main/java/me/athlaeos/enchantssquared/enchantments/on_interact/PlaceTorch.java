@@ -16,7 +16,6 @@ import org.bukkit.block.data.Directional;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Projectile;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -26,6 +25,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 
 public class PlaceTorch extends CustomEnchant implements TriggerOnInteractEnchantment {
@@ -50,7 +50,7 @@ public class PlaceTorch extends CustomEnchant implements TriggerOnInteractEnchan
         this.cooldown = config.getInt("enchantment_configuration.illuminated.cooldown");
         this.damagePerTorch = config.getDouble("enchantment_configuration.illuminated.durability_cost");
         this.applyUnbreaking = config.getBoolean("enchantment_configuration.illuminated.use_unbreaking");
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.illuminated.icon", new ItemStack(Material.TORCH));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.illuminated.icon", createIcon(Material.TORCH));
     }
 
     private final LevelService levelService = new LevelsFromMainHandOnly(this);
@@ -156,6 +156,11 @@ public class PlaceTorch extends CustomEnchant implements TriggerOnInteractEnchan
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-torches";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return Collections.singleton("PICKAXES");
     }
 
     private final int cooldown;

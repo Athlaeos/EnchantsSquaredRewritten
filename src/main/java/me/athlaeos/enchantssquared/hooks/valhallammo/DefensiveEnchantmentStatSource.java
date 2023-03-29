@@ -1,4 +1,4 @@
-package me.athlaeos.enchantssquared.enchantments.valhalla_stats;
+package me.athlaeos.enchantssquared.hooks.valhallammo;
 
 import me.athlaeos.enchantssquared.domain.EntityEquipment;
 import me.athlaeos.enchantssquared.enchantments.CustomEnchant;

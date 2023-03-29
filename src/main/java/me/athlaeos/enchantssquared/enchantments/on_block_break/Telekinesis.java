@@ -6,15 +6,9 @@ import me.athlaeos.enchantssquared.domain.MaterialClassType;
 import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
 import me.athlaeos.enchantssquared.enchantments.LevelService;
 import me.athlaeos.enchantssquared.enchantments.Levels1IfPresent;
-import me.athlaeos.enchantssquared.enchantments.LevelsFromMainHandAndEquipment;
 import me.athlaeos.enchantssquared.utility.ItemUtils;
-import me.athlaeos.enchantssquared.utility.Utils;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -22,9 +16,7 @@ import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 
 public class Telekinesis extends CustomEnchant implements TriggerOnBlockBreakEnchantment {
     private final YamlConfiguration config;
@@ -39,7 +31,7 @@ public class Telekinesis extends CustomEnchant implements TriggerOnBlockBreakEnc
         this.incompatibleVanillaEnchantments = new HashSet<>(config.getStringList("enchantment_configuration.telekinesis.incompatible_vanilla_enchantments"));
         this.incompatibleCustomEnchantments = new HashSet<>(config.getStringList("enchantment_configuration.telekinesis.incompatible_custom_enchantments"));
 
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.telekinesis.icon", new ItemStack(Material.ENDER_PEARL));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.telekinesis.icon", createIcon(Material.ENDER_PEARL));
     }
 
     private final LevelService levelService = new Levels1IfPresent(this);
@@ -146,6 +138,11 @@ public class Telekinesis extends CustomEnchant implements TriggerOnBlockBreakEnc
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-telekinesis";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 
     @Override

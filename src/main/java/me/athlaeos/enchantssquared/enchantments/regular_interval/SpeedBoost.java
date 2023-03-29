@@ -20,9 +20,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 
 public class SpeedBoost extends CustomEnchant implements TriggerOnRegularIntervalsEnchantment, Listener {
     private final YamlConfiguration config;
@@ -47,7 +45,7 @@ public class SpeedBoost extends CustomEnchant implements TriggerOnRegularInterva
         this.speedBase = config.getDouble("enchantment_configuration.speed_boost.speed_base");
         this.speedLv = config.getDouble("enchantment_configuration.speed_boost.speed_lv");
 
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.speed_boost.icon", new ItemStack(Material.FEATHER));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.speed_boost.icon", createIcon(Material.FEATHER));
 
         EnchantsSquared.getPlugin().getServer().getPluginManager().registerEvents(this, EnchantsSquared.getPlugin());
     }
@@ -156,6 +154,11 @@ public class SpeedBoost extends CustomEnchant implements TriggerOnRegularInterva
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-speed";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 
     private final double speedBase;

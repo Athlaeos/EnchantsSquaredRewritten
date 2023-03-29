@@ -28,6 +28,9 @@ public final class EnchantsSquared extends JavaPlugin {
     private static boolean worldGuardHooked = false;
     private static boolean jobsHooked = false;
 
+
+    private static boolean grindstonesEnabled = true;
+
     private GrindstoneListener grindstoneListener = null;
     private AnvilListener anvilListener = null;
     private EnchantListener enchantListener = null;
@@ -72,15 +75,16 @@ public final class EnchantsSquared extends JavaPlugin {
         saveAndUpdateConfig("config.yml");
         saveConfig("excavationblocks.yml");
         saveConfig("smeltblocksrecipes.yml");
-        saveConfig("translations.yml");
+        saveAndUpdateConfig("translations.yml");
         if (ConfigManager.getInstance().getConfig("config.yml").get().getBoolean("metrics", true)){
             new Metrics(this, 10596);
         }
 
+        grindstonesEnabled = ConfigManager.getInstance().getConfig("config.yml").get().getBoolean("allow_grindstone_removal", true);
         CommandManager.getInstance();
         CosmeticGlintEnchantment.register();
 
-        if (Version.currentVersionOrNewerThan(Version.MINECRAFT_1_14)) grindstoneListener = registerListener(new GrindstoneListener());
+        if (Version.currentVersionOrNewerThan(Version.MINECRAFT_1_14) && grindstonesEnabled) grindstoneListener = registerListener(new GrindstoneListener());
         anvilListener = registerListener(new AnvilListener(), "disable_anvil");
         enchantListener = registerListener(new EnchantListener(), "disable_enchanting");
         villagerClickListener = registerListener(new VillagerClickListener(), "disable_trading");
@@ -220,5 +224,13 @@ public final class EnchantsSquared extends JavaPlugin {
 
     public ItemDamageListener getItemDamageListener() {
         return itemDamageListener;
+    }
+
+    public static boolean isGrindstonesEnabled() {
+        return grindstonesEnabled;
+    }
+
+    public static void setGrindstonesEnabled(boolean grindstonesEnabled) {
+        EnchantsSquared.grindstonesEnabled = grindstonesEnabled;
     }
 }

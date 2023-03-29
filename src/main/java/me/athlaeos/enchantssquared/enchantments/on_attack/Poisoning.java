@@ -52,7 +52,7 @@ public class Poisoning extends CustomEnchant implements TriggerOnAttackEnchantme
         this.sound = Utils.soundFromString(config.getString("enchantment_configuration.poisoning.sound"), Sound.BLOCK_FIRE_EXTINGUISH);
         this.particleAnimation = config.getString("enchantment_configuration.poisoning.animation");
 
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.poisoning.icon", new ItemStack(Material.SPIDER_EYE));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.poisoning.icon", createIcon(Material.SPIDER_EYE));
     }
 
     private final LevelService mainHandLevels = new LevelsFromMainHandAndEquipment(this);
@@ -179,5 +179,10 @@ public class Poisoning extends CustomEnchant implements TriggerOnAttackEnchantme
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-poisoning";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 }

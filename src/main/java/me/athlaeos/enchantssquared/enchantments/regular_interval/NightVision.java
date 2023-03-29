@@ -1,19 +1,16 @@
 package me.athlaeos.enchantssquared.enchantments.regular_interval;
 
-import me.athlaeos.enchantssquared.EnchantsSquared;
 import me.athlaeos.enchantssquared.config.ConfigManager;
 import me.athlaeos.enchantssquared.domain.MaterialClassType;
 import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
 import me.athlaeos.enchantssquared.enchantments.LevelService;
 import me.athlaeos.enchantssquared.enchantments.Levels1IfPresent;
-import me.athlaeos.enchantssquared.enchantments.LevelsFromAllEquipment;
 import me.athlaeos.enchantssquared.utility.EntityUtils;
 import me.athlaeos.enchantssquared.utility.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -43,7 +40,7 @@ public class NightVision extends CustomEnchant implements TriggerOnRegularInterv
 
         this.duration = config.getInt("enchantment_configuration.night_vision.duration");
 
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.night_vision.icon", new ItemStack(Material.ENDER_EYE));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.night_vision.icon", createIcon(Material.ENDER_EYE));
     }
 
     private final LevelService levelService = new Levels1IfPresent(this);
@@ -150,6 +147,11 @@ public class NightVision extends CustomEnchant implements TriggerOnRegularInterv
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-night-vision";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 
     private final int duration;

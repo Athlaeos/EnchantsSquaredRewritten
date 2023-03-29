@@ -1,13 +1,36 @@
 package me.athlaeos.enchantssquared.enchantments;
 
 import me.athlaeos.enchantssquared.EnchantsSquared;
+import me.athlaeos.enchantssquared.config.ConfigManager;
 import me.athlaeos.enchantssquared.domain.ExecutionPriority;
+import me.athlaeos.enchantssquared.utility.ChatUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 public abstract class CustomEnchant {
+    private static Map<String, String> equipmentTranslations = new HashMap<>();
+
+    static {
+        YamlConfiguration config = ConfigManager.getInstance().getConfig("translations.yml").get();
+        ConfigurationSection section = config.getConfigurationSection("equipment_translations");
+        if (section != null){
+            Map<String, String> translations = new HashMap<>();
+            for (String equipment : section.getKeys(false)){
+                translations.put(equipment, config.getString("equipment_translations." + equipment));
+            }
+            equipmentTranslations = translations;
+        }
+    }
+
     protected String type;
     protected int id;
     protected ExecutionPriority priority = ExecutionPriority.NORMAL;
@@ -144,4 +167,39 @@ public abstract class CustomEnchant {
         return level <= 0 || !EnchantsSquared.isWorldGuardAllowed(actor, worldGuardLocation, getWorldGuardFlagName());
     }
 
+    public abstract Collection<String> getCompatibleItems();
+
+    public ItemStack createIcon(Material defaultMaterial){
+        YamlConfiguration config = ConfigManager.getInstance().getConfig("translations.yml").get();
+
+        ItemStack icon = new ItemStack(defaultMaterial);
+        ItemMeta meta = icon.getItemMeta();
+        if (meta == null) return null;
+        meta.setDisplayName(ChatUtils.chat(getDisplayEnchantment()));
+        int maxLength = config.getInt("enchantment_menu.max_length");
+        List<String> format = config.getStringList("enchantment_menu.lore");
+        List<String> lore = new ArrayList<>();
+        format.forEach(l -> {
+            if (l.contains("%description%")){
+                lore.addAll(ChatUtils.seperateStringIntoLines(ChatUtils.chat(getDescription()), maxLength));
+            } else if (l.contains("%compatible_with%")){
+                lore.addAll(ChatUtils.seperateStringIntoLines(ChatUtils.chat(
+                        l.replace("%compatible_with%", "") +
+                                getCompatibleItems().stream()
+                                .filter(equipmentTranslations::containsKey)
+                                .map(equipmentTranslations::get)
+                                .collect(Collectors.joining(", "))),
+                        35));
+            } else {
+                lore.add(ChatUtils.chat(l
+                        .replace("%weight%", "" + getWeight())
+                        .replace("%lv_roman%", ChatUtils.toRoman(getMaxLevel()))
+                        .replace("%lv_number%", "" + getMaxLevel())));
+            }
+        });
+        meta.setLore(lore);
+        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_POTION_EFFECTS, ItemFlag.HIDE_DYE);
+        icon.setItemMeta(meta);
+        return icon;
+    }
 }

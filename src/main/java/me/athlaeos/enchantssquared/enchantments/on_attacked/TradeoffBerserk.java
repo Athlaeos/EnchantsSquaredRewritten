@@ -16,12 +16,12 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Collection;
 import java.util.HashSet;
 
-public class CurseBerserk extends CustomEnchant implements TriggerOnAttackedEnchantment, TriggerOnAttackEnchantment {
+public class TradeoffBerserk extends CustomEnchant implements TriggerOnAttackedEnchantment, TriggerOnAttackEnchantment {
     private final YamlConfiguration config;
     private final Collection<String> incompatibleVanillaEnchantments;
     private final Collection<String> incompatibleCustomEnchantments;
 
-    public CurseBerserk(int id, String type) {
+    public TradeoffBerserk(int id, String type) {
         super(id, type);
         this.config = ConfigManager.getInstance().getConfig("config.yml").get();
         this.naturallyCompatibleWith = new HashSet<>(config.getStringList("enchantment_configuration.curse_berserk.compatible_with"));
@@ -33,7 +33,7 @@ public class CurseBerserk extends CustomEnchant implements TriggerOnAttackedEnch
         this.damageTakenBase = config.getDouble("enchantment_configuration.curse_berserk.damage_taken_base");
         this.damageTakenLv = config.getDouble("enchantment_configuration.curse_berserk.damage_taken_lv");
 
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.curse_berserk.icon", new ItemStack(Material.BLAZE_POWDER));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.curse_berserk.icon", createIcon(Material.BLAZE_POWDER));
     }
 
     private final LevelService levelService = new LevelsFromMainHandAndEquipment(this);
@@ -162,5 +162,10 @@ public class CurseBerserk extends CustomEnchant implements TriggerOnAttackedEnch
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-curse-berserk";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 }

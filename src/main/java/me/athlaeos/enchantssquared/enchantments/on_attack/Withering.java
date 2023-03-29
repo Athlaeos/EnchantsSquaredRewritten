@@ -49,7 +49,7 @@ public class Withering extends CustomEnchant implements TriggerOnAttackEnchantme
         this.sound = Utils.soundFromString(config.getString("enchantment_configuration.withering.sound"), Sound.ENTITY_WITHER_SKELETON_DEATH);
         this.particleAnimation = config.getString("enchantment_configuration.withering.animation");
 
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.withering.icon", new ItemStack(Material.WITHER_SKELETON_SKULL));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.withering.icon", createIcon(Material.WITHER_SKELETON_SKULL));
     }
 
     private final LevelService mainHandLevels = new LevelsFromMainHandAndEquipment(this);
@@ -176,5 +176,10 @@ public class Withering extends CustomEnchant implements TriggerOnAttackEnchantme
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-withering";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 }

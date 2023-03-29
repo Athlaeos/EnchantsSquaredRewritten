@@ -56,7 +56,7 @@ public class EntityDamageListener implements Listener {
                         // if the damager was a trident, simply consider the main hand item of the attacker the trident they threw
                         // this does not set the trident to the attacker's main hand
                         attackerEquipment.setMainHand(((Trident) e.getDamager()).getItem());
-                        attackerEquipment.setMainHandEnchantments(CustomEnchantManager.getInstance().getItemsEnchantments(((Trident) e.getDamager()).getItem()));
+                        attackerEquipment.setMainHandEnchantments(CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(((Trident) e.getDamager()).getItem()));
                     } else {
                         MaterialClassType mainType = MaterialClassType.getClass(attacker.getEquipment().getItemInMainHand().getType());
                         if (!(mainType == MaterialClassType.BOWS || mainType == MaterialClassType.CROSSBOWS)){

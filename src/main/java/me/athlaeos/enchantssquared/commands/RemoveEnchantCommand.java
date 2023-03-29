@@ -5,7 +5,6 @@ import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.utility.ChatUtils;
 import me.athlaeos.enchantssquared.utility.EntityUtils;
-import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -43,7 +42,7 @@ public class RemoveEnchantCommand implements Command {
         boolean success = false;
         for (Player p : targets){
             ItemStack inHandItem = p.getInventory().getItemInMainHand();
-            Map<CustomEnchant, Integer> enchantments = CustomEnchantManager.getInstance().getItemsEnchantments(inHandItem);
+            Map<CustomEnchant, Integer> enchantments = CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(inHandItem);
             if (enchantments.keySet().stream().anyMatch(en -> en.getType().equalsIgnoreCase(args[1]))) {
                 if (CustomEnchantManager.getInstance().removeEnchant(inHandItem, args[1])) success = true;
             }
@@ -76,7 +75,7 @@ public class RemoveEnchantCommand implements Command {
     public List<String> getSubcommandArgs(CommandSender sender, String[] args) {
         if (args.length == 2 && sender instanceof Player){
             ItemStack inHandItem = ((Player) sender).getInventory().getItemInMainHand();
-            return CustomEnchantManager.getInstance().getItemsEnchantments(inHandItem).keySet().stream().map(CustomEnchant::getType).collect(Collectors.toList());
+            return CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(inHandItem).keySet().stream().map(CustomEnchant::getType).collect(Collectors.toList());
         }
         return null;
     }

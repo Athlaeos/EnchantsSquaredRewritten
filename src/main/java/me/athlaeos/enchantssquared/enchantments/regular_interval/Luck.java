@@ -14,7 +14,6 @@ import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -47,7 +46,7 @@ public class Luck extends CustomEnchant implements TriggerOnRegularIntervalsEnch
         this.luckLv = config.getDouble("enchantment_configuration.luck.luck_lv");
         this.percentileIncrease = config.getBoolean("enchantment_configuration.luck.percentile_increase");
 
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.luck.icon", new ItemStack(Material.RABBIT_FOOT));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.luck.icon", createIcon(Material.RABBIT_FOOT));
 
         EnchantsSquared.getPlugin().getServer().getPluginManager().registerEvents(this, EnchantsSquared.getPlugin());
     }
@@ -156,6 +155,11 @@ public class Luck extends CustomEnchant implements TriggerOnRegularIntervalsEnch
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-luck";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 
     private final double luckBase;

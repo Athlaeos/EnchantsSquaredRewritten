@@ -36,7 +36,7 @@ public class Crushing extends CustomEnchant implements TriggerOnAttackEnchantmen
         this.incompatibleVanillaEnchantments = new HashSet<>(config.getStringList("enchantment_configuration.crushing.incompatible_vanilla_enchantments"));
         this.incompatibleCustomEnchantments = new HashSet<>(config.getStringList("enchantment_configuration.crushing.incompatible_custom_enchantments"));
 
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.crushing.icon", new ItemStack(Material.DIAMOND_AXE));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.crushing.icon", createIcon(Material.DIAMOND_AXE));
     }
 
     private final LevelService mainHandLevels = new LevelsFromMainHandAndEquipment(this);
@@ -165,5 +165,10 @@ public class Crushing extends CustomEnchant implements TriggerOnAttackEnchantmen
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-crushing";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 }

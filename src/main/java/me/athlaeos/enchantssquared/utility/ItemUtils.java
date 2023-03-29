@@ -32,13 +32,14 @@ public class ItemUtils {
         return m;
     }
 
-    public static ItemStack getItemStackFromConfig(YamlConfiguration config, String path, ItemStack def){
+    public static ItemStack getIconFromConfig(YamlConfiguration config, String path, ItemStack def){
         Object rawIcon = config.get(path);
         if (rawIcon instanceof ItemStack){
             return (ItemStack) rawIcon;
         } else {
             try {
-                return new ItemStack(Material.valueOf(config.getString(path)));
+                def.setType(Material.valueOf(config.getString(path)));
+                return def;
             } catch (IllegalArgumentException ignored){
                 EnchantsSquared.getPlugin().getServer().getLogger().warning(
                         "ItemStack in config " + config.getName() + ", " + path + " did not lead to an itemstack or proper material type. Defaulted to " + getItemName(def)
@@ -127,8 +128,8 @@ public class ItemUtils {
         return false;
     }
 
-    public static boolean damageItem(Player damager, ItemStack i, int damage){
-        return damageItem(damager, i, damage, null);
+    public static void damageItem(Player damager, ItemStack i, int damage){
+        damageItem(damager, i, damage, null);
     }
 
     public static void addItem(Player player, ItemStack i, boolean setOwnership){

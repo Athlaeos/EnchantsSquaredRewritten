@@ -10,7 +10,6 @@ import me.athlaeos.enchantssquared.enchantments.LevelsFromMainHandOnly;
 import me.athlaeos.enchantssquared.managers.CooldownManager;
 import me.athlaeos.enchantssquared.utility.ChatUtils;
 import me.athlaeos.enchantssquared.utility.ItemUtils;
-import me.athlaeos.enchantssquared.utility.Utils;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Location;
@@ -21,22 +20,15 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.data.Directional;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.util.Vector;
 
 import java.util.Collection;
@@ -69,7 +61,7 @@ public class Shockwave extends CustomEnchant implements TriggerOnInteractEnchant
         this.explode = config.getBoolean("enchantment_configuration.shockwave.explode");
         this.cooldownMessage = config.getString("enchantment_configuration.shockwave.cooldown_message");
         this.cooldown = config.getInt("enchantment_configuration.shockwave.cooldown");
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.shockwave.icon", new ItemStack(Material.TNT));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.shockwave.icon", createIcon(Material.TNT));
     }
 
     private final LevelService levelService = new LevelsFromMainHandOnly(this);
@@ -176,6 +168,11 @@ public class Shockwave extends CustomEnchant implements TriggerOnInteractEnchant
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-torches";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 
     private final int cooldown;

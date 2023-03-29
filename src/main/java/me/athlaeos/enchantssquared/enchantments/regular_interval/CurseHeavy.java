@@ -14,7 +14,6 @@ import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -52,7 +51,7 @@ public class CurseHeavy extends CustomEnchant implements TriggerOnRegularInterva
         this.fatigueAmplifierLv = config.getInt("enchantment_configuration.curse_heavy.amplifier_lv_fatigue");
         this.fatigueDuration = config.getInt("enchantment_configuration.curse_heavy.duration");
 
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.curse_heavy.icon", new ItemStack(Material.ANVIL));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.curse_heavy.icon", createIcon(Material.ANVIL));
 
         EnchantsSquared.getPlugin().getServer().getPluginManager().registerEvents(this, EnchantsSquared.getPlugin());
     }
@@ -161,6 +160,11 @@ public class CurseHeavy extends CustomEnchant implements TriggerOnRegularInterva
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-curse-heavy";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 
     private final double slowBase;

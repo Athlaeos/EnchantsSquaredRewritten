@@ -73,7 +73,7 @@ public class Flight extends CustomEnchant implements TriggerOnRegularIntervalsEn
         }
         this.barStyle = style;
 
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.flight.icon", new ItemStack(Material.FEATHER));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.flight.icon", createIcon(Material.FEATHER));
     }
 
     private final LevelService levelService = new LevelsFromMainHandAndEquipment(this);
@@ -180,6 +180,11 @@ public class Flight extends CustomEnchant implements TriggerOnRegularIntervalsEn
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-flight";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 
     private final Set<UUID> flyingPlayers = new HashSet<>();

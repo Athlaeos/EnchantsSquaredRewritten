@@ -6,29 +6,18 @@ import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
 import me.athlaeos.enchantssquared.enchantments.LevelService;
 import me.athlaeos.enchantssquared.enchantments.LevelsFromMainHandOnly;
 import me.athlaeos.enchantssquared.enchantments.on_block_break.TriggerOnBlockBreakEnchantment;
-import me.athlaeos.enchantssquared.managers.CooldownManager;
-import me.athlaeos.enchantssquared.utility.EntityUtils;
 import me.athlaeos.enchantssquared.utility.ItemUtils;
-import me.athlaeos.enchantssquared.utility.Utils;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.data.Ageable;
-import org.bukkit.block.data.Directional;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDropItemEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
 
 import java.util.*;
 
@@ -52,7 +41,7 @@ public class AutoReplant extends CustomEnchant implements TriggerOnInteractEncha
         this.incompatibleCustomEnchantments = new HashSet<>(config.getStringList("enchantment_configuration.auto_replant.incompatible_custom_enchantments"));
 
         this.ignoreBreakPermissions = config.getBoolean("enchantment_configuration.auto_replant.ignore_break_permission");
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.auto_replant.icon", new ItemStack(Material.DIAMOND_HOE));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.auto_replant.icon", createIcon(Material.DIAMOND_HOE));
     }
 
     private final LevelService levelService = new LevelsFromMainHandOnly(this);
@@ -158,6 +147,11 @@ public class AutoReplant extends CustomEnchant implements TriggerOnInteractEncha
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-torches";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return Collections.singletonList("HOES");
     }
 
     private final boolean ignoreBreakPermissions;

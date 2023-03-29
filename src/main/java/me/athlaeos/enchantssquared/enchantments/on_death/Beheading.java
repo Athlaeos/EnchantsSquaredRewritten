@@ -42,7 +42,7 @@ public class Beheading extends CustomEnchant implements TriggerOnDeathEnchantmen
         this.beheadingBase = config.getDouble("enchantment_configuration.beheading.beheading_base");
         this.beheadingLv = config.getDouble("enchantment_configuration.beheading.beheading_lv");
         this.axeMultiplier = config.getDouble("enchantment_configuration.beheading.axe_buff");
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.beheading.icon", new ItemStack(Material.IRON_AXE));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.beheading.icon", createIcon(Material.IRON_AXE));
     }
 
     private final LevelService levelService = new LevelsFromMainHandAndEquipment(this);
@@ -149,6 +149,11 @@ public class Beheading extends CustomEnchant implements TriggerOnDeathEnchantmen
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-beheading";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 
     private final double beheadingBase;

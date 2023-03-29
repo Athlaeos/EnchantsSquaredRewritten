@@ -1,6 +1,5 @@
 package me.athlaeos.enchantssquared.enchantments.regular_interval;
 
-import me.athlaeos.enchantssquared.EnchantsSquared;
 import me.athlaeos.enchantssquared.config.ConfigManager;
 import me.athlaeos.enchantssquared.domain.MaterialClassType;
 import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
@@ -12,7 +11,6 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -42,7 +40,7 @@ public class WaterBreathing extends CustomEnchant implements TriggerOnRegularInt
 
         this.duration = config.getInt("enchantment_configuration.water_breathing.duration");
 
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.water_breathing.icon", new ItemStack(Material.PUFFERFISH));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.water_breathing.icon", createIcon(Material.PUFFERFISH));
     }
 
     private final LevelService levelService = new Levels1IfPresent(this);
@@ -149,6 +147,11 @@ public class WaterBreathing extends CustomEnchant implements TriggerOnRegularInt
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-water-breathing";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 
     private final int duration;

@@ -34,7 +34,7 @@ public class TridentSharpness extends CustomEnchant implements TriggerOnAttackEn
         this.damageBase = config.getDouble("enchantment_configuration.trident_sharpness.damage_base");
         this.damageLv = config.getDouble("enchantment_configuration.trident_sharpness.damage_lv");
 
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.trident_sharpness.icon", new ItemStack(Material.TRIDENT));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.trident_sharpness.icon", createIcon(Material.TRIDENT));
     }
 
     private final LevelService mainHandLevels = new LevelsFromMainHandAndEquipment(this);
@@ -150,5 +150,10 @@ public class TridentSharpness extends CustomEnchant implements TriggerOnAttackEn
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-trident-sharpness";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 }

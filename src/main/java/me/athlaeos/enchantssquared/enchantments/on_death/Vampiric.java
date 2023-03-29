@@ -52,7 +52,7 @@ public class Vampiric extends CustomEnchant implements TriggerOnDeathEnchantment
         this.healingLv = config.getDouble("enchantment_configuration.vampiric.healing_lv");
         this.hungerBase = config.getDouble("enchantment_configuration.vampiric.hunger_base");
         this.hungerLv = config.getDouble("enchantment_configuration.vampiric.hunger_lv");
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.vampiric.icon", new ItemStack(Material.REDSTONE));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.vampiric.icon", createIcon(Material.REDSTONE));
     }
 
     private final LevelService levelService = new LevelsFromMainHandAndEquipment(this);
@@ -159,6 +159,11 @@ public class Vampiric extends CustomEnchant implements TriggerOnDeathEnchantment
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-vampiric";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 
     private final double lifestealBase;

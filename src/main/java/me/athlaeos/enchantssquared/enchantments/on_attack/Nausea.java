@@ -48,7 +48,7 @@ public class Nausea extends CustomEnchant implements TriggerOnAttackEnchantment 
         this.sound = Utils.soundFromString(config.getString("enchantment_configuration.nausea.sound"), Sound.BLOCK_BREWING_STAND_BREW);
         this.particleAnimation = config.getString("enchantment_configuration.nausea.animation");
 
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.nausea.icon", new ItemStack(Material.CHORUS_PLANT));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.nausea.icon", createIcon(Material.CHORUS_PLANT));
     }
 
     private final LevelService mainHandLevels = new LevelsFromMainHandAndEquipment(this);
@@ -174,5 +174,10 @@ public class Nausea extends CustomEnchant implements TriggerOnAttackEnchantment 
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-nausea";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 }

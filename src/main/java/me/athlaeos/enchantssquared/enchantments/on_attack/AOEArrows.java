@@ -40,7 +40,7 @@ public class AOEArrows extends CustomEnchant implements TriggerOnAttackEnchantme
         this.incompatibleVanillaEnchantments = new HashSet<>(config.getStringList("enchantment_configuration.aoe_arrows.incompatible_vanilla_enchantments"));
         this.incompatibleCustomEnchantments = new HashSet<>(config.getStringList("enchantment_configuration.aoe_arrows.incompatible_custom_enchantments"));
 
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.aoe_arrows.icon", new ItemStack(Material.SPECTRAL_ARROW));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.aoe_arrows.icon", createIcon(Material.SPECTRAL_ARROW));
     }
 
     private final LevelService mainHandLevels = new LevelsFromMainHandAndEquipment(this);
@@ -169,5 +169,10 @@ public class AOEArrows extends CustomEnchant implements TriggerOnAttackEnchantme
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-aoe-arrows";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 }

@@ -32,7 +32,7 @@ public class Shielding extends CustomEnchant implements TriggerOnAttackedEnchant
         this.incompatibleVanillaEnchantments = new HashSet<>(config.getStringList("enchantment_configuration.shielding.incompatible_vanilla_enchantments"));
         this.incompatibleCustomEnchantments = new HashSet<>(config.getStringList("enchantment_configuration.shielding.incompatible_custom_enchantments"));
 
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.shielding.icon", new ItemStack(Material.SHIELD));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.shielding.icon", createIcon(Material.SHIELD));
     }
 
     private final LevelService levelService = new LevelsFromAllEquipment(this);
@@ -149,5 +149,10 @@ public class Shielding extends CustomEnchant implements TriggerOnAttackedEnchant
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-deflect-projectiles";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 }

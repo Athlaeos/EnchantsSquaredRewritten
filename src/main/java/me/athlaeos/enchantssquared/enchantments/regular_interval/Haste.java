@@ -1,6 +1,5 @@
 package me.athlaeos.enchantssquared.enchantments.regular_interval;
 
-import me.athlaeos.enchantssquared.EnchantsSquared;
 import me.athlaeos.enchantssquared.config.ConfigManager;
 import me.athlaeos.enchantssquared.domain.MaterialClassType;
 import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
@@ -12,7 +11,6 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -44,7 +42,7 @@ public class Haste extends CustomEnchant implements TriggerOnRegularIntervalsEnc
         this.amplifierLv = config.getInt("enchantment_configuration.haste.amplifier_lv");
         this.duration = config.getInt("enchantment_configuration.haste.duration");
 
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.haste.icon", new ItemStack(Material.GOLDEN_PICKAXE));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.haste.icon", createIcon(Material.GOLDEN_PICKAXE));
     }
 
     private final LevelService levelService = new LevelsFromAllEquipment(this);
@@ -151,6 +149,11 @@ public class Haste extends CustomEnchant implements TriggerOnRegularIntervalsEnc
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-haste";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 
     private final int amplifierBase;

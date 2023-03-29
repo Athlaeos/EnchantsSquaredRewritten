@@ -19,6 +19,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 
 public class Grappling extends CustomEnchant implements TriggerOnFishingEnchantment {
@@ -46,7 +47,7 @@ public class Grappling extends CustomEnchant implements TriggerOnFishingEnchantm
         this.cooldownMessage = config.getString("enchantment_configuration.grappling.cooldown_message");
         this.cooldown = config.getInt("enchantment_configuration.grappling.cooldown");
 
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.grappling.icon", new ItemStack(Material.FISHING_ROD));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.grappling.icon", createIcon(Material.FISHING_ROD));
     }
 
     private final LevelService mainHandService = new LevelsFromMainHandOnly(this);
@@ -153,6 +154,11 @@ public class Grappling extends CustomEnchant implements TriggerOnFishingEnchantm
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-grappling";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return Collections.singleton("FISHINGROD");
     }
 
     private final double forceBase;

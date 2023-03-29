@@ -2,23 +2,17 @@ package me.athlaeos.enchantssquared.enchantments.on_potion_effect;
 
 import me.athlaeos.enchantssquared.EnchantsSquared;
 import me.athlaeos.enchantssquared.config.ConfigManager;
-import me.athlaeos.enchantssquared.domain.EntityEquipment;
 import me.athlaeos.enchantssquared.domain.MaterialClassType;
 import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
 import me.athlaeos.enchantssquared.enchantments.LevelService;
 import me.athlaeos.enchantssquared.enchantments.LevelsFromMainHandAndEquipment;
-import me.athlaeos.enchantssquared.enchantments.on_item_damage.TriggerOnItemDamageEnchantment;
-import me.athlaeos.enchantssquared.utility.EntityUtils;
 import me.athlaeos.enchantssquared.utility.ItemUtils;
-import me.athlaeos.enchantssquared.utility.Utils;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
-import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
 
@@ -49,7 +43,7 @@ public class IncreasePotionPotency extends CustomEnchant implements TriggerOnPot
         this.durationMinimum = config.getDouble("enchantment_configuration.potion_potency_buff.duration_minimum");
         this.exceptions.addAll(config.getStringList("enchantment_configuration.potion_potency_buff.exceptions"));
 
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.potion_potency_buff.icon", new ItemStack(Material.GLOWSTONE_DUST));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.potion_potency_buff.icon", createIcon(Material.GLOWSTONE_DUST));
     }
 
     private final LevelService levelService = new LevelsFromMainHandAndEquipment(this);
@@ -156,6 +150,11 @@ public class IncreasePotionPotency extends CustomEnchant implements TriggerOnPot
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-potion-potency-buff";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 
     private final double amplifierBase;

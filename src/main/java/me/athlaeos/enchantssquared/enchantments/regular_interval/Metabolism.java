@@ -41,7 +41,7 @@ public class Metabolism extends CustomEnchant implements TriggerOnRegularInterva
         this.hungerPerSecondLv = config.getDouble("enchantment_configuration.metabolism.hunger_regeneration_lv");
         this.saturationLimit = config.getInt("enchantment_configuration.metabolism.saturation_limit");
 
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.metabolism.icon", new ItemStack(Material.GOLDEN_CARROT));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.metabolism.icon", createIcon(Material.GOLDEN_CARROT));
     }
 
     private final LevelService levelService = new LevelsFromAllEquipment(this);
@@ -148,6 +148,11 @@ public class Metabolism extends CustomEnchant implements TriggerOnRegularInterva
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-metabolism";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 
     private final double hungerPerSecondBase;

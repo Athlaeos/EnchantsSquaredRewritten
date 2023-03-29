@@ -39,7 +39,7 @@ public class Toxic extends CustomEnchant implements TriggerOnAttackEnchantment, 
         this.incompatibleVanillaEnchantments = new HashSet<>(config.getStringList("enchantment_configuration.toxic.incompatible_vanilla_enchantments"));
         this.incompatibleCustomEnchantments = new HashSet<>(config.getStringList("enchantment_configuration.toxic.incompatible_custom_enchantments"));
 
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.toxic.icon", new ItemStack(Material.BONE));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.toxic.icon", createIcon(Material.BONE));
     }
 
     private final LevelService mainHandLevels = new LevelsFromMainHandAndEquipment(this);
@@ -179,5 +179,10 @@ public class Toxic extends CustomEnchant implements TriggerOnAttackEnchantment, 
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-slowing";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 }

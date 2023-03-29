@@ -42,7 +42,7 @@ public class Rejuvenation extends CustomEnchant implements TriggerOnRegularInter
         this.durabilityPerSecondBase = config.getDouble("enchantment_configuration.rejuvenation.durability_regeneration_base");
         this.durabilityPerSecondLv = config.getDouble("enchantment_configuration.rejuvenation.durability_regeneration_lv");
 
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.rejuvenation.icon", new ItemStack(Material.EMERALD));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.rejuvenation.icon", createIcon(Material.EMERALD));
     }
 
     private final LevelService levelService = new Levels1IfPresent(this);
@@ -149,6 +149,11 @@ public class Rejuvenation extends CustomEnchant implements TriggerOnRegularInter
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-rejuvenation";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 
     private final double durabilityPerSecondBase;

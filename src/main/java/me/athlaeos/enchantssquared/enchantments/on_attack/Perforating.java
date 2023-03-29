@@ -36,7 +36,7 @@ public class Perforating extends CustomEnchant implements TriggerOnAttackEnchant
         this.incompatibleVanillaEnchantments = new HashSet<>(config.getStringList("enchantment_configuration.perforating.incompatible_vanilla_enchantments"));
         this.incompatibleCustomEnchantments = new HashSet<>(config.getStringList("enchantment_configuration.perforating.incompatible_custom_enchantments"));
 
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.perforating.icon", new ItemStack(Material.DIAMOND_SWORD));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.perforating.icon", createIcon(Material.DIAMOND_SWORD));
     }
 
     private final LevelService mainHandLevels = new LevelsFromMainHandAndEquipment(this);
@@ -165,5 +165,10 @@ public class Perforating extends CustomEnchant implements TriggerOnAttackEnchant
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-perforating";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 }

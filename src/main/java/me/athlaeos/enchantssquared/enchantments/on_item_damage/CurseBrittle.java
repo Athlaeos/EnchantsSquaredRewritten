@@ -43,7 +43,7 @@ public class CurseBrittle extends CustomEnchant implements TriggerOnItemDamageEn
         this.damageMultiplierBase = config.getDouble("enchantment_configuration.curse_brittle.damage_multiplier_base");
         this.damageMultiplierLv = config.getDouble("enchantment_configuration.curse_brittle.damage_multiplier_lv");
 
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.curse_brittle.icon", new ItemStack(Material.GOLDEN_SWORD));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.curse_brittle.icon", createIcon(Material.GOLDEN_SWORD));
     }
 
     private final LevelService levelService = new Levels1IfPresent(this);
@@ -150,6 +150,11 @@ public class CurseBrittle extends CustomEnchant implements TriggerOnItemDamageEn
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-curse-brittle";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 
     private final double damageMultiplierBase;

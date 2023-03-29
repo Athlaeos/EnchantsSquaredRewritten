@@ -52,7 +52,7 @@ public class Steady extends CustomEnchant implements TriggerOnRegularIntervalsEn
 
         this.cleanup = config.getBoolean("clean_old_enchantments");
 
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.steady.icon", new ItemStack(Material.IRON_BLOCK));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.steady.icon", createIcon(Material.IRON_BLOCK));
 
         EnchantsSquared.getPlugin().getServer().getPluginManager().registerEvents(this, EnchantsSquared.getPlugin());
     }
@@ -161,6 +161,11 @@ public class Steady extends CustomEnchant implements TriggerOnRegularIntervalsEn
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-knockback-resistance";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 
     private final double resistanceBase;

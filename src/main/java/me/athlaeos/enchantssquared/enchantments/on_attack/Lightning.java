@@ -35,7 +35,7 @@ public class Lightning extends CustomEnchant implements TriggerOnAttackEnchantme
         this.chanceBase = config.getDouble("enchantment_configuration.lightning.apply_chance");
         this.chanceLv = config.getDouble("enchantment_configuration.lightning.apply_chance_lv");
 
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.lightning.icon", new ItemStack(Material.DIAMOND));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.lightning.icon", createIcon(Material.DIAMOND));
     }
 
     private final LevelService mainHandLevels = new LevelsFromMainHandAndEquipment(this);
@@ -153,5 +153,10 @@ public class Lightning extends CustomEnchant implements TriggerOnAttackEnchantme
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-lightning";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 }

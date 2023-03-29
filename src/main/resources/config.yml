@@ -80,6 +80,8 @@ cache_refresh_time: 1950 # Time is in milliseconds, default little under 2 secon
 # Every x amount of time, the cache will be cleaned up to get rid of all invalid entities in it
 cache_cleanup_delay: 600000 # Time is in milliseconds, default 10 minutes
 
+allow_grindstone_removal: true # If false, grindstones no longer remove custom enchantments
+
 # You may add the following properties to enchantments in case you want them to conflict with other enchantments
 # incompatible_vanilla_enchantments
 # incompatible_custom_enchantments
@@ -87,7 +89,7 @@ cache_cleanup_delay: 600000 # Time is in milliseconds, default 10 minutes
 
 enchantment_configuration:
   excavation:
-    description: '&8> Mines a &e2x1&7-&e+ shaped&7-&e3x3 area instead of 1x1x1. Sneak while mining to stop this effect.'
+    description: '&8> Mines a &e2x1&8 - &e+ shaped&8 - &e3x3 area&8 instead of 1x1x1. Sneak while mining to stop this effect.'
     enchant_name: '&7Excavation' # The lore applied on items, which is also used for determining item enchants
     max_level: 3 # Maximum level for this enchantment, players will be able to reach this level through the anvil
     max_level_table: 3 # Maximum level attainable through the enchantment table
@@ -194,7 +196,7 @@ enchantment_configuration:
       - mending
 
   lava_walker:
-    description: '&8> Transforms lava under you within a radius of &e1&8-&e2&8-&e3&8 blocks into magma, at the cost of durability.'
+    description: '&8> Transforms lava under you within a radius of &e0&8-&e1&8-&e2&8 blocks into magma, at the cost of durability.'
     enchant_name: '&7Lava Walker %lv_roman%'
     enabled: true
     weight: 20
@@ -334,7 +336,7 @@ enchantment_configuration:
     icon: DIAMOND_HOE
 
   kinship:
-    description: '&8> If the pickaxe matches the material of the ore you''re mining, some durability is restored. &estone:0-0-0&8, &eiron:1-2-3&8, &ediamond:10-20-30&8, &enetherite:50-100-150'
+    description: '&8> If the pickaxe matches the material of the ore you''re mining, some durability is restored. &estone:0.05-0.1-0.15&8, &eiron:1-2-3&8, &ediamond:10-20-30&8, &enetherite:50-100-150'
     enchant_name: '&7Kinship %lv_roman%'
     enabled: true
     weight: 80
@@ -451,7 +453,7 @@ enchantment_configuration:
       - silk_touch
 
   flight:
-    description: '&8> Allows the wearer temporary flight at the cost of durability. Recharge your flight by standing on the ground'
+    description: '&8> Allows the wearer temporary flight at the cost of durability for &e5&8-&e10&8-&e15&8 seconds at a time. Recharge your flight by standing on the ground at &e1&8-&e1.5&8-&e2x&8 speed'
     enchant_name: '&7Wings %lv_roman%'
     enabled: true
     max_level: 3
@@ -460,9 +462,9 @@ enchantment_configuration:
     # If it's higher than 0, the next options determine how long a player can fly for before they have to
     # go back to the ground to recharge and if they gain slow fall if it expires. Or if they have a fuel bar displayed.
     flight_duration_base: 5000 # Base duration a player can fly in milliseconds
-    flight_duration_lv: 7500 # Additional duration per level a player will be able to fly
+    flight_duration_lv: 5000 # Additional duration per level a player will be able to fly
     regeneration_base: 500 # Base speed at which your flight duration or "fuel" regenerates when on ground, in milliseconds per 0.5 seconds
-    regeneration_lv: 750 # Additional speed at which your flight duration or "fuel" regenerates when on ground
+    regeneration_lv: 250 # Additional speed at which your flight duration or "fuel" regenerates when on ground
     slowfall_duration: 200 # The duration of the slow falling buff in ticks (20 = 1 second)
     flight_bar: false # If true, while in flight a small "fuel" bar will appear above your hotbar displaying
     # how much flight you have left.
@@ -485,7 +487,7 @@ enchantment_configuration:
       - BOOTS
 
   speed_boost:
-    description: '&8> Grants the wearer speed boost &eI&8-&eII&8 while wearing'
+    description: '&8> Grants the wearer &e20&8-&e30%&8 increased movement speed while wearing'
     enchant_name: '&7Fleeting %lv_roman%'
     enabled: true
     weight: 40
@@ -544,7 +546,7 @@ enchantment_configuration:
       - BOOTS
 
   luck:
-    description: '&8> Grants the player luck &eI&8-&eII&8 while wearing'
+    description: '&8> Grants the player &e1&8-&e2&8-&e3&8 luck while wearing'
     enchant_name: '&7Blessing %lv_roman%'
     enabled: true
     weight: 40
@@ -553,7 +555,7 @@ enchantment_configuration:
     max_level_table: 3
     percentile_increase: false
     luck_base: 1 # Base luck granted at level 1
-    luck_lv: 0.5 # Additional luck granted per level
+    luck_lv: 1 # Additional luck granted per level
     trade_enabled: true
     trade_cost_base_lower: 16
     trade_cost_base_upper: 32
@@ -579,11 +581,11 @@ enchantment_configuration:
     trade_cost_base_upper: 12
     trade_cost_lv_lower: 8
     trade_cost_lv_upper: 12
-    icon: DIAMOND_SWORD
+    icon: TRIDENT
     is_treasure: false
 
   grappling:
-    description: '&8> Turns fishing rods into grappling hooks'
+    description: '&8> Turns fishing rods into grappling hooks. The hook must be connected to a surface to be able to grapple to it'
     enchant_name: '&7Grappling %lv_roman%'
     enabled: true
     weight: 40
@@ -659,7 +661,7 @@ enchantment_configuration:
       - HOES
 
   strength:
-    description: '&8> Grants the player &e+3&8-&e+6&8 attack damage while holding'
+    description: '&8> Grants the player &e+3&8-&e6&8 attack damage while holding'
     enchant_name: '&7Barbarian %lv_roman%'
     enabled: true
     weight: 40
@@ -809,7 +811,7 @@ enchantment_configuration:
       - CROSSBOWS
 
   stunning:
-    description: '&8> Has a &e2&8-&e4%&8 chance to inflict the entity you''re damaging with a stun'
+    description: '&8> Has a &e2&8-&e4%&8 chance to inflict the entity you''re damaging with a stun. Axes are twice as potent'
     # A stun is a combination of 5 very strong debuffs, mining fatigue, slowness, weakness, blindness, and jump boost (to cancel jumping)
     enchant_name: '&7Blunt %lv_roman%'
     enabled: true
@@ -894,7 +896,7 @@ enchantment_configuration:
       - AXES
 
   shield_downer:
-    description: '&8> Has a &e20&8-&e40&8-&e60%&8 chance to disable a shield for &e2&8-&e3&8-&e4%&8 seconds'
+    description: '&8> Has a &e20&8-&e40&8-&e60%&8 chance to disable a shield for &e2&8-&e3&8-&e4&8 seconds'
     enchant_name: '&7Splintering %lv_roman%'
     enabled: true
     weight: 40
@@ -1087,7 +1089,7 @@ enchantment_configuration:
       - AXES
 
   beheading:
-    description: '&8> Killing an entity adds a &e1&8-&e2%&8 chance of dropping its head. Works with creepers, skeletons, players, etc.'
+    description: '&8> Killing an entity adds a &e1&8-&e2%&8 chance of dropping its head. Works with creepers, skeletons, players, etc. Axes are twice as potent'
     enchant_name: '&7Executioner %lv_roman%'
     enabled: true
     weight: 10
@@ -1175,7 +1177,7 @@ enchantment_configuration:
       - CHESTPLATES
 
   curse_brittle:
-    description: '&8> Curse enchant that causes items to break quicker'
+    description: '&8> Curse enchant that causes items to break &c2&8-&c3&8-&c4x&8 quicker'
     enchant_name: '&cBrittle %lv_roman%'
     enabled: true
     weight: 5
@@ -1195,7 +1197,7 @@ enchantment_configuration:
       - ALL
 
   curse_heavy:
-    description: '&8> Curse enchant that, while holding/wearing, slows the holder/wearer down and gives them mining fatigue'
+    description: '&8> Curse enchant that, while holding/wearing, slows the user down by &c10&8-&c20%&8'
     enchant_name: '&cBurden %lv_roman%'
     enabled: true
     weight: 5
@@ -1243,7 +1245,7 @@ enchantment_configuration:
 
   curse_berserk:
     description: '&8> You deal &e20&8-&e35&8-&e50%&8 more damage, but you also take &e30&8-&e50&8-&e70%&8 more damage'
-    enchant_name: '&cCurse of Rage %lv_roman%'
+    enchant_name: '&9Pact of the Berserker %lv_roman%'
     enabled: true
     weight: 5
     book_only: false

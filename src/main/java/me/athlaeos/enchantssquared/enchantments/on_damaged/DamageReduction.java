@@ -40,7 +40,7 @@ public class DamageReduction extends CustomEnchant implements TriggerOnAttackedE
         this.damageReductionBase = config.getDouble("enchantment_configuration.damage_reduction.reduction_base");
         this.damageReductionLv = config.getDouble("enchantment_configuration.damage_reduction.reduction_lv");
 
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.damage_reduction.icon", new ItemStack(Material.DRAGON_HEAD));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.damage_reduction.icon", createIcon(Material.DRAGON_HEAD));
     }
 
     private final LevelService levelService = new LevelsFromAllEquipment(this);
@@ -147,6 +147,11 @@ public class DamageReduction extends CustomEnchant implements TriggerOnAttackedE
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-damage-reduction";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 
     private final double damageReductionBase;

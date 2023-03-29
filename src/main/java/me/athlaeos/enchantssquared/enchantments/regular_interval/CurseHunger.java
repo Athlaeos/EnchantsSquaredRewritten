@@ -1,6 +1,5 @@
 package me.athlaeos.enchantssquared.enchantments.regular_interval;
 
-import me.athlaeos.enchantssquared.EnchantsSquared;
 import me.athlaeos.enchantssquared.config.ConfigManager;
 import me.athlaeos.enchantssquared.domain.MaterialClassType;
 import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
@@ -41,7 +40,7 @@ public class CurseHunger extends CustomEnchant implements TriggerOnRegularInterv
         this.hungerPerSecondBase = config.getDouble("enchantment_configuration.curse_hunger.hunger_degeneration_base");
         this.hungerPerSecondLv = config.getDouble("enchantment_configuration.curse_hunger.hunger_degeneration_lv");
 
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.curse_hunger.icon", new ItemStack(Material.ROTTEN_FLESH));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.curse_hunger.icon", createIcon(Material.ROTTEN_FLESH));
     }
 
     private final LevelService levelService = new LevelsFromAllEquipment(this);
@@ -148,6 +147,11 @@ public class CurseHunger extends CustomEnchant implements TriggerOnRegularInterv
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-curse-hunger";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 
     private final double hungerPerSecondBase;

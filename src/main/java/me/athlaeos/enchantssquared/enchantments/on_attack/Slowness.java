@@ -52,7 +52,7 @@ public class Slowness extends CustomEnchant implements TriggerOnAttackEnchantmen
         this.sound = Utils.soundFromString(config.getString("enchantment_configuration.slowness.sound"), Sound.BLOCK_BELL_RESONATE);
         this.particleAnimation = config.getString("enchantment_configuration.slowness.animation");
 
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.slowness.icon", new ItemStack(Material.SNOWBALL));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.slowness.icon", createIcon(Material.SNOWBALL));
     }
 
     private final LevelService mainHandLevels = new LevelsFromMainHandAndEquipment(this);
@@ -179,5 +179,10 @@ public class Slowness extends CustomEnchant implements TriggerOnAttackEnchantmen
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-slowing";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 }

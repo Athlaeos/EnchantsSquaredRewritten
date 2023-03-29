@@ -57,7 +57,7 @@ public class Excavation extends CustomEnchant implements TriggerOnBlockBreakEnch
         this.durabilityLeveling = config.getBoolean("enchantment_configuration.excavation.durability_leveling");
         this.durabilityMultiplierLv = config.getDouble("enchantment_configuration.excavation.durability_decay_lv");
         this.allowSneakDisable = config.getBoolean("enchantment_configuration.excavation.sneak_disable", true);
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.excavation.icon", new ItemStack(Material.TNT));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.excavation.icon", createIcon(Material.TNT));
 
         YamlConfiguration excavationConfig = ConfigManager.getInstance().getConfig("excavationblocks.yml").get();
         excavationBreakables.put(MaterialClassType.PICKAXES, ItemUtils.getMaterialList(excavationConfig.getStringList("excavation_pickaxe_blocks")));
@@ -218,6 +218,11 @@ public class Excavation extends CustomEnchant implements TriggerOnBlockBreakEnch
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-excavation";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 
     private final double durabilityMultiplier;

@@ -48,7 +48,7 @@ public class ShieldDowner extends CustomEnchant implements TriggerOnAttackEnchan
         this.sound = Utils.soundFromString(config.getString("enchantment_configuration.shield_downer.sound"), Sound.ENTITY_ZOMBIE_BREAK_WOODEN_DOOR);
         this.particleAnimation = config.getString("enchantment_configuration.shield_downer.animation");
 
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.shield_downer.icon", new ItemStack(Material.SHIELD));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.shield_downer.icon", createIcon(Material.SHIELD));
     }
 
     private final LevelService mainHandLevels = new LevelsFromMainHandAndEquipment(this);
@@ -175,5 +175,10 @@ public class ShieldDowner extends CustomEnchant implements TriggerOnAttackEnchan
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-shield-downer";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 }

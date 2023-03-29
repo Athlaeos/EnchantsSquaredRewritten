@@ -24,7 +24,7 @@ public class ReloadCommand implements Command {
 
 		CommandManager.getInstance().reload();
 		CustomEnchantManager.getInstance().reload();
-		//MineUtils.reload();
+
 		sender.sendMessage(ChatUtils.chat(reload_successful));
 		return true;
 	}

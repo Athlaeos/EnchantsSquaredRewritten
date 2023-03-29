@@ -6,7 +6,6 @@ import me.athlaeos.enchantssquared.domain.MaterialClassType;
 import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
 import me.athlaeos.enchantssquared.enchantments.LevelService;
 import me.athlaeos.enchantssquared.enchantments.Levels1IfPresent;
-import me.athlaeos.enchantssquared.enchantments.LevelsFromAllEquipment;
 import me.athlaeos.enchantssquared.utility.EntityUtils;
 import me.athlaeos.enchantssquared.utility.ItemUtils;
 import org.bukkit.Material;
@@ -48,7 +47,7 @@ public class FireResistance extends CustomEnchant implements TriggerOnRegularInt
         this.slow = config.getDouble("enchantment_configuration.fire_resistance.slow");
         this.duration = config.getInt("enchantment_configuration.fire_resistance.duration");
 
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.fire_resistance.icon", new ItemStack(Material.MAGMA_CREAM));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.fire_resistance.icon", createIcon(Material.MAGMA_CREAM));
 
         EnchantsSquared.getPlugin().getServer().getPluginManager().registerEvents(this, EnchantsSquared.getPlugin());
     }
@@ -157,6 +156,11 @@ public class FireResistance extends CustomEnchant implements TriggerOnRegularInt
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-jump";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 
     private final double slow;

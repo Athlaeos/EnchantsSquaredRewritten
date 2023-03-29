@@ -9,5 +9,6 @@ public class ValhallaLoadModifiersListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onValhallaLoadModifiers(ValhallaLoadModifiersEvent e){
+
     }
 }

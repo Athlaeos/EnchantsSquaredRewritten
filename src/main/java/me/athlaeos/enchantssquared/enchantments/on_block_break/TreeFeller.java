@@ -2,7 +2,6 @@ package me.athlaeos.enchantssquared.enchantments.on_block_break;
 
 import me.athlaeos.enchantssquared.EnchantsSquared;
 import me.athlaeos.enchantssquared.config.ConfigManager;
-import me.athlaeos.enchantssquared.domain.MaterialClassType;
 import me.athlaeos.enchantssquared.domain.Offset;
 import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
 import me.athlaeos.enchantssquared.enchantments.LevelService;
@@ -49,7 +48,7 @@ public class TreeFeller extends CustomEnchant implements TriggerOnBlockBreakEnch
         this.logLimit = config.getInt("enchantment_configuration.tree_feller.log_limit");
         this.leafLimit = config.getInt("enchantment_configuration.tree_feller.leaf_limit");
         this.includeLeaves = config.getBoolean("enchantment_configuration.tree_feller.break_leaves");
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.tree_feller.icon", new ItemStack(Material.DIAMOND_AXE));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.tree_feller.icon", createIcon(Material.DIAMOND_AXE));
 
         EnchantsSquared.getPlugin().getServer().getPluginManager().registerEvents(this, EnchantsSquared.getPlugin());
     }
@@ -157,6 +156,11 @@ public class TreeFeller extends CustomEnchant implements TriggerOnBlockBreakEnch
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-tree-feller";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return Collections.singletonList("AXES");
     }
 
     private final double durabilityMultiplier;

@@ -44,7 +44,7 @@ public class Kinship extends CustomEnchant implements TriggerOnBlockBreakEnchant
         this.durabilityRegenIron = config.getDouble("enchantment_configuration.kinship.durability_regen_iron");
         this.durabilityRegenStone = config.getDouble("enchantment_configuration.kinship.durability_regen_stone");
         this.durabilityRegenGold = config.getDouble("enchantment_configuration.kinship.durability_regen_gold");
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.kinship.icon", new ItemStack(Material.ANVIL));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.kinship.icon", createIcon(Material.ANVIL));
     }
 
     private final LevelService levelService = new LevelsFromMainHandAndEquipment(this);
@@ -150,6 +150,11 @@ public class Kinship extends CustomEnchant implements TriggerOnBlockBreakEnchant
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-kinship";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return Collections.singletonList("PICKAXES");
     }
 
     private final double durabilityRegenNetherite;

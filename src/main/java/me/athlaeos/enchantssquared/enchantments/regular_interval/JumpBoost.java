@@ -1,6 +1,5 @@
 package me.athlaeos.enchantssquared.enchantments.regular_interval;
 
-import me.athlaeos.enchantssquared.EnchantsSquared;
 import me.athlaeos.enchantssquared.config.ConfigManager;
 import me.athlaeos.enchantssquared.domain.MaterialClassType;
 import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
@@ -9,11 +8,9 @@ import me.athlaeos.enchantssquared.enchantments.LevelsFromAllEquipment;
 import me.athlaeos.enchantssquared.utility.EntityUtils;
 import me.athlaeos.enchantssquared.utility.ItemUtils;
 import org.bukkit.Material;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -45,7 +42,7 @@ public class JumpBoost extends CustomEnchant implements TriggerOnRegularInterval
         this.amplifierLv = config.getInt("enchantment_configuration.jump_boost.amplifier_lv");
         this.duration = config.getInt("enchantment_configuration.jump_boost.duration");
 
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.jump_boost.icon", new ItemStack(Material.SLIME_BLOCK));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.jump_boost.icon", createIcon(Material.SLIME_BLOCK));
     }
 
     private final LevelService levelService = new LevelsFromAllEquipment(this);
@@ -152,6 +149,11 @@ public class JumpBoost extends CustomEnchant implements TriggerOnRegularInterval
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-jump";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 
     private final int amplifierBase;

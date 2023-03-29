@@ -1,6 +1,5 @@
 package me.athlaeos.enchantssquared.enchantments.on_block_break;
 
-import me.athlaeos.enchantssquared.EnchantsSquared;
 import me.athlaeos.enchantssquared.config.ConfigManager;
 import me.athlaeos.enchantssquared.domain.MaterialClassType;
 import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
@@ -46,7 +45,7 @@ public class Sunforged extends CustomEnchant implements TriggerOnBlockBreakEncha
         this.incompatibleCustomEnchantments = new HashSet<>(config.getStringList("enchantment_configuration.sunforged.incompatible_custom_enchantments"));
 
         this.avgExpDropped = config.getDouble("enchantment_configuration.sunforged.drop_exp_chance");
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.sunforged.icon", new ItemStack(Material.FURNACE));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.sunforged.icon", createIcon(Material.FURNACE));
 
         YamlConfiguration smeltConfig = ConfigManager.getInstance().getConfig("smeltblocksrecipes.yml").get();
         ConfigurationSection fortuneLessSection = smeltConfig.getConfigurationSection("fortune_ignored");
@@ -177,6 +176,11 @@ public class Sunforged extends CustomEnchant implements TriggerOnBlockBreakEncha
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-sunforged";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 
     private final double avgExpDropped;

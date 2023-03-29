@@ -44,7 +44,7 @@ public class Soulbound extends CustomEnchant implements TriggerOnDeathEnchantmen
         this.singleUse = config.getBoolean("enchantment_configuration.soulbound.single_use");
         this.chanceBase = config.getDouble("enchantment_configuration.soulbound.chance_base");
         this.chanceLv = config.getDouble("enchantment_configuration.soulbound.chance_lv");
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.soulbound.icon", new ItemStack(Material.END_CRYSTAL));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.soulbound.icon", createIcon(Material.END_CRYSTAL));
     }
 
     private final LevelService levelService = new Levels1IfPresentInInventory(this);
@@ -151,6 +151,11 @@ public class Soulbound extends CustomEnchant implements TriggerOnDeathEnchantmen
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-soulbound";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 
     private final double chanceBase;

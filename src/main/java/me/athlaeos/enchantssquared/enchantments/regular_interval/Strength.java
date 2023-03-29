@@ -14,7 +14,6 @@ import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -47,7 +46,7 @@ public class Strength extends CustomEnchant implements TriggerOnRegularIntervals
         this.damageLv = config.getDouble("enchantment_configuration.strength.damage_lv");
         this.percentileIncrease = config.getBoolean("enchantment_configuration.strength.percentile_increase");
 
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.strength.icon", new ItemStack(Material.BLAZE_POWDER));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.strength.icon", createIcon(Material.BLAZE_POWDER));
 
         EnchantsSquared.getPlugin().getServer().getPluginManager().registerEvents(this, EnchantsSquared.getPlugin());
     }
@@ -156,6 +155,11 @@ public class Strength extends CustomEnchant implements TriggerOnRegularIntervals
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-barbarian";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 
     private final double damageBase;

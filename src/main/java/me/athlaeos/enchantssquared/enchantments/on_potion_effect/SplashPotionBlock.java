@@ -11,6 +11,7 @@ import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 
 public class SplashPotionBlock extends CustomEnchant implements TriggerOnPotionEffectEnchantment {
@@ -32,7 +33,7 @@ public class SplashPotionBlock extends CustomEnchant implements TriggerOnPotionE
         this.incompatibleVanillaEnchantments = new HashSet<>(config.getStringList("enchantment_configuration.chemical_shield.incompatible_vanilla_enchantments"));
         this.incompatibleCustomEnchantments = new HashSet<>(config.getStringList("enchantment_configuration.chemical_shield.incompatible_custom_enchantments"));
 
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.chemical_shield.icon", new ItemStack(Material.SPLASH_POTION));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.chemical_shield.icon", createIcon(Material.SPLASH_POTION));
     }
 
     private final LevelService mainHandLevels = new LevelsFromMainHandAndEquipment(this);
@@ -142,6 +143,11 @@ public class SplashPotionBlock extends CustomEnchant implements TriggerOnPotionE
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-chemical-shield";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return Collections.singleton("SHIELDS");
     }
 
     @Override

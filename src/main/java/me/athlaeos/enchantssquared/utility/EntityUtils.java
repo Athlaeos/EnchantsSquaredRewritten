@@ -44,23 +44,23 @@ public class EntityUtils {
             equipment.setMainHand(e.getEquipment().getItemInMainHand());
             equipment.setOffHand(e.getEquipment().getItemInOffHand());
             if (getEnchantments){
-                if (!ItemUtils.isAirOrNull(equipment.getHelmet())) equipment.setHelmetEnchantments(CustomEnchantManager.getInstance().getItemsEnchantments(equipment.getHelmet()));
-                if (!ItemUtils.isAirOrNull(equipment.getChestplate())) equipment.setChestplateEnchantments(CustomEnchantManager.getInstance().getItemsEnchantments(equipment.getChestplate()));
-                if (!ItemUtils.isAirOrNull(equipment.getLeggings())) equipment.setLeggingsEnchantments(CustomEnchantManager.getInstance().getItemsEnchantments(equipment.getLeggings()));
-                if (!ItemUtils.isAirOrNull(equipment.getBoots())) equipment.setBootsEnchantments(CustomEnchantManager.getInstance().getItemsEnchantments(equipment.getBoots()));
+                if (!ItemUtils.isAirOrNull(equipment.getHelmet())) equipment.setHelmetEnchantments(CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(equipment.getHelmet()));
+                if (!ItemUtils.isAirOrNull(equipment.getChestplate())) equipment.setChestplateEnchantments(CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(equipment.getChestplate()));
+                if (!ItemUtils.isAirOrNull(equipment.getLeggings())) equipment.setLeggingsEnchantments(CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(equipment.getLeggings()));
+                if (!ItemUtils.isAirOrNull(equipment.getBoots())) equipment.setBootsEnchantments(CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(equipment.getBoots()));
                 if (
                         !ItemUtils.isAirOrNull(equipment.getMainHand()) &&
                         !MaterialClassType.isArmor(equipment.getMainHand()) &&
                         MaterialClassType.getClass(equipment.getMainHand()) != MaterialClassType.TRINKETS
                 ){
-                    equipment.setMainHandEnchantments(CustomEnchantManager.getInstance().getItemsEnchantments(equipment.getMainHand()));
+                    equipment.setMainHandEnchantments(CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(equipment.getMainHand()));
                 }
                 if (
                         !ItemUtils.isAirOrNull(equipment.getOffHand()) &&
                         !MaterialClassType.isArmor(equipment.getOffHand()) &&
                         MaterialClassType.getClass(equipment.getOffHand()) != MaterialClassType.TRINKETS
                 ){
-                    equipment.setOffHandEnchantments(CustomEnchantManager.getInstance().getItemsEnchantments(equipment.getOffHand()));
+                    equipment.setOffHandEnchantments(CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(equipment.getOffHand()));
                 }
             }
         }
@@ -70,7 +70,7 @@ public class EntityUtils {
                 equipment.getMiscEquipment().addAll(trinkets.values());
                 if (getEnchantments){
                     for (ItemStack i : trinkets.values())
-                        equipment.getMiscEquipmentEnchantments().put(i, CustomEnchantManager.getInstance().getItemsEnchantments(i));
+                        equipment.getMiscEquipmentEnchantments().put(i, CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(i));
                 }
             }
         }

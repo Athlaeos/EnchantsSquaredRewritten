@@ -10,14 +10,17 @@ enchant_notifications:
   activation_deflect_projectile: '&8Projectile deflected!'
 
 enchantment_menu:
-  title: '&a&lCustom Enchantments' # Title of the menu
+  title: '&8&lCustom Enchantments' # Title of the menu
   name: '%name%' # Name of the item
   lore: # Lore of the item
+    - '&8&m                   [&r&7 ♦ &8&m]                   '
     - '%description%'
+    - '&8&m                   [&r&7 ⭐ &8&m]                   '
     - '&eRarity: &7%weight%'
     - '&eMax Level: &7%lv_roman%'
-    - '&eCompatible with: &7%compatible_with%'
-  max_length: 40 # Max length of each line of lore, anything exceeding this will be moved to the next line.
+    - '&8&m                   [&r&7 ⚔ &8&m]                   '
+    - '&e%compatible_with%'
+  max_length: 35 # Max length of each line of lore, anything exceeding this will be moved to the next line.
   button_nextpage: # Names and descriptions of the next/previous page buttons. If no previous or next page is
     # available, they will not be visible.
     # Since the plugin has less than 45 enchantments by default, these buttons will not appear unless a custom
@@ -31,6 +34,29 @@ enchantment_menu:
     name: '&7Previous Page'
     lore:
       - '&8Currently on page &e%page%'
+
+equipment_translations:
+  SWORDS: 'Swords'
+  BOWS: 'Bows'
+  CROSSBOWS: 'Crossbows'
+  TRIDENTS: 'Tridents'
+  HELMETS: 'Helmets'
+  CHESTPLATES: 'Chestplates'
+  LEGGINGS: 'Leggings'
+  BOOTS: 'Boots'
+  SHEARS: 'Shears'
+  FLINTANDSTEEL: 'Flint and Steels'
+  FISHINGROD: 'Fishing Rods'
+  ELYTRA: 'Elytras'
+  AXES: 'Axes'
+  PICKAXES: 'Pickaxes'
+  SHOVELS: 'Shovels'
+  HOES: 'Hoes'
+  SHIELDS: 'Shields'
+  ALL: 'Everything'
+  TRINKETS: 'Accessories'
+
+
 
 # Warning when player attempts to combine items, but the item would have too many enchants as a result
 warning_allowed_enchants_exceeded: '&cYou''ve exceeded the allowed amount of enchants: 5'

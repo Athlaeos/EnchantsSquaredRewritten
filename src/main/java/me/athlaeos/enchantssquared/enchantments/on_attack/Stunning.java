@@ -47,7 +47,7 @@ public class Stunning extends CustomEnchant implements TriggerOnAttackEnchantmen
         this.sound = Utils.soundFromString(config.getString("enchantment_configuration.stunning.sound"), Sound.ENCHANT_THORNS_HIT);
         this.particleAnimation = config.getString("enchantment_configuration.stunning.animation");
 
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.stunning.icon", new ItemStack(Material.ANVIL));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.stunning.icon", createIcon(Material.ANVIL));
     }
 
     private final LevelService mainHandLevels = new LevelsFromMainHandAndEquipment(this);
@@ -193,5 +193,10 @@ public class Stunning extends CustomEnchant implements TriggerOnAttackEnchantmen
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-stunning";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 }

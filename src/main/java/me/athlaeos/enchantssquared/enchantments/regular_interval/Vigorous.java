@@ -53,7 +53,7 @@ public class Vigorous extends CustomEnchant implements TriggerOnRegularIntervals
 
         this.cleanup = config.getBoolean("clean_old_enchantments");
 
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.vigorous.icon", new ItemStack(Material.GLISTERING_MELON_SLICE));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.vigorous.icon", createIcon(Material.GLISTERING_MELON_SLICE));
 
         EnchantsSquared.getPlugin().getServer().getPluginManager().registerEvents(this, EnchantsSquared.getPlugin());
     }
@@ -162,6 +162,11 @@ public class Vigorous extends CustomEnchant implements TriggerOnRegularIntervals
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-vigorous";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 
     private final double healthBase;

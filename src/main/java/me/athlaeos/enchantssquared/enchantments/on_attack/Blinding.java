@@ -48,7 +48,7 @@ public class Blinding extends CustomEnchant implements TriggerOnAttackEnchantmen
         this.sound = Utils.soundFromString(config.getString("enchantment_configuration.blinding.sound"), Sound.ENTITY_BLAZE_DEATH);
         this.particleAnimation = config.getString("enchantment_configuration.blinding.animation");
 
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.blinding.icon", new ItemStack(Material.INK_SAC));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.blinding.icon", createIcon(Material.INK_SAC));
     }
 
     private final LevelService mainHandLevels = new LevelsFromMainHandAndEquipment(this);
@@ -174,5 +174,10 @@ public class Blinding extends CustomEnchant implements TriggerOnAttackEnchantmen
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-blinding";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 }

@@ -1,4 +1,4 @@
-package me.athlaeos.enchantssquared.enchantments.valhalla_stats;
+package me.athlaeos.enchantssquared.hooks.valhallammo;
 
 import me.athlaeos.enchantssquared.config.ConfigManager;
 import me.athlaeos.enchantssquared.domain.MaterialClassType;
@@ -34,7 +34,7 @@ public class GenericValhallaStatEnchantment extends CustomEnchant {
         this.incompatibleVanillaEnchantments = new HashSet<>(config.getStringList("enchantments." + type.toLowerCase() + ".incompatible_vanilla_enchantments"));
         this.incompatibleCustomEnchantments = new HashSet<>(config.getStringList("enchantments." + type.toLowerCase() + ".incompatible_custom_enchantments"));
 
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantments." + type.toLowerCase() + ".icon", new ItemStack(Material.BOOK));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantments." + type.toLowerCase() + ".icon", createIcon(Material.BOOK));
     }
 
     private final LevelService levelService = new LevelsFromAllEquipment(this);
@@ -141,5 +141,10 @@ public class GenericValhallaStatEnchantment extends CustomEnchant {
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-" + type.toLowerCase();
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 }

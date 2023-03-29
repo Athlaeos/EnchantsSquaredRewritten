@@ -52,7 +52,7 @@ public class Weakening extends CustomEnchant implements TriggerOnAttackEnchantme
         this.sound = Utils.soundFromString(config.getString("enchantment_configuration.weakening.sound"), Sound.ENTITY_ITEM_BREAK);
         this.particleAnimation = config.getString("enchantment_configuration.weakening.animation");
 
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.weakening.icon", new ItemStack(Material.WOODEN_SWORD));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.weakening.icon", createIcon(Material.WOODEN_SWORD));
     }
 
     private final LevelService mainHandLevels = new LevelsFromMainHandAndEquipment(this);
@@ -179,5 +179,10 @@ public class Weakening extends CustomEnchant implements TriggerOnAttackEnchantme
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-weakening";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 }

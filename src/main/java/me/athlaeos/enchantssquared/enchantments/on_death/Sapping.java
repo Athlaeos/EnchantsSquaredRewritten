@@ -1,42 +1,20 @@
 package me.athlaeos.enchantssquared.enchantments.on_death;
 
-import me.athlaeos.enchantssquared.EnchantsSquared;
 import me.athlaeos.enchantssquared.config.ConfigManager;
-import me.athlaeos.enchantssquared.domain.EntityClassificationType;
 import me.athlaeos.enchantssquared.domain.MaterialClassType;
 import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
 import me.athlaeos.enchantssquared.enchantments.LevelService;
 import me.athlaeos.enchantssquared.enchantments.LevelsFromMainHandAndEquipment;
-import me.athlaeos.enchantssquared.enchantments.LevelsFromMainHandOnly;
-import me.athlaeos.enchantssquared.enchantments.on_interact.TriggerOnInteractEnchantment;
-import me.athlaeos.enchantssquared.managers.CooldownManager;
-import me.athlaeos.enchantssquared.utility.ChatUtils;
 import me.athlaeos.enchantssquared.utility.ItemUtils;
 import me.athlaeos.enchantssquared.utility.Utils;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeInstance;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Vector;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -63,7 +41,7 @@ public class Sapping extends CustomEnchant implements TriggerOnDeathEnchantment 
 
         this.expBase = config.getDouble("enchantment_configuration.sapping.exp_base");
         this.expLv = config.getDouble("enchantment_configuration.sapping.exp_lv");
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.sapping.icon", new ItemStack(Material.EXPERIENCE_BOTTLE));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.sapping.icon", createIcon(Material.EXPERIENCE_BOTTLE));
     }
 
     private final LevelService levelService = new LevelsFromMainHandAndEquipment(this);
@@ -170,6 +148,11 @@ public class Sapping extends CustomEnchant implements TriggerOnDeathEnchantment 
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-sapping";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 
     private final double expBase;

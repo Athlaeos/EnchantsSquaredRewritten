@@ -19,13 +19,11 @@ import me.athlaeos.enchantssquared.enchantments.on_interact.*;
 import me.athlaeos.enchantssquared.enchantments.on_item_damage.*;
 import me.athlaeos.enchantssquared.enchantments.on_potion_effect.*;
 import me.athlaeos.enchantssquared.enchantments.regular_interval.*;
-import me.athlaeos.enchantssquared.enchantments.valhalla_stats.DefensiveEnchantmentStatSource;
-import me.athlaeos.enchantssquared.enchantments.valhalla_stats.EnchantmentStatSource;
-import me.athlaeos.enchantssquared.enchantments.valhalla_stats.GenericValhallaStatEnchantment;
-import me.athlaeos.enchantssquared.enchantments.valhalla_stats.OffensiveEnchantmentStatSource;
+import me.athlaeos.enchantssquared.hooks.valhallammo.*;
 import me.athlaeos.enchantssquared.utility.ChatUtils;
 import me.athlaeos.enchantssquared.utility.ItemUtils;
 import me.athlaeos.enchantssquared.utility.Utils;
+import me.athlaeos.valhallammo.crafting.DynamicItemModifierManager;
 import me.athlaeos.valhallammo.managers.AccumulativeStatManager;
 import me.athlaeos.valhallammo.statsources.EvEAccumulativeStatSource;
 import org.bukkit.ChatColor;
@@ -85,7 +83,7 @@ public class CustomEnchantManager {
     }
 
     public Map<CustomEnchant, Integer> getRandomEnchantments(ItemStack item, Player p, int maxRolls, boolean treasure, Collection<CustomEnchant> possibleEnchantments){
-        Map<CustomEnchant, Integer> pickedEnchantments = getItemsEnchantments(item);
+        Map<CustomEnchant, Integer> pickedEnchantments = getItemsEnchantsFromPDC(item);
         Collection<CustomEnchant> compatibleEnchantments = getCompatibleEnchants(item, GameMode.SURVIVAL);
         possibleEnchantments.removeIf(e -> !compatibleEnchantments.contains(e));
         possibleEnchantments.removeIf(e -> !treasure && e.isTreasure());
@@ -147,7 +145,7 @@ public class CustomEnchantManager {
         Collection<CustomEnchant> possibleEnchants = new HashSet<>();
         if (ItemUtils.isAirOrNull(item)) return possibleEnchants;
         if (item.getType() == Material.BOOK || item.getType() == Material.ENCHANTED_BOOK) return allEnchants.values();
-        Map<CustomEnchant, Integer> existingCustomEnchantments = getItemsEnchantments(item);
+        Map<CustomEnchant, Integer> existingCustomEnchantments = getItemsEnchantsFromPDC(item);
         for (CustomEnchant e : allEnchants.values()){
             // checks if the item has any conflicting custom enchantments. This isn't done with hasCustomEnchantment()
             // because that method would repeatedly fetch an item's enchantments for each custom enchantment which
@@ -177,6 +175,8 @@ public class CustomEnchantManager {
                 meta = item.getItemMeta();
             }
         } else {
+            if (item.getType() == Material.BOOK) item.setType(Material.ENCHANTED_BOOK);
+
             if (enableCosmeticGlint){
                 item.addUnsafeEnchantment(CosmeticGlintEnchantment.getEnchantsSquaredGlint(), 1);
             }
@@ -210,7 +210,7 @@ public class CustomEnchantManager {
                 finalLore.add(l);
             }
         }
-        Map<CustomEnchant, Integer> enchantments = getItemsEnchantments(i);
+        Map<CustomEnchant, Integer> enchantments = getItemsEnchantsFromPDC(i);
 
         if (firstEnchantIndex >= 0){
             for (CustomEnchant e : enchantments.keySet()){
@@ -256,7 +256,7 @@ public class CustomEnchantManager {
     /**
      * Gathers a map containing all custom enchantments the item has
      */
-    public Map<CustomEnchant, Integer> getItemsEnchantments(ItemStack item){
+    public Map<CustomEnchant, Integer> getItemsEnchantsFromPDC(ItemStack item){
         Map<CustomEnchant, Integer> totalEnchants = new HashMap<>();
         if (ItemUtils.isAirOrNull(item)) return totalEnchants;
         if (item.getItemMeta() == null) return totalEnchants;
@@ -309,7 +309,7 @@ public class CustomEnchantManager {
      */
     public boolean removeEnchant(ItemStack item, String enchant){
         if (ItemUtils.isAirOrNull(item)) return false;
-        Map<CustomEnchant, Integer> itemsEnchants = getItemsEnchantments(item);
+        Map<CustomEnchant, Integer> itemsEnchants = getItemsEnchantsFromPDC(item);
         CustomEnchant associatedEnchant = getEnchantmentFromType(enchant);
         if (associatedEnchant == null ||
                 !allEnchants.containsKey(associatedEnchant.getId()) ||
@@ -335,7 +335,7 @@ public class CustomEnchantManager {
      */
     public void addEnchant(ItemStack item, String enchant, int level){
         if (ItemUtils.isAirOrNull(item)) return;
-        Map<CustomEnchant, Integer> itemsEnchants = getItemsEnchantments(item);
+        Map<CustomEnchant, Integer> itemsEnchants = getItemsEnchantsFromPDC(item);
         CustomEnchant newEnchant = getEnchantmentFromType(enchant);
         if (newEnchant != null){
             itemsEnchants.put(newEnchant, level);
@@ -347,7 +347,7 @@ public class CustomEnchantManager {
         if (ItemUtils.isAirOrNull(item)) return 0;
         CustomEnchant e = getEnchantmentFromType(enchant);
         if (e != null){
-            return getItemsEnchantments(item).getOrDefault(e, 0);
+            return getItemsEnchantsFromPDC(item).getOrDefault(e, 0);
         }
         return 0;
     }
@@ -359,6 +359,14 @@ public class CustomEnchantManager {
     private void registerEnchant(CustomEnchant enchant){
         if (enchant.isEnabled()){
             allEnchants.put(enchant.getId(), enchant);
+            if (EnchantsSquared.isValhallaHooked()){
+                try {
+                    DynamicItemModifierManager.modifiersToRegister.add(new CustomEnchantmentAddModifier(enchant));
+                } catch (Exception ignored){
+                    // If this happens, ValhallaMMO is not up to date yet as the modifiersToRegister feature was
+                    // implemented before Valhalla was properly updated on spigot with it
+                }
+            }
         }
     }
 
@@ -373,8 +381,8 @@ public class CustomEnchantManager {
         // item 1 is the same as item 2 and are therefore allowed to combine
         // OR item 2 is an enchanted book and item 1 is able to take enchantments (they are a tool or armor piece or something like that)
         if (item1.getType() == item2.getType() || (item2.getType() == Material.ENCHANTED_BOOK && MaterialClassType.getClass(item1) != null)) {
-            Map<CustomEnchant, Integer> item1Enchantments = getItemsEnchantments(item1);
-            Map<CustomEnchant, Integer> item2Enchantments = getItemsEnchantments(item2);
+            Map<CustomEnchant, Integer> item1Enchantments = getItemsEnchantsFromPDC(item1);
+            Map<CustomEnchant, Integer> item2Enchantments = getItemsEnchantsFromPDC(item2);
             // second item has no custom enchantments, so no special combination logic needs to occur
             if (item2Enchantments.isEmpty() && item1Enchantments.isEmpty()) return new AnvilCombinationResult(output, AnvilCombinationResult.AnvilCombinationResultState.ITEM_NO_CUSTOM_ENCHANTS);
 
@@ -481,7 +489,7 @@ public class CustomEnchantManager {
         registerEnchant(new SplashPotionBlock(39, "chemical_shield"));
         registerEnchant(new IncreasePotionPotency(40, "potion_potency_buff"));
 
-        registerEnchant(new CurseBerserk(41, "curse_berserk"));
+        registerEnchant(new TradeoffBerserk(41, "tradeoff_berserk"));
 
         registerEnchant(new ReinforcedPlating(42, "plating"));
 

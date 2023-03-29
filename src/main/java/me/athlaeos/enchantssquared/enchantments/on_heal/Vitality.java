@@ -38,7 +38,7 @@ public class Vitality extends CustomEnchant implements TriggerOnHealthRegainedEn
         this.healingBase = config.getDouble("enchantment_configuration.vitality.extra_healing_base");
         this.healingLv = config.getDouble("enchantment_configuration.vitality.extra_healing_lv");
 
-        this.icon = ItemUtils.getItemStackFromConfig(config, "enchantment_configuration.vitality.icon", new ItemStack(Material.GHAST_TEAR));
+        this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.vitality.icon", createIcon(Material.GHAST_TEAR));
     }
 
     private final LevelService levelService = new LevelsFromAllEquipment(this);
@@ -145,6 +145,11 @@ public class Vitality extends CustomEnchant implements TriggerOnHealthRegainedEn
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-vitality";
+    }
+
+    @Override
+    public Collection<String> getCompatibleItems() {
+        return naturallyCompatibleWith;
     }
 
     private final double healingBase;
