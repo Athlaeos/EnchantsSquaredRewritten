@@ -428,7 +428,7 @@ public class CustomEnchantManager {
             if (item1.toString().equals(removeRepairCostData(result.toString()))) return new AnvilCombinationResult(null, AnvilCombinationResult.AnvilCombinationResultState.ITEMS_NOT_COMBINEABLE);
             return new AnvilCombinationResult(result, AnvilCombinationResult.AnvilCombinationResultState.SUCCESSFUL);
         }
-        return new AnvilCombinationResult(null, AnvilCombinationResult.AnvilCombinationResultState.ITEMS_NOT_COMBINEABLE);
+        return new AnvilCombinationResult(output, AnvilCombinationResult.AnvilCombinationResultState.ITEMS_NOT_COMBINEABLE);
     }
 
     private String removeRepairCostData(String itemString){

@@ -52,7 +52,7 @@ public class AnvilListener implements Listener {
                 break;
             }
             case ITEMS_NOT_COMBINEABLE: {
-                e.setResult(null);
+                e.setResult(output.getOutput());
                 break;
             }
         }
