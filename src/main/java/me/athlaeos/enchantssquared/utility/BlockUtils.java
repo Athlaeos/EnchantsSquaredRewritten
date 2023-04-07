@@ -1,12 +1,22 @@
 package me.athlaeos.enchantssquared.utility;
 
+import me.athlaeos.enchantssquared.EnchantsSquared;
 import me.athlaeos.enchantssquared.domain.Offset;
+import me.athlaeos.enchantssquared.domain.Version;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Item;
+import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockDropItemEvent;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class BlockUtils {
     public static Collection<Location> getBlocksInArea(Location loc1, Location loc2){
@@ -33,6 +43,44 @@ public class BlockUtils {
             }
         }
         return blocks;
+    }
+
+    public static void breakBlock(Player player, Block block){
+        if (Version.currentVersionOrOlderThan(Version.MINECRAFT_1_16)){
+            // try to break a block and call the appropriate events
+            ItemStack tool;
+            if (!ItemUtils.isAirOrNull(player.getInventory().getItemInMainHand())) {
+                tool = player.getInventory().getItemInMainHand();
+            } else {
+                tool = player.getInventory().getItemInOffHand();
+                if (ItemUtils.isAirOrNull(tool)) tool = null;
+            }
+            BlockBreakEvent breakEvent = new BlockBreakEvent(block, player);
+            EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(breakEvent);
+            if (breakEvent.isCancelled()) return;
+
+            List<ItemStack> drops = new ArrayList<>((tool == null) ? block.getDrops() : block.getDrops(tool, player));
+            List<Item> items = drops.stream().map(i -> block.getWorld().dropItemNaturally(block.getLocation(), i)).collect(Collectors.toList());
+            BlockDropItemEvent event = new BlockDropItemEvent(block, block.getState(), player, items);
+            EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(event);
+            if (event.isCancelled()){
+                items.forEach(Item::remove);
+            } else {
+                items.forEach(i -> {
+                    if (!event.getItems().contains(i)){
+                        // if the event drops do not contain the original item, remove it
+                        i.remove();
+                    }
+                });
+            }
+
+            block.getWorld().spawnParticle(Particle.BLOCK_DUST, block.getLocation().add(0.5, 0.5, 0.5), 16, 0.5, 0.5, 0.5, block.getBlockData());
+            block.setType(Material.AIR);
+
+            ItemUtils.damageItem(player, player.getInventory().getItemInMainHand(), 1, EquipmentSlot.HAND);
+        } else {
+            player.breakBlock(block);
+        }
     }
 
     public static List<Block> getBlockVein(Location origin, HashSet<Material> filter, int limit, Predicate<Block> predicate, Offset... scanArea){

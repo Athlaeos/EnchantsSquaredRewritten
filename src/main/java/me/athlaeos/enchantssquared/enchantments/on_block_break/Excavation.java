@@ -259,7 +259,7 @@ public class Excavation extends CustomEnchant implements TriggerOnBlockBreakEnch
                         if (e.getPlayer().getGameMode() == GameMode.CREATIVE)
                             e.getPlayer().getWorld().getBlockAt(l).setType(Material.AIR);
                         else
-                            e.getPlayer().breakBlock(e.getPlayer().getWorld().getBlockAt(l));
+                            BlockUtils.breakBlock(e.getPlayer(), e.getPlayer().getWorld().getBlockAt(l));
                     }
                 }
                 excavatingPlayers.remove(e.getPlayer().getUniqueId());

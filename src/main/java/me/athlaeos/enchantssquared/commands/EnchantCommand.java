@@ -70,6 +70,7 @@ public class EnchantCommand implements Command {
 				CustomEnchantManager.getInstance().addEnchant(inHandItem, chosenEnchant, chosenLevel);
 				success = true;
 			}
+			p.updateInventory();
 		}
 		sender.sendMessage(ChatUtils.chat(success ? enchant_success : enchant_failed));
 		return true;

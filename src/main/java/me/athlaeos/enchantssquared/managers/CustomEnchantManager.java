@@ -18,6 +18,7 @@ import me.athlaeos.enchantssquared.enchantments.on_heal.*;
 import me.athlaeos.enchantssquared.enchantments.on_interact.*;
 import me.athlaeos.enchantssquared.enchantments.on_item_damage.*;
 import me.athlaeos.enchantssquared.enchantments.on_potion_effect.*;
+import me.athlaeos.enchantssquared.enchantments.on_shoot.RapidShot;
 import me.athlaeos.enchantssquared.enchantments.regular_interval.*;
 import me.athlaeos.enchantssquared.hooks.valhallammo.*;
 import me.athlaeos.enchantssquared.utility.ChatUtils;
@@ -202,7 +203,8 @@ public class CustomEnchantManager {
         int firstEnchantIndex = -1; // This will track where in the lore the first enchant is located,
         // so that in case there is custom lore before or after the enchantments they will stay there
         for (String l : lore){
-            if (allEnchants.values().stream().map(c -> ChatColor.stripColor(ChatUtils.chat(c.getDisplayEnchantment()))).anyMatch(l::contains)){
+            String colorStrippedLine = ChatColor.stripColor(ChatUtils.chat(l));
+            if (allEnchants.values().stream().map(c -> ChatColor.stripColor(ChatUtils.chat(c.getDisplayEnchantment()))).anyMatch(colorStrippedLine::contains)){
                 // if this line of lore is a custom enchantment, it is not added and the location is recorded
                 if (firstEnchantIndex == -1) firstEnchantIndex = lore.indexOf(l);
             } else {
@@ -362,7 +364,7 @@ public class CustomEnchantManager {
             if (EnchantsSquared.isValhallaHooked()){
                 try {
                     DynamicItemModifierManager.modifiersToRegister.add(new CustomEnchantmentAddModifier(enchant));
-                } catch (Exception ignored){
+                } catch (Error | Exception ignored){
                     // If this happens, ValhallaMMO is not up to date yet as the modifiersToRegister feature was
                     // implemented before Valhalla was properly updated on spigot with it
                 }
@@ -503,6 +505,8 @@ public class CustomEnchantManager {
         registerEnchant(new Telekinesis(49, "telekinesis"));
         registerEnchant(new Lightning(50, "lightning"));
         registerEnchant(new TreeFeller(51, "tree_feller"));
+        registerEnchant(new Pulling(52, "pulling"));
+        registerEnchant(new RapidShot(53, "rapid_shot"));
 
         if (EnchantsSquared.isValhallaHooked()){
             EnchantsSquared.getPlugin().getServer().getScheduler().runTaskLater(EnchantsSquared.getPlugin(), () -> {

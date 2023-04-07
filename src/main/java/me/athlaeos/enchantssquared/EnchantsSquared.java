@@ -43,6 +43,7 @@ public final class EnchantsSquared extends JavaPlugin {
     private EntityDamageListener entityDamageListener = null;
     private EntityDeathListener entityDeathListener = null;
     private EntityPotionEffectListener potionEffectListener = null;
+    private ProjectileListener projectileListener = null;
     private MenuListener menuListener = null;
     private ItemDamageListener itemDamageListener = null;
 
@@ -98,6 +99,7 @@ public final class EnchantsSquared extends JavaPlugin {
         potionEffectListener = registerListener(new EntityPotionEffectListener());
         menuListener = registerListener(new MenuListener());
         itemDamageListener = registerListener(new ItemDamageListener());
+        projectileListener = registerListener(new ProjectileListener());
 
         AnimationRegistry.registerDefaults();
         CustomEnchantManager.getInstance(); // enchantment registry
@@ -224,6 +226,10 @@ public final class EnchantsSquared extends JavaPlugin {
 
     public ItemDamageListener getItemDamageListener() {
         return itemDamageListener;
+    }
+
+    public ProjectileListener getProjectileListener() {
+        return projectileListener;
     }
 
     public static boolean isGrindstonesEnabled() {

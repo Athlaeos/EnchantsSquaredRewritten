@@ -197,7 +197,7 @@ public class TreeFeller extends CustomEnchant implements TriggerOnBlockBreakEnch
                         new Offset(-1, 0, -1), new Offset(-1, 0, 0), new Offset(-1, 0, 1),
                         new Offset(0, 0, -1), new Offset(0, 0, 1),
                         new Offset(1, 0, -1), new Offset(1, 0, 0), new Offset(1, 0, 1));
-                treeBlocks.forEach(b -> e.getPlayer().breakBlock(b));
+                treeBlocks.forEach(b -> BlockUtils.breakBlock(e.getPlayer(), b));
 
                 EnchantsSquared.getPlugin().getServer().getScheduler().runTaskLater(EnchantsSquared.getPlugin(), () -> {
                     List<Block> leaves = includeLeaves ? getTreeLeaves(e.getBlock()) : new ArrayList<>();

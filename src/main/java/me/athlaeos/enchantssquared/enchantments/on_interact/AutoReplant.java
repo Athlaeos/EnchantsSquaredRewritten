@@ -6,6 +6,7 @@ import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
 import me.athlaeos.enchantssquared.enchantments.LevelService;
 import me.athlaeos.enchantssquared.enchantments.LevelsFromMainHandOnly;
 import me.athlaeos.enchantssquared.enchantments.on_block_break.TriggerOnBlockBreakEnchantment;
+import me.athlaeos.enchantssquared.utility.BlockUtils;
 import me.athlaeos.enchantssquared.utility.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -175,7 +176,7 @@ public class AutoReplant extends CustomEnchant implements TriggerOnInteractEncha
                 EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(breakEvent);
                 clickedBlock.breakNaturally(e.getPlayer().getInventory().getItemInMainHand());
             }
-            else e.getPlayer().breakBlock(clickedBlock);
+            else BlockUtils.breakBlock(e.getPlayer(), clickedBlock);
         }
     }
 
