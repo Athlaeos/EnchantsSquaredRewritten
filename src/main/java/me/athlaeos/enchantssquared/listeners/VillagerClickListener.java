@@ -98,7 +98,7 @@ public class VillagerClickListener implements Listener {
                                 if (hasEmeralds){
                                     int minAmount = (chosenEnchant.getValue() <= 1) ? chosenEnchant.getKey().getTradingMinBasePrice() : chosenEnchant.getKey().getTradingMinBasePrice() + (chosenEnchant.getKey().getTradingMinLeveledPrice() * (chosenEnchant.getValue() - 1));
                                     int maxAmount = (chosenEnchant.getValue() <= 1) ? chosenEnchant.getKey().getTradingMaxBasePrice() : chosenEnchant.getKey().getTradingMaxBasePrice() + (chosenEnchant.getKey().getTradingMaxLeveledPrice() * (chosenEnchant.getValue() - 1));
-                                    int emeraldAmount = Math.max(1, Utils.getRandom().nextInt((maxAmount - minAmount) + 1) + minAmount);
+                                    int emeraldAmount = Math.max(1, Utils.getRandom().nextInt(Math.max(1, (maxAmount - minAmount) + 1)) + minAmount);
                                     newIngredients.add(new ItemStack(Material.EMERALD, emeraldAmount));
                                 }
                                 if (book != null) {

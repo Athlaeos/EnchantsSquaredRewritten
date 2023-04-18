@@ -61,8 +61,9 @@ public class BlockUtils {
 
             List<ItemStack> drops = new ArrayList<>((tool == null) ? block.getDrops() : block.getDrops(tool, player));
             List<Item> items = drops.stream().map(i -> block.getWorld().dropItemNaturally(block.getLocation(), i)).collect(Collectors.toList());
-            BlockDropItemEvent event = new BlockDropItemEvent(block, block.getState(), player, items);
+            BlockDropItemEvent event = new BlockDropItemEvent(block, block.getState(), player, new ArrayList<>(items));
             EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(event);
+
             if (event.isCancelled()){
                 items.forEach(Item::remove);
             } else {

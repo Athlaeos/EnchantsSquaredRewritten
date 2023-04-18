@@ -1051,12 +1051,12 @@ enchantment_configuration:
     max_level_table: 3
     pull_chance_base: 0.2
     pull_chance_lv: 0.2
-    pull_strength_base: 0.1 # Pulling force at level 1, this force is relative to the attacker and becomes stronger with distance.
-    pull_strength_lv: 0.1
+    pull_strength_base: 0.2 # Pulling force at level 1, this force is relative to the attacker and becomes stronger with distance.
+    pull_strength_lv: 0.2
     pull_strength_max_base: 0.3 # If the distance is big enough for the pulling force to exceed this maximum, it is capped at this maximum
     pull_strength_max_lv: 0.3
-    # This pulling force equates to 1/10th (0.1) of the distance between the shooter and target per level, up to 30 blocks (0.3/0.1 = 3, 0.1 being 1 every 10 blocks, so 30)
-    # Meaning the pulling force does not become stronger after 30 blocks
+    # This pulling force equates to 2/10th (0.2) of the distance between the shooter and target per level, up to 15 blocks (0.3/0.2 = 1.5, 0.2 being 2 every 10 blocks, so 15)
+    # Meaning the pulling force does not become stronger after 15 blocks
     proc_sound: ITEM_TRIDENT_HIT # Sound both the victim and attacker hear if an attack will cause a pull after the given delay
     pull_sound: ENTITY_FISHING_BOBBER_RETRIEVE # Sound both the victim and attacker hear when the victim is pulled in
     pull_delay: 20 # Delay (in ticks) after which the hit target will be pulled towards the attacker

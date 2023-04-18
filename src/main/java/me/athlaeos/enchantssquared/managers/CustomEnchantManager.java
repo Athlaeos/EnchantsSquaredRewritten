@@ -418,7 +418,7 @@ public class CustomEnchantManager {
 
             ItemStack result;
             // if the result of the anvil isn't empty by vanilla, simply take that output as result
-            if (output != null) result = output.clone();
+            if (!ItemUtils.isAirOrNull(output)) result = output.clone();
             // if the result of the anvil IS empty, meaning the items could normally not be combined, take the item 1 as result
             else result = item1.clone();
 

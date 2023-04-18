@@ -12,6 +12,8 @@ import me.athlaeos.enchantssquared.utility.Utils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -36,8 +38,8 @@ public class Pulling extends CustomEnchant implements TriggerOnAttackEnchantment
         this.pull_strength_lv = config.getDouble("enchantment_configuration.pulling.pull_strength_lv");
         this.pull_strength_max_base = config.getDouble("enchantment_configuration.pulling.pull_strength_max_base");
         this.pull_strength_max_lv = config.getDouble("enchantment_configuration.pulling.pull_strength_max_lv");
-        this.proc_sound = Utils.soundFromString(config.getString("enchantment_configuration.pulling.proc_sound"), Sound.ITEM_TRIDENT_HIT);
-        this.pull_sound = Utils.soundFromString(config.getString("enchantment_configuration.pulling.pull_sound"), Sound.ENTITY_FISHING_BOBBER_RETRIEVE);
+        this.proc_sound = Utils.soundFromString(config.getString("enchantment_configuration.pulling.proc_sound"), null);
+        this.pull_sound = Utils.soundFromString(config.getString("enchantment_configuration.pulling.pull_sound"), null);
         this.pull_delay = config.getInt("enchantment_configuration.pulling.pull_delay");
 
         this.naturallyCompatibleWith = new HashSet<>(config.getStringList("enchantment_configuration.pulling.compatible_with"));
@@ -71,8 +73,8 @@ public class Pulling extends CustomEnchant implements TriggerOnAttackEnchantment
 
         double chance = pull_chance_base + ((level - 1) * pull_chance_lv);
         if (Utils.getRandom().nextDouble() <= chance){
-            if (victim instanceof Player) ((Player) victim).playSound(victim, proc_sound, 1F, 1F);
-            if (realAttacker instanceof Player) ((Player) realAttacker).playSound(realAttacker, proc_sound, 1F, 1F);
+            if (victim instanceof Player && proc_sound != null) ((Player) victim).playSound(victim.getLocation(), proc_sound, 1F, 1F);
+            if (realAttacker instanceof Player && proc_sound != null) ((Player) realAttacker).playSound(realAttacker.getLocation(), proc_sound, 1F, 1F);
 
             double strength = pull_strength_base + ((level - 1) * pull_strength_lv);
             double maxStrength = pull_strength_max_base + ((level - 1) * pull_strength_max_lv);
@@ -82,12 +84,16 @@ public class Pulling extends CustomEnchant implements TriggerOnAttackEnchantment
                 Location victimLocation = victim.getLocation();
                 if (!realAttacker.getWorld().equals(victim.getWorld())) return;
 
-                if (victim instanceof Player) ((Player) victim).playSound(victim, pull_sound, 1F, 1F);
-                if (realAttacker instanceof Player) ((Player) realAttacker).playSound(realAttacker, pull_sound, 1F, 1F);
+                if (victim instanceof Player && pull_sound != null) ((Player) victim).playSound(victim.getLocation(), pull_sound, 1F, 1F);
+                if (realAttacker instanceof Player && pull_sound != null) ((Player) realAttacker).playSound(realAttacker.getLocation(), pull_sound, 1F, 1F);
+
+                AttributeInstance attribute = victim.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE);
+                double strengthWithResistance = strength;
+                if (attribute != null) strengthWithResistance *= Math.max(0, 1 - attribute.getValue());
                 victim.setVelocity(victim.getVelocity().add(new Vector(
-                        Math.min(maxStrength, (attackerLocation.getX() - victimLocation.getX()) * strength),
-                        Math.min(maxStrength, (attackerLocation.getY() - victimLocation.getY()) * strength),
-                        Math.min(maxStrength, (attackerLocation.getZ() - victimLocation.getZ()) * strength))));
+                        Math.min(maxStrength, (attackerLocation.getX() - victimLocation.getX()) * strengthWithResistance),
+                        Math.min(maxStrength, (attackerLocation.getY() - victimLocation.getY()) * strengthWithResistance),
+                        Math.min(maxStrength, (attackerLocation.getZ() - victimLocation.getZ()) * strengthWithResistance))));
             }, pull_delay);
         }
     }

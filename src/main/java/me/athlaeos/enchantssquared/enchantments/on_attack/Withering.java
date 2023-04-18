@@ -73,7 +73,7 @@ public class Withering extends CustomEnchant implements TriggerOnAttackEnchantme
                     new PotionEffect(PotionEffectType.WITHER, duration, amplifier, true, false, true)
             );
 
-            if (sound != null) victim.getWorld().playSound(victim, sound, 0.5f, 1f);
+            if (sound != null) victim.getWorld().playSound(victim.getLocation(), sound, 0.5f, 1f);
             Animation animation = AnimationRegistry.get(particleAnimation);
             if (animation != null) animation.play(victim.getEyeLocation());
         }

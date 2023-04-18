@@ -129,7 +129,7 @@ public class RapidShot extends CustomEnchant implements TriggerOnProjectileEvent
                     EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(event);
                     if (!event.isCancelled()) {
                         newArrow.setPickupStatus(AbstractArrow.PickupStatus.CREATIVE_ONLY);
-                        shooter.getWorld().playSound(shooter, Sound.ENTITY_ARROW_SHOOT, 1F, 1F);
+                        shooter.getWorld().playSound(shooter.getLocation(), Sound.ENTITY_ARROW_SHOOT, 1F, 1F);
                     } else {
                         newArrow.remove();
                     }
