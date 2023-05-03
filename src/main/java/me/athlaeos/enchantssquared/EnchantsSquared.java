@@ -5,6 +5,7 @@ import me.athlaeos.enchantssquared.config.ConfigManager;
 import me.athlaeos.enchantssquared.config.ConfigUpdater;
 import me.athlaeos.enchantssquared.domain.Version;
 import me.athlaeos.enchantssquared.enchantments.CosmeticGlintEnchantment;
+import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
 import me.athlaeos.enchantssquared.hooks.WorldGuardHook;
 import me.athlaeos.enchantssquared.listeners.*;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
@@ -102,7 +103,13 @@ public final class EnchantsSquared extends JavaPlugin {
         projectileListener = registerListener(new ProjectileListener());
 
         AnimationRegistry.registerDefaults();
-        CustomEnchantManager.getInstance(); // enchantment registry
+        // enchantment registry for the ones that are also listeners or that need special tasks registered on enable
+        for (CustomEnchant enchant : CustomEnchantManager.getInstance().getAllEnchants().values()){
+            if (enchant instanceof Listener){
+                getServer().getPluginManager().registerEvents((Listener) enchant, this);
+            }
+            enchant.onPluginEnable();
+        }
         RegularIntervalEnchantmentClockManager.startClock();
     }
 

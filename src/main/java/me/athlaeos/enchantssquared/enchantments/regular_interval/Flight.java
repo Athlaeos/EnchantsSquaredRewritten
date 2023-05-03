@@ -6,6 +6,7 @@ import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
 import me.athlaeos.enchantssquared.enchantments.LevelService;
 import me.athlaeos.enchantssquared.enchantments.LevelsFromMainHandAndEquipment;
 import me.athlaeos.enchantssquared.managers.CooldownManager;
+import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.managers.EntityEquipmentCacheManager;
 import me.athlaeos.enchantssquared.utility.*;
 import net.md_5.bungee.api.ChatMessageType;
@@ -24,6 +25,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Flight extends CustomEnchant implements TriggerOnRegularIntervalsEnchantment {
     private final YamlConfiguration config;
@@ -57,6 +59,7 @@ public class Flight extends CustomEnchant implements TriggerOnRegularIntervalsEn
         this.fuelRegenerationLv = config.getInt("enchantment_configuration.flight.regeneration_lv");
         this.bossbarEnabled = config.getBoolean("enchantment_configuration.flight.flight_bossbar");
         this.bossBarTitle = config.getString("enchantment_configuration.flight.flight_bossbar_title", "");
+
         BarColor color;
         try {
             color = BarColor.valueOf(config.getString("enchantment_configuration.flight.flight_bossbar_color", "RED"));
@@ -209,90 +212,104 @@ public class Flight extends CustomEnchant implements TriggerOnRegularIntervalsEn
         return 10;
     }
 
+    private final Set<UUID> playersWhoHadFlight = new HashSet<>();
+
     @Override
     public void execute(Entity e, int level) {
         if (!(e instanceof Player)) return;
         Player p = (Player) e;
         boolean allowFlightNaturally = p.getGameMode() == GameMode.CREATIVE || p.getGameMode() == GameMode.SPECTATOR
                 || p.hasPermission("essentials.fly");
-        if (allowFlightNaturally || shouldEnchantmentCancel(level, (LivingEntity) e, e.getLocation())) {
-            if (!allowFlightNaturally){
-                p.setFlying(false);
+        if (shouldEnchantmentCancel(level, (LivingEntity) e, e.getLocation())){
+            // player doesn't have the enchantment, or is not allowed in this area
+            if (!allowFlightNaturally && (p.isFlying() || p.getAllowFlight())){
+                // if the player isn't allowed to fly naturally, so if they're in survival/adventure mode and are also flying currently, disallow flight
                 p.setAllowFlight(false);
+                p.setFlying(false);
             }
+        } else {
+            p.setAllowFlight(true);
+
+            if (!allowFlightNaturally) {
+                EntityUtils.SlotEquipment firstFlightItem = EntityUtils.getFirstEquipmentItemStackWithEnchantment(EntityEquipmentCacheManager.getInstance().getAndCacheEquipment(p), this);
+                if (p.isFlying() && !ItemUtils.isAirOrNull(firstFlightItem.getEquipment())){
+                    int damage = Utils.excessChance(durabilityDecay * (1D/(firstFlightItem.getEquipment().getEnchantmentLevel(Enchantment.DURABILITY) + 1D)));
+                    if (damage > 0 && ItemUtils.damageItem(p, firstFlightItem.getEquipment(), damage, firstFlightItem.getSlot())){
+                        p.setAllowFlight(false);
+                        p.setFlying(false);
+                        p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, slowfallDuration, 0, true, false, true));
+                        return;
+                    }
+                }
+
+                if (getMaxLevel() > 0){
+                    boolean isOnGround = !p.getLocation().add(0, -0.1, 0).getBlock().isPassable();
+
+                    // Enchantment is configured a max level above 0, and therefore has a fuel meter
+                    CooldownManager cooldownManager = CooldownManager.getInstance();
+                    int maxFlightDuration = durationBase + ((level - 1) * durationLv);
+                    int flightRegeneration = fuelRegenerationBase + ((level - 1) * fuelRegenerationLv);
+                    if (!cooldownManager.getCounters("player_in_flight").containsKey(p.getUniqueId())) {
+                        cooldownManager.setCounter(p.getUniqueId(), maxFlightDuration, "player_in_flight");
+                    }
+                    long currentFlight = cooldownManager.getCounterResult(p.getUniqueId(), "player_in_flight");
+                    if (p.isFlying()) {
+                        flyingPlayers.add(p.getUniqueId());
+                        if (currentFlight <= 0) {
+                            cooldownManager.setCounter(p.getUniqueId(), 0, "player_in_flight");
+                            p.setAllowFlight(false);
+                            p.setFlying(false);
+                            p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, slowfallDuration, 0, true, false, true));
+                        } else {
+                            cooldownManager.incrementCounter(p.getUniqueId(), -500, "player_in_flight");
+                        }
+                    } else if (isOnGround) {
+                        if (cooldownManager.getCounterResult(p.getUniqueId(), "player_in_flight") + flightRegeneration > maxFlightDuration) {
+                            cooldownManager.setCounter(p.getUniqueId(), maxFlightDuration, "player_in_flight");
+                            currentFlight = maxFlightDuration;
+                        } else {
+                            cooldownManager.incrementCounter(p.getUniqueId(), flightRegeneration, "player_in_flight");
+                            currentFlight += flightRegeneration;
+                        }
+                    }
+
+                    float fraction = (float) currentFlight / maxFlightDuration;
+                    if (fraction < 0) fraction = 0F;
+                    if (fraction > 1) fraction = 1F;
+                    if (actionBarEnabled){
+                        if (flyingPlayers.contains(p.getUniqueId())){
+                            if (!actionBarTitle.equals("")){
+                                p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatUtils.chat(actionBarTitle.replace("%fuel%", fuelBarBuilder(fraction)))));
+                            }
+                            if (!(cooldownManager.getCounterResult(p.getUniqueId(), "player_in_flight") < maxFlightDuration)){
+                                flyingPlayers.remove(p.getUniqueId());
+                            }
+                        }
+                    }
+                    if (bossbarEnabled){
+                        if (flyingPlayers.contains(p.getUniqueId())){
+                            if (!bossBarTitle.equals("")){
+                                BossBarUtils.showBossBarToPlayer(p, ChatUtils.chat(bossBarTitle), fraction, 60, "es_flight", barColor, barStyle);
+                            }
+                            if (!(cooldownManager.getCounterResult(p.getUniqueId(), "player_in_flight") < maxFlightDuration)){
+                                flyingPlayers.remove(p.getUniqueId());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        // the following code runs regardless if the player has the enchantment or not, to later test if they're still supposed to fly
+        if (allowFlightNaturally) return;
+        if (level > 0) {
+            playersWhoHadFlight.add(p.getUniqueId());
             return;
         }
-        EntityUtils.SlotEquipment firstFlightItem = EntityUtils.getFirstEquipmentItemStackWithEnchantment(EntityEquipmentCacheManager.getInstance().getAndCacheEquipment(p), this);
-        if (firstFlightItem.getEquipment() == null){
+        if (playersWhoHadFlight.contains(p.getUniqueId())){
+            // only if the player previously was allowed to fly, check if they're still allowed to fly
+            playersWhoHadFlight.remove(p.getUniqueId());
             p.setFlying(false);
             p.setAllowFlight(false);
-            return;
-        }
-
-        p.setAllowFlight(true);
-        if (p.isFlying()){
-            int damage = Utils.excessChance(durabilityDecay * (1D/(firstFlightItem.getEquipment().getEnchantmentLevel(Enchantment.DURABILITY) + 1D)));
-            if (damage > 0 && ItemUtils.damageItem(p, firstFlightItem.getEquipment(), damage, firstFlightItem.getSlot())){
-                p.setFlying(false);
-                p.setAllowFlight(false);
-                p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, slowfallDuration, 0, true, false, true));
-                return;
-            }
-        }
-
-        if (getMaxLevel() > 0){
-            boolean isOnGround = !p.getLocation().add(0, -0.1, 0).getBlock().isPassable();
-
-            // Enchantment is configured a max level above 0, and therefore has a fuel meter
-            CooldownManager cooldownManager = CooldownManager.getInstance();
-            int maxFlightDuration = durationBase + ((level - 1) * durationLv);
-            int flightRegeneration = fuelRegenerationBase + ((level - 1) * fuelRegenerationLv);
-            if (!cooldownManager.getCounters("player_in_flight").containsKey(p.getUniqueId())) {
-                cooldownManager.setCounter(p.getUniqueId(), maxFlightDuration, "player_in_flight");
-            }
-            long currentFlight = cooldownManager.getCounterResult(p.getUniqueId(), "player_in_flight");
-            if (p.isFlying()) {
-                flyingPlayers.add(p.getUniqueId());
-                if (currentFlight < 0) {
-                    cooldownManager.setCounter(p.getUniqueId(), 0, "player_in_flight");
-                    p.setFlying(false);
-                    p.setAllowFlight(false);
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, slowfallDuration, 0, true, false, true));
-                } else {
-                    cooldownManager.incrementCounter(p.getUniqueId(), -500, "player_in_flight");
-                }
-            } else if (isOnGround) {
-                if (cooldownManager.getCounterResult(p.getUniqueId(), "player_in_flight") + flightRegeneration > maxFlightDuration) {
-                    cooldownManager.setCounter(p.getUniqueId(), maxFlightDuration, "player_in_flight");
-                    currentFlight = maxFlightDuration;
-                } else {
-                    cooldownManager.incrementCounter(p.getUniqueId(), flightRegeneration, "player_in_flight");
-                    currentFlight += flightRegeneration;
-                }
-            }
-            float fraction = (float) currentFlight / maxFlightDuration;
-            if (fraction < 0) fraction = 0F;
-            if (fraction > 1) fraction = 1F;
-            if (actionBarEnabled){
-                if (flyingPlayers.contains(p.getUniqueId())){
-                    if (!actionBarTitle.equals("")){
-                        p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatUtils.chat(actionBarTitle.replace("%fuel%", fuelBarBuilder(fraction)))));
-                    }
-                    if (!(cooldownManager.getCounterResult(p.getUniqueId(), "player_in_flight") < maxFlightDuration)){
-                        flyingPlayers.remove(p.getUniqueId());
-                    }
-                }
-            }
-            if (bossbarEnabled){
-                if (flyingPlayers.contains(p.getUniqueId())){
-                    if (!bossBarTitle.equals("")){
-                        BossBarUtils.showBossBarToPlayer(p, ChatUtils.chat(bossBarTitle), fraction, 60, "es_flight", barColor, barStyle);
-                    }
-                    if (!(cooldownManager.getCounterResult(p.getUniqueId(), "player_in_flight") < maxFlightDuration)){
-                        flyingPlayers.remove(p.getUniqueId());
-                    }
-                }
-            }
         }
     }
 

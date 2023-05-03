@@ -52,8 +52,6 @@ public class CurseHeavy extends CustomEnchant implements TriggerOnRegularInterva
         this.fatigueDuration = config.getInt("enchantment_configuration.curse_heavy.duration");
 
         this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.curse_heavy.icon", createIcon(Material.ANVIL));
-
-        EnchantsSquared.getPlugin().getServer().getPluginManager().registerEvents(this, EnchantsSquared.getPlugin());
     }
 
     private final LevelService levelService = new LevelsFromAllEquipment(this);

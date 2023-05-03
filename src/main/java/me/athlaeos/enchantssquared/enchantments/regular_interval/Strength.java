@@ -47,8 +47,6 @@ public class Strength extends CustomEnchant implements TriggerOnRegularIntervals
         this.percentileIncrease = config.getBoolean("enchantment_configuration.strength.percentile_increase");
 
         this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.strength.icon", createIcon(Material.BLAZE_POWDER));
-
-        EnchantsSquared.getPlugin().getServer().getPluginManager().registerEvents(this, EnchantsSquared.getPlugin());
     }
 
     private final LevelService levelService = new LevelsFromAllEquipment(this);

@@ -64,7 +64,10 @@ public class LavaWalker extends CustomEnchant implements TriggerOnRegularInterva
         this.transformInto = material;
 
         this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.lava_walker.icon", createIcon(Material.OBSIDIAN));
+    }
 
+    @Override
+    public void onPluginEnable() {
         if (duration > 0){
             EnchantsSquared.getPlugin().getServer().getScheduler().runTaskTimer(EnchantsSquared.getPlugin(), () ->
                             new HashMap<>(convertedBlocks).entrySet().stream()
@@ -180,7 +183,7 @@ public class LavaWalker extends CustomEnchant implements TriggerOnRegularInterva
 
     @Override
     public String getWorldGuardFlagName() {
-        return "es-deny-lava_walker";
+        return "es-deny-lava-walker";
     }
 
     @Override

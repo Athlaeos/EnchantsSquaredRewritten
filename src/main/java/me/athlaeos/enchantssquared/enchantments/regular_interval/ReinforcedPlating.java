@@ -53,8 +53,6 @@ public class ReinforcedPlating extends CustomEnchant implements TriggerOnRegular
         this.cleanup = config.getBoolean("clean_old_enchantments");
 
         this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.reinforced_plating.icon", createIcon(Material.IRON_BLOCK));
-
-        EnchantsSquared.getPlugin().getServer().getPluginManager().registerEvents(this, EnchantsSquared.getPlugin());
     }
 
     private final LevelService levelService = new LevelsFromAllEquipment(this);

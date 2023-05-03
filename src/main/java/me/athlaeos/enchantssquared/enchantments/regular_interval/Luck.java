@@ -47,8 +47,6 @@ public class Luck extends CustomEnchant implements TriggerOnRegularIntervalsEnch
         this.percentileIncrease = config.getBoolean("enchantment_configuration.luck.percentile_increase");
 
         this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.luck.icon", createIcon(Material.RABBIT_FOOT));
-
-        EnchantsSquared.getPlugin().getServer().getPluginManager().registerEvents(this, EnchantsSquared.getPlugin());
     }
 
     private final LevelService levelService = new LevelsFromAllEquipment(this);

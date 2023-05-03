@@ -81,6 +81,10 @@ public abstract class CustomEnchant {
      */
     public abstract String getDescription();
 
+    public void onPluginEnable(){
+
+    }
+
     public abstract boolean isEnabled();
 
     /**

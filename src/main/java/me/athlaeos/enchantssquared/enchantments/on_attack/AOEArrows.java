@@ -16,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.UUID;
 
 public class AOEArrows extends CustomEnchant implements TriggerOnAttackEnchantment {
 
@@ -50,10 +51,12 @@ public class AOEArrows extends CustomEnchant implements TriggerOnAttackEnchantme
         return offHand ? offHandLevels : mainHandLevels;
     }
 
+    private final Collection<UUID> ignoreArrows = new HashSet<>();
+
     @Override
     public void onAttack(EntityDamageByEntityEvent e, int level, LivingEntity realAttacker) {
         LivingEntity victim = (LivingEntity) e.getEntity();
-        if (shouldEnchantmentCancel(level, realAttacker, victim.getLocation())) return;
+        if (ignoreArrows.contains(e.getDamager().getUniqueId()) || shouldEnchantmentCancel(level, realAttacker, victim.getLocation())) return;
 
         double finalRadius = this.radius_base + ((level - 1) * radius_lv);
         double finalDamage = this.aoe_damage_base + ((level - 1) * aoe_damage_lv);
@@ -64,12 +67,15 @@ public class AOEArrows extends CustomEnchant implements TriggerOnAttackEnchantme
         }
         Collection<Entity> surroundingEntities = victim.getWorld().getNearbyEntities(victim.getLocation(), finalRadius, finalRadius, finalRadius);
         surroundingEntities.remove(victim);
+        surroundingEntities.remove(e.getDamager());
         surroundingEntities.remove(realAttacker);
+        ignoreArrows.add(e.getDamager().getUniqueId());
         for (Entity entity : surroundingEntities){
             if (entity instanceof LivingEntity && !EntityClassificationType.isMatchingClassification(entity.getType(), EntityClassificationType.UNALIVE)){
                 ((LivingEntity) entity).damage(damage * finalDamage, e.getDamager());
             }
         }
+        ignoreArrows.remove(e.getDamager().getUniqueId());
     }
 
     @Override

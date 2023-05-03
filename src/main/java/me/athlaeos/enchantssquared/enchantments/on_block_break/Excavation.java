@@ -69,8 +69,6 @@ public class Excavation extends CustomEnchant implements TriggerOnBlockBreakEnch
             existingEntries.addAll(ItemUtils.getMaterialList(excavationConfig.getStringList(m.toString())));
             excavationBreakables.put(m, existingEntries);
         }
-
-        EnchantsSquared.getPlugin().getServer().getPluginManager().registerEvents(this, EnchantsSquared.getPlugin());
     }
 
     private Collection<Location> getExcavationPattern(Location originalSpot, BlockFace face, int type){

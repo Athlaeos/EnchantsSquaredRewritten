@@ -48,8 +48,6 @@ public class FireResistance extends CustomEnchant implements TriggerOnRegularInt
         this.duration = config.getInt("enchantment_configuration.fire_resistance.duration");
 
         this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.fire_resistance.icon", createIcon(Material.MAGMA_CREAM));
-
-        EnchantsSquared.getPlugin().getServer().getPluginManager().registerEvents(this, EnchantsSquared.getPlugin());
     }
 
     private final LevelService levelService = new Levels1IfPresent(this);

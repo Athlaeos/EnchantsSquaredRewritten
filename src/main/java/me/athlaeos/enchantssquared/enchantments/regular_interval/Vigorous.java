@@ -54,8 +54,6 @@ public class Vigorous extends CustomEnchant implements TriggerOnRegularIntervals
         this.cleanup = config.getBoolean("clean_old_enchantments");
 
         this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.vigorous.icon", createIcon(Material.GLISTERING_MELON_SLICE));
-
-        EnchantsSquared.getPlugin().getServer().getPluginManager().registerEvents(this, EnchantsSquared.getPlugin());
     }
 
     private final LevelService levelService = new LevelsFromAllEquipment(this);

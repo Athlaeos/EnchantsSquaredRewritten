@@ -49,8 +49,6 @@ public class TreeFeller extends CustomEnchant implements TriggerOnBlockBreakEnch
         this.leafLimit = config.getInt("enchantment_configuration.tree_feller.leaf_limit");
         this.includeLeaves = config.getBoolean("enchantment_configuration.tree_feller.break_leaves");
         this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.tree_feller.icon", createIcon(Material.DIAMOND_AXE));
-
-        EnchantsSquared.getPlugin().getServer().getPluginManager().registerEvents(this, EnchantsSquared.getPlugin());
     }
 
     private final LevelService levelService = new LevelsFromMainHandAndEquipment(this);

@@ -46,8 +46,6 @@ public class SpeedBoost extends CustomEnchant implements TriggerOnRegularInterva
         this.speedLv = config.getDouble("enchantment_configuration.speed_boost.speed_lv");
 
         this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.speed_boost.icon", createIcon(Material.FEATHER));
-
-        EnchantsSquared.getPlugin().getServer().getPluginManager().registerEvents(this, EnchantsSquared.getPlugin());
     }
 
     private final LevelService levelService = new LevelsFromAllEquipment(this);

@@ -24,6 +24,8 @@ public class BossBarUtils {
      * @param time the time (in TENTH SECONDS) to show the boss bar
      */
     public static void showBossBarToPlayer(final Player player, String title, double progress, final int time, String uniqueKey, BarColor color, BarStyle style){
+        if (Double.isNaN(progress)) progress = 0D;
+        if (Double.isInfinite(progress)) progress = 0F;
         BossBarUtils.TemporaryBossBar bossBar = null;
         if (progress < 0) progress = 0D;
         if (progress > 1) progress = 1D;
