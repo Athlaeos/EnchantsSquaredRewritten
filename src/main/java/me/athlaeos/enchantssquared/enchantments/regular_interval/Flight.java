@@ -6,7 +6,6 @@ import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
 import me.athlaeos.enchantssquared.enchantments.LevelService;
 import me.athlaeos.enchantssquared.enchantments.LevelsFromMainHandAndEquipment;
 import me.athlaeos.enchantssquared.managers.CooldownManager;
-import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.managers.EntityEquipmentCacheManager;
 import me.athlaeos.enchantssquared.utility.*;
 import net.md_5.bungee.api.ChatMessageType;
@@ -25,7 +24,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Flight extends CustomEnchant implements TriggerOnRegularIntervalsEnchantment {
     private final YamlConfiguration config;
@@ -220,14 +218,14 @@ public class Flight extends CustomEnchant implements TriggerOnRegularIntervalsEn
         Player p = (Player) e;
         boolean allowFlightNaturally = p.getGameMode() == GameMode.CREATIVE || p.getGameMode() == GameMode.SPECTATOR
                 || p.hasPermission("essentials.fly");
-        if (shouldEnchantmentCancel(level, (LivingEntity) e, e.getLocation())){
+        if (!shouldEnchantmentCancel(level, (LivingEntity) e, e.getLocation())){
             // player doesn't have the enchantment, or is not allowed in this area
-            if (!allowFlightNaturally && (p.isFlying() || p.getAllowFlight())){
-                // if the player isn't allowed to fly naturally, so if they're in survival/adventure mode and are also flying currently, disallow flight
-                p.setAllowFlight(false);
-                p.setFlying(false);
-            }
-        } else {
+//            if (!allowFlightNaturally && (p.isFlying() || p.getAllowFlight())){
+//                // if the player isn't allowed to fly naturally, so if they're in survival/adventure mode and are also flying currently, disallow flight
+//                p.setAllowFlight(false);
+//                p.setFlying(false);
+//            }
+//        } else {
             p.setAllowFlight(true);
 
             if (!allowFlightNaturally) {

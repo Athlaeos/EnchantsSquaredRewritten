@@ -17,10 +17,8 @@ public class AnimationRegistry {
         // animation is not yet registered, so its construction is attempted
         String[] parts = type.split("-");
         String baseType = parts[0];
-        // if the base animation (animation without argument) does not exist, throw an exception
-        if (!baseAnimations.containsKey(baseType)) {
-            throw new IllegalArgumentException("Base animation type " + baseType + " does not exist");
-        }
+        // if the base animation (animation without argument) does not exist, return null
+        if (!baseAnimations.containsKey(baseType)) return null;
         // register the animation with the argument, or no argument if none are present
         animations.put(type, baseAnimations.get(baseType).getNew(parts.length > 1 ? parts[1] : null));
         return animations.get(type);
