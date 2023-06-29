@@ -274,14 +274,8 @@ public class CustomEnchantManager {
                     try {
                         int id = Integer.parseInt(enchantmentLevelPair[0]);
                         int level = Integer.parseInt(enchantmentLevelPair[1]);
-                        if (!allEnchants.containsKey(id)) throw new IllegalArgumentException();
-                        totalEnchants.put(allEnchants.get(id), level);
-                    } catch (IllegalArgumentException e){
-                        EnchantsSquared.getPlugin().getServer().getLogger().severe(
-                                "An item containing custom enchantment id '" + enchantmentLevelPair[0] +
-                                        "' with level '" + enchantmentLevelPair[1] + "' was found, but no " +
-                                        "enchantments under this id exist. If the id or level are not a number that " +
-                                        "would also cause this error.");
+                        if (allEnchants.containsKey(id)) totalEnchants.put(allEnchants.get(id), level);
+                    } catch (IllegalArgumentException ignored){
                     }
                 }
             }

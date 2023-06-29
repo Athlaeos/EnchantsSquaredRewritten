@@ -15,6 +15,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
@@ -120,10 +121,7 @@ public class GetEnchantedItemCommand implements Command {
 					String[] enchantArgs = finalArg.split(",");
 					for (String enchantment : enchantArgs){
 						String[] enchantDetails = enchantment.split(":");
-						if (enchantDetails.length != 2){
-
-							continue;
-						}
+						if (enchantDetails.length != 2) continue;
 						Enchantment enchant;
 						try {
 							enchant = Enchantment.getByKey(NamespacedKey.minecraft(enchantDetails[0]));
@@ -155,14 +153,22 @@ public class GetEnchantedItemCommand implements Command {
 				itemMeta.setLore(lore);
 			}
 
-			giveItem.setItemMeta(itemMeta);
+			if (itemMeta instanceof EnchantmentStorageMeta){
+				EnchantmentStorageMeta eMeta = (EnchantmentStorageMeta) itemMeta;
+
+				for (Enchantment e : vanillaEnchantments.keySet()){
+					eMeta.addStoredEnchant(e, vanillaEnchantments.get(e), true);
+				}
+				giveItem.setItemMeta(eMeta);
+			} else {
+				for (Enchantment e : vanillaEnchantments.keySet()){
+					giveItem.addUnsafeEnchantment(e, vanillaEnchantments.get(e));
+				}
+				giveItem.setItemMeta(itemMeta);
+			}
 
 			if (!customEnchantments.isEmpty()){
 				CustomEnchantManager.getInstance().setItemEnchants(giveItem, customEnchantments);
-			}
-
-			for (Enchantment e : vanillaEnchantments.keySet()){
-				giveItem.addUnsafeEnchantment(e, vanillaEnchantments.get(e));
 			}
 
 			ItemUtils.addItem(target, giveItem, true);

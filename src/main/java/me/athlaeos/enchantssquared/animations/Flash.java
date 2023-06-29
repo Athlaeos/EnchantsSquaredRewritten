@@ -1,5 +1,6 @@
 package me.athlaeos.enchantssquared.animations;
 
+import me.athlaeos.enchantssquared.domain.Version;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 
@@ -23,6 +24,9 @@ public class Flash extends Animation{
     @Override
     public void play(Location l) {
         if (l.getWorld() == null) return;
-        l.getWorld().spawnParticle(Particle.FLASH, l, 0, size);
+        if (Version.currentVersionOrNewerThan(Version.MINECRAFT_1_20))
+            l.getWorld().spawnParticle(Particle.FLASH, l, 0);
+        else
+            l.getWorld().spawnParticle(Particle.FLASH, l, 0, size);
     }
 }

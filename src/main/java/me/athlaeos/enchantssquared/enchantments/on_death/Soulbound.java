@@ -28,7 +28,7 @@ public class Soulbound extends CustomEnchant implements TriggerOnDeathEnchantmen
     /**
      * Constructor for a Custom Enchant. The type and id must be unique and the type will automatically be uppercased
      * by convention.
-     * The id will be used on the item to store the enchantment and thus must be consistent, or it will risk
+     * The id will be used on the item to store the encha\ntment and thus must be consistent, or it will risk
      * changing existing enchantments on item or simply invalidate the enchantment entirely.
      *
      * @param id   the identifying id of this custom enchant.
