@@ -207,31 +207,30 @@ public class LavaWalker extends CustomEnchant implements TriggerOnRegularInterva
 
         EntityEquipment cachedEquipment = EntityEquipmentCacheManager.getInstance().getAndCacheEquipment((Player) e);
         Map<ItemStack, Map<CustomEnchant, Integer>> iterable = cachedEquipment.getIterableWithEnchantments(true);
-        for (ItemStack i : iterable.keySet()){
-            if (i.getType().getMaxDurability() > 0 && i.getItemMeta() instanceof Damageable){
-                EntityUtils.SlotEquipment firstLavaWalkerItem = EntityUtils.getFirstEquipmentItemStackWithEnchantment(EntityEquipmentCacheManager.getInstance().getAndCacheEquipment((Player) e), this);
-                int lavaWalkerLevel = iterable.getOrDefault(i, new HashMap<>()).getOrDefault(this, 0);
-                if (lavaWalkerLevel > 0){
-                    Collection<Block> blocksToReplace = BlockUtils.getBlocksInArea(
-                            e.getLocation().add(-(lavaWalkerLevel - 1), -0.2, -(lavaWalkerLevel - 1)),
-                            e.getLocation().add((lavaWalkerLevel - 1), -0.2, (lavaWalkerLevel - 1)))
-                            .stream().map(Location::getBlock)
-                            .filter(b -> {
-                                if (b.getType() == Material.LAVA && b.getBlockData() instanceof Levelled){
-                                    return ((Levelled) b.getBlockData()).getLevel() == 0 &&
-                                            b.getLocation().add(0, 1, 0).getBlock().toString().contains("AIR");
-                                }
-                                return false;
-                            }).collect(Collectors.toSet());
-                    int unbreakingLevel = i.getEnchantmentLevel(Enchantment.DURABILITY);
-                    int damage = Utils.excessChance(blocksToReplace.size() * durabilityPerBlock * (1D/(unbreakingLevel + 1D)));
-                    ItemUtils.damageItem((Player) e, i, damage, firstLavaWalkerItem.getSlot());
+        EntityUtils.SlotEquipment firstLavaWalkerItem = EntityUtils.getFirstEquipmentItemStackWithEnchantment(cachedEquipment, this);
+        ItemStack i = firstLavaWalkerItem.getEquipment();
+        if (ItemUtils.isAirOrNull(i)) return;
+        if (i.getType().getMaxDurability() > 0 && i.getItemMeta() instanceof Damageable){
+            int lavaWalkerLevel = iterable.getOrDefault(i, new HashMap<>()).getOrDefault(this, 0);
+            if (lavaWalkerLevel > 0){
+                Collection<Block> blocksToReplace = BlockUtils.getBlocksInArea(
+                        e.getLocation().add(-(lavaWalkerLevel - 1), -0.2, -(lavaWalkerLevel - 1)),
+                        e.getLocation().add((lavaWalkerLevel - 1), -0.2, (lavaWalkerLevel - 1)))
+                        .stream().map(Location::getBlock)
+                        .filter(b -> {
+                            if (b.getType() == Material.LAVA && b.getBlockData() instanceof Levelled){
+                                return ((Levelled) b.getBlockData()).getLevel() == 0 &&
+                                        b.getLocation().add(0, 1, 0).getBlock().toString().contains("AIR");
+                            }
+                            return false;
+                        }).collect(Collectors.toSet());
+                int unbreakingLevel = i.getEnchantmentLevel(Enchantment.DURABILITY);
+                int damage = Utils.excessChance(blocksToReplace.size() * durabilityPerBlock * (1D/(unbreakingLevel + 1D)));
+                ItemUtils.damageItem((Player) e, i, damage, firstLavaWalkerItem.getSlot());
 
-                    for (Block b : blocksToReplace){
-                        b.setType(transformInto);
-                        convertedBlocks.put(b, System.currentTimeMillis());
-                    }
-                    return;
+                for (Block b : blocksToReplace){
+                    b.setType(transformInto);
+                    convertedBlocks.put(b, System.currentTimeMillis());
                 }
             }
         }

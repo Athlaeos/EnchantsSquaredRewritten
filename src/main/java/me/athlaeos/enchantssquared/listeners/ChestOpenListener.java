@@ -22,8 +22,8 @@ public class ChestOpenListener implements Listener {
     private final int chestCustomEnchantRolls;
 
     public ChestOpenListener(){
-        chestCustomEnchantChance = ConfigManager.getInstance().getConfig("config.yml").get().getDouble("custom_enchant_fish_rate");
-        chestCustomEnchantRolls = Math.max(1, ConfigManager.getInstance().getConfig("config.yml").get().getInt("custom_enchant_fish_rolls"));
+        chestCustomEnchantChance = ConfigManager.getInstance().getConfig("config.yml").get().getDouble("custom_enchant_dungeon_rate");
+        chestCustomEnchantRolls = Math.max(1, ConfigManager.getInstance().getConfig("config.yml").get().getInt("custom_enchant_dungeon_rolls"));
     }
 
     @EventHandler

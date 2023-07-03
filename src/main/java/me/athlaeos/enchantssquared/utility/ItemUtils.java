@@ -97,26 +97,32 @@ public class ItemUtils {
                         case HAND: {
                             damager.playEffect(EntityEffect.BREAK_EQUIPMENT_MAIN_HAND);
                             damager.getInventory().setItemInMainHand(null);
+                            break;
                         }
                         case OFF_HAND: {
                             damager.playEffect(EntityEffect.BREAK_EQUIPMENT_OFF_HAND);
                             damager.getInventory().setItemInOffHand(null);
+                            break;
                         }
                         case FEET: {
                             damager.playEffect(EntityEffect.BREAK_EQUIPMENT_BOOTS);
                             damager.getInventory().setBoots(null);
+                            break;
                         }
                         case LEGS: {
                             damager.playEffect(EntityEffect.BREAK_EQUIPMENT_LEGGINGS);
                             damager.getInventory().setLeggings(null);
+                            break;
                         }
                         case CHEST: {
                             damager.playEffect(EntityEffect.BREAK_EQUIPMENT_CHESTPLATE);
                             damager.getInventory().setChestplate(null);
+                            break;
                         }
                         case HEAD: {
                             damager.playEffect(EntityEffect.BREAK_EQUIPMENT_HELMET);
                             damager.getInventory().setHelmet(null);
+                            break;
                         }
                     }
                     EntityEquipmentCacheManager.getInstance().unCacheEquipment(damager);
