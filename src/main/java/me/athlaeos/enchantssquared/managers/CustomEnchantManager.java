@@ -501,46 +501,46 @@ public class CustomEnchantManager {
         registerEnchant(new TreeFeller(51, "tree_feller"));
         registerEnchant(new Pulling(52, "pulling"));
         registerEnchant(new RapidShot(53, "rapid_shot"));
+    }
 
+    public void registerValhallaEnchantments(){
         if (EnchantsSquared.isValhallaHooked()){
-            EnchantsSquared.getPlugin().getServer().getScheduler().runTaskLater(EnchantsSquared.getPlugin(), () -> {
-                YamlConfiguration valhallaConfig = ConfigManager.getInstance().getConfig("config_valhallammo.yml").get();
-                ConfigurationSection section = valhallaConfig.getConfigurationSection("enchantments");
-                if (section != null){
-                    int registered = 0;
-                    for (String key : section.getKeys(false)){
-                        int id = valhallaConfig.getInt("enchantments." + key + ".id");
-                        if (allEnchants.containsKey(id)) {
-                            EnchantsSquared.getPlugin().getServer().getLogger().warning("Enchantment " + key + " has id " + id + ", but it was already registered!");
-                            continue;
-                        }
-                        GenericValhallaStatEnchantment newEnchantment = new GenericValhallaStatEnchantment(id, key);
+            YamlConfiguration valhallaConfig = ConfigManager.getInstance().getConfig("config_valhallammo.yml").get();
+            ConfigurationSection section = valhallaConfig.getConfigurationSection("enchantments");
+            if (section != null){
+                int registered = 0;
+                for (String key : section.getKeys(false)){
+                    int id = valhallaConfig.getInt("enchantments." + key + ".id");
+                    if (allEnchants.containsKey(id)) {
+                        EnchantsSquared.getPlugin().getServer().getLogger().warning("Enchantment " + key + " has id " + id + ", but it was already registered!");
+                        continue;
+                    }
+                    GenericValhallaStatEnchantment newEnchantment = new GenericValhallaStatEnchantment(id, key);
 
-                        ConfigurationSection statSection = valhallaConfig.getConfigurationSection("enchantments." + key + ".stats");
-                        if (statSection != null){
-                            for (String stat : statSection.getKeys(false)){
-                                double base = valhallaConfig.getDouble("enchantments." + key + ".stats." + stat + ".base");
-                                double lv = valhallaConfig.getDouble("enchantments." + key + ".stats." + stat + ".lv");
-                                if (AccumulativeStatManager.getInstance().getSources().getOrDefault(stat, new HashSet<>()).stream()
-                                        .anyMatch(source -> source instanceof EvEAccumulativeStatSource)){
-                                    if (AccumulativeStatManager.getInstance().getAttackerStatPossessiveMap().getOrDefault(stat, false)){
-                                        AccumulativeStatManager.getInstance().register(stat, new OffensiveEnchantmentStatSource(newEnchantment, base, lv));
-                                    } else {
-                                        AccumulativeStatManager.getInstance().register(stat, new DefensiveEnchantmentStatSource(newEnchantment, base, lv));
-                                    }
+                    ConfigurationSection statSection = valhallaConfig.getConfigurationSection("enchantments." + key + ".stats");
+                    if (statSection != null){
+                        for (String stat : statSection.getKeys(false)){
+                            double base = valhallaConfig.getDouble("enchantments." + key + ".stats." + stat + ".base");
+                            double lv = valhallaConfig.getDouble("enchantments." + key + ".stats." + stat + ".lv");
+                            if (AccumulativeStatManager.getInstance().getSources().getOrDefault(stat, new HashSet<>()).stream()
+                                    .anyMatch(source -> source instanceof EvEAccumulativeStatSource)){
+                                if (AccumulativeStatManager.getInstance().getAttackerStatPossessiveMap().getOrDefault(stat, false)){
+                                    AccumulativeStatManager.getInstance().register(stat, new OffensiveEnchantmentStatSource(newEnchantment, base, lv));
                                 } else {
-                                    AccumulativeStatManager.getInstance().register(stat, new EnchantmentStatSource(newEnchantment, base, lv));
+                                    AccumulativeStatManager.getInstance().register(stat, new DefensiveEnchantmentStatSource(newEnchantment, base, lv));
                                 }
+                            } else {
+                                AccumulativeStatManager.getInstance().register(stat, new EnchantmentStatSource(newEnchantment, base, lv));
                             }
                         }
-
-                        registered++;
-                        registerEnchant(newEnchantment);
                     }
 
-                    EnchantsSquared.getPlugin().getServer().getLogger().info("ValhallaMMO enchantments loaded in! " + registered + " were registered.");
+                    registered++;
+                    registerEnchant(newEnchantment);
                 }
-            }, 100L);
+
+                EnchantsSquared.getPlugin().getServer().getLogger().info("ValhallaMMO enchantments loaded in! " + registered + " were registered.");
+            }
         }
     }
 

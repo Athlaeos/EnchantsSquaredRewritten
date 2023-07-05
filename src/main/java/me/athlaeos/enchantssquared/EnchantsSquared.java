@@ -103,6 +103,9 @@ public final class EnchantsSquared extends JavaPlugin {
         projectileListener = registerListener(new ProjectileListener());
 
         AnimationRegistry.registerDefaults();
+
+        CustomEnchantManager.getInstance().registerValhallaEnchantments();
+
         // enchantment registry for the ones that are also listeners or that need special tasks registered on enable
         for (CustomEnchant enchant : CustomEnchantManager.getInstance().getAllEnchants().values()){
             if (enchant instanceof Listener){
