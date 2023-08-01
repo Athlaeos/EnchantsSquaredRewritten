@@ -92,7 +92,7 @@ public class CustomEnchantManager {
         List<Entry> entries = new ArrayList<>();
         double accumulatedWeight = 0.0;
         for (CustomEnchant c : possibleEnchantments){
-            if (p != null && requirePermissions && !p.hasPermission(c.getRequiredPermission())) continue;
+            if (p != null && !c.hasPermission(p)) continue;
             accumulatedWeight += c.getWeight();
             entries.add(new Entry(c, accumulatedWeight));
         }
@@ -355,14 +355,6 @@ public class CustomEnchantManager {
     private void registerEnchant(CustomEnchant enchant){
         if (enchant.isEnabled()){
             allEnchants.put(enchant.getId(), enchant);
-            if (EnchantsSquared.isValhallaHooked()){
-                try {
-                    DynamicItemModifierManager.modifiersToRegister.add(new CustomEnchantmentAddModifier(enchant));
-                } catch (Error | Exception ignored){
-                    // If this happens, ValhallaMMO is not up to date yet as the modifiersToRegister feature was
-                    // implemented before Valhalla was properly updated on spigot with it
-                }
-            }
         }
     }
 

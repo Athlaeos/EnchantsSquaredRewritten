@@ -2,6 +2,7 @@ package me.athlaeos.enchantssquared.listeners;
 
 import me.athlaeos.enchantssquared.config.ConfigManager;
 import me.athlaeos.enchantssquared.domain.AnvilCombinationResult;
+import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.utility.ChatUtils;
 import me.athlaeos.enchantssquared.utility.ItemUtils;
@@ -13,6 +14,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.HashSet;
+import java.util.Map;
 
 public class AnvilListener implements Listener {
 
@@ -38,10 +42,20 @@ public class AnvilListener implements Listener {
         switch (output.getState()){
             case SUCCESSFUL:{
                 inventory.setRepairCost(inventory.getRepairCost() + extra_cost);
+                Player p = null;
                 if (e.getInventory().getViewers().size() > 0){
-                    ((Player) e.getInventory().getViewers().get(0)).updateInventory();
+                    p = (Player) e.getInventory().getViewers().get(0);
+                    p.updateInventory();
                 }
-                e.setResult(output.getOutput());
+                ItemStack r = output.getOutput();
+                if (p != null && CustomEnchantManager.getInstance().isRequirePermissions()){
+                    Map<CustomEnchant, Integer> enchantments = CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(r);
+                    for (CustomEnchant en : new HashSet<>(enchantments.keySet())){
+                        if (!en.hasPermission(p)) enchantments.remove(en);
+                    }
+                    CustomEnchantManager.getInstance().setItemEnchants(r, enchantments);
+                }
+                e.setResult(r);
                 break;
             }
             case MAX_ENCHANTS_EXCEEDED: {

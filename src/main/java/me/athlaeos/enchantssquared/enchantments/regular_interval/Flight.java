@@ -240,7 +240,7 @@ public class Flight extends CustomEnchant implements TriggerOnRegularIntervalsEn
                     }
                 }
 
-                if (getMaxLevel() > 0){
+                if (durationBase > 0){
                     boolean isOnGround = !p.getLocation().add(0, -0.1, 0).getBlock().isPassable();
 
                     // Enchantment is configured a max level above 0, and therefore has a fuel meter

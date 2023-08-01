@@ -458,7 +458,7 @@ enchantment_configuration:
     enabled: true
     max_level: 3
     max_level_table: 2
-    # If max_level is set to 0, flight will not run out (as long as they have durability, of course)
+    # If flight_duration_base is set to 0, flight will not run out (as long as they have durability, of course)
     # If it's higher than 0, the next options determine how long a player can fly for before they have to
     # go back to the ground to recharge and if they gain slow fall if it expires. Or if they have a fuel bar displayed.
     flight_duration_base: 5000 # Base duration a player can fly in milliseconds

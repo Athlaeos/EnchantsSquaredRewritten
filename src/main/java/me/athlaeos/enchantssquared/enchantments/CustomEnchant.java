@@ -3,12 +3,14 @@ package me.athlaeos.enchantssquared.enchantments;
 import me.athlaeos.enchantssquared.EnchantsSquared;
 import me.athlaeos.enchantssquared.config.ConfigManager;
 import me.athlaeos.enchantssquared.domain.ExecutionPriority;
+import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.utility.ChatUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -205,5 +207,11 @@ public abstract class CustomEnchant {
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_POTION_EFFECTS, ItemFlag.HIDE_DYE);
         icon.setItemMeta(meta);
         return icon;
+    }
+
+    public boolean hasPermission(Player p){
+        boolean required = CustomEnchantManager.getInstance().isRequirePermissions();
+        if (!required) return true;
+        return p.hasPermission("es.enchant.*") || (!p.hasPermission(getRequiredPermission()));
     }
 }
