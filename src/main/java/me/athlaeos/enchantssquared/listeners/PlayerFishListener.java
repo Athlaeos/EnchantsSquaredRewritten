@@ -8,6 +8,7 @@ import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
 import me.athlaeos.enchantssquared.enchantments.on_fishing.TriggerOnFishingEnchantment;
 import me.athlaeos.enchantssquared.hooks.WorldGuardHook;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
+import me.athlaeos.enchantssquared.managers.EntityEquipmentCacheManager;
 import me.athlaeos.enchantssquared.utility.EntityUtils;
 import me.athlaeos.enchantssquared.utility.Utils;
 import org.bukkit.GameMode;
@@ -47,7 +48,7 @@ public class PlayerFishListener implements Listener {
         Player fisher = e.getPlayer();
 
         if (EnchantsSquared.isWorldGuardAllowed(fisher, e.getHook().getLocation(), "es-deny-all")){
-            EntityEquipment equipment = EntityUtils.getEntityEquipment(fisher);
+            EntityEquipment equipment = EntityEquipmentCacheManager.getInstance().getAndCacheEquipment(fisher);
 
             boolean offHand = fisher.getInventory().getItemInMainHand().getType() != Material.FISHING_ROD && fisher.getInventory().getItemInOffHand().getType() == Material.FISHING_ROD;
 

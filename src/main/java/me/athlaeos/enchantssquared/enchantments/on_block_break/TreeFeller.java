@@ -169,12 +169,12 @@ public class TreeFeller extends CustomEnchant implements TriggerOnBlockBreakEnch
     // tree feller, and should take the double value as fraction item durability damage while doing so
 
     private final Collection<Material> logs = ItemUtils.getMaterialList(Arrays.asList("OAK_LOG", "SPRUCE_LOG",
-            "BIRCH_LOG", "ACACIA_LOG", "JUNGLE_LOG", "DARK_OAK_LOG", "MANGROVE_LOG", "CHERRY_BLOSSOM_LOG",
+            "BIRCH_LOG", "ACACIA_LOG", "JUNGLE_LOG", "DARK_OAK_LOG", "MANGROVE_LOG", "CHERRY_LOG",
             "OAK_WOOD", "SPRUCE_WOOD", "BIRCH_WOOD", "ACACIA_WOOD", "JUNGLE_WOOD", "DARK_OAK_WOOD", "MANGROVE_WOOD",
-            "CHERRY_BLOSSOM_WOOD", "WARPED_STEM", "CRIMSON_STEM", "WARPED_HYPHAE", "CRIMSON_HYPHAE"));
+            "CHERRY_WOOD", "WARPED_STEM", "CRIMSON_STEM", "WARPED_HYPHAE", "CRIMSON_HYPHAE"));
     private final Collection<Material> leaves = ItemUtils.getMaterialList(Arrays.asList("OAK_LEAVES", "SPRUCE_LEAVES",
             "BIRCH_LEAVES", "ACACIA_LEAVES", "JUNGLE_LEAVES", "DARK_OAK_LEAVES", "MANGROVE_LEAVES",
-            "CHERRY_BLOSSOM_LEAVES", "NETHER_WART_BLOCK", "WARPED_WART_BLOCK"));
+            "CHERRY_LEAVES", "NETHER_WART_BLOCK", "WARPED_WART_BLOCK"));
 
     @Override
     public void onBlockBreak(BlockBreakEvent e, int level) {

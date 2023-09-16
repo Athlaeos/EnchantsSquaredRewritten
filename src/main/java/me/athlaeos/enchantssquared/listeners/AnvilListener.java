@@ -1,5 +1,6 @@
 package me.athlaeos.enchantssquared.listeners;
 
+import me.athlaeos.enchantssquared.EnchantsSquared;
 import me.athlaeos.enchantssquared.config.ConfigManager;
 import me.athlaeos.enchantssquared.domain.AnvilCombinationResult;
 import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
@@ -41,17 +42,26 @@ public class AnvilListener implements Listener {
         AnvilInventory inventory = e.getInventory();
         switch (output.getState()){
             case SUCCESSFUL:{
-                inventory.setRepairCost(inventory.getRepairCost() + extra_cost);
-                Player p = null;
+                Player p;
                 if (e.getInventory().getViewers().size() > 0){
+                    int cost = inventory.getRepairCost() + extra_cost;
+                    inventory.setRepairCost(cost);
                     p = (Player) e.getInventory().getViewers().get(0);
                     p.updateInventory();
+                    EnchantsSquared.getPlugin().getServer().getScheduler().runTaskLater(EnchantsSquared.getPlugin(), () -> {
+                        inventory.setRepairCost(cost);
+                        p.updateInventory();
+                    }, 1L);
+                } else {
+                    p = null;
                 }
                 ItemStack r = output.getOutput();
                 if (p != null && CustomEnchantManager.getInstance().isRequirePermissions()){
                     Map<CustomEnchant, Integer> enchantments = CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(r);
                     for (CustomEnchant en : new HashSet<>(enchantments.keySet())){
-                        if (!en.hasPermission(p)) enchantments.remove(en);
+                        if (!en.hasPermission(p)) {
+                            enchantments.remove(en);
+                        }
                     }
                     CustomEnchantManager.getInstance().setItemEnchants(r, enchantments);
                 }

@@ -35,6 +35,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -212,43 +213,47 @@ public class CustomEnchantManager {
                 finalLore.add(l);
             }
         }
-        Map<CustomEnchant, Integer> enchantments = getItemsEnchantsFromPDC(i);
+        boolean hideEnchantsFlag = meta.hasItemFlag(ItemFlag.HIDE_ENCHANTS);
 
-        if (firstEnchantIndex >= 0){
-            for (CustomEnchant e : enchantments.keySet()){
-                finalLore.add(firstEnchantIndex, ChatUtils.chat(e.getDisplayEnchantment() + (e.getMaxLevel() > 1 ? " " +
-                        (isUsingRomanNumerals ?
-                                ChatUtils.toRoman(enchantments.get(e)) :
-                                enchantments.get(e)) : "")));
-            }
-        } else {
-            for (CustomEnchant e : enchantments.keySet()){
-                finalLore.add(ChatUtils.chat(e.getDisplayEnchantment() + (e.getMaxLevel() > 1 ? " " +
-                        (isUsingRomanNumerals ?
-                                ChatUtils.toRoman(enchantments.get(e)) :
-                                enchantments.get(e)) : "")));
-            }
-        }
-        // Add cosmetic enchantment glow if the item has enchantments and the glow is enabled, or attempt removal otherwise
-        if (!enchantments.isEmpty() && enableCosmeticGlint){
-            if (meta instanceof EnchantmentStorageMeta){
-                EnchantmentStorageMeta storageMeta = (EnchantmentStorageMeta) meta;
-                storageMeta.addStoredEnchant(CosmeticGlintEnchantment.getEnchantsSquaredGlint(), 1, true);
-                storageMeta.setLore(finalLore);
-                i.setItemMeta(storageMeta);
-                return;
+        if (!hideEnchantsFlag){
+            Map<CustomEnchant, Integer> enchantments = getItemsEnchantsFromPDC(i);
+
+            if (firstEnchantIndex >= 0){
+                for (CustomEnchant e : enchantments.keySet()){
+                    finalLore.add(firstEnchantIndex, ChatUtils.chat(e.getDisplayEnchantment() + (e.getMaxLevel() > 1 ? " " +
+                            (isUsingRomanNumerals ?
+                                    ChatUtils.toRoman(enchantments.get(e)) :
+                                    enchantments.get(e)) : "")));
+                }
             } else {
-                i.addUnsafeEnchantment(CosmeticGlintEnchantment.getEnchantsSquaredGlint(), 1);
+                for (CustomEnchant e : enchantments.keySet()){
+                    finalLore.add(ChatUtils.chat(e.getDisplayEnchantment() + (e.getMaxLevel() > 1 ? " " +
+                            (isUsingRomanNumerals ?
+                                    ChatUtils.toRoman(enchantments.get(e)) :
+                                    enchantments.get(e)) : "")));
+                }
             }
-        } else {
-            if (meta instanceof EnchantmentStorageMeta){
-                EnchantmentStorageMeta storageMeta = (EnchantmentStorageMeta) meta;
-                storageMeta.removeStoredEnchant(CosmeticGlintEnchantment.getEnchantsSquaredGlint());
-                storageMeta.setLore(finalLore);
-                i.setItemMeta(storageMeta);
-                return;
+            // Add cosmetic enchantment glow if the item has enchantments and the glow is enabled, or attempt removal otherwise
+            if (!enchantments.isEmpty() && enableCosmeticGlint){
+                if (meta instanceof EnchantmentStorageMeta){
+                    EnchantmentStorageMeta storageMeta = (EnchantmentStorageMeta) meta;
+                    storageMeta.addStoredEnchant(CosmeticGlintEnchantment.getEnchantsSquaredGlint(), 1, true);
+                    storageMeta.setLore(finalLore);
+                    i.setItemMeta(storageMeta);
+                    return;
+                } else {
+                    i.addUnsafeEnchantment(CosmeticGlintEnchantment.getEnchantsSquaredGlint(), 1);
+                }
             } else {
-                i.removeEnchantment(CosmeticGlintEnchantment.getEnchantsSquaredGlint());
+                if (meta instanceof EnchantmentStorageMeta){
+                    EnchantmentStorageMeta storageMeta = (EnchantmentStorageMeta) meta;
+                    storageMeta.removeStoredEnchant(CosmeticGlintEnchantment.getEnchantsSquaredGlint());
+                    storageMeta.setLore(finalLore);
+                    i.setItemMeta(storageMeta);
+                    return;
+                } else {
+                    i.removeEnchantment(CosmeticGlintEnchantment.getEnchantsSquaredGlint());
+                }
             }
         }
         meta.setLore(finalLore);

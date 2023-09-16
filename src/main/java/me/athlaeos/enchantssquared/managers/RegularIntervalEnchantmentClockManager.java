@@ -7,15 +7,21 @@ import me.athlaeos.enchantssquared.enchantments.regular_interval.TriggerOnRegula
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 public class RegularIntervalEnchantmentClockManager {
 
     private static Map<Long, Collection<CustomEnchant>> enchantmentsPerClock;
     private static final Collection<BukkitTask> runningTasks = new HashSet<>();
+    private static final Collection<UUID> playersWithRunningEnchantments = new HashSet<>();
+
+    public static void includePlayerIntoClock(UUID uuid){
+        playersWithRunningEnchantments.add(uuid);
+    }
+
+    public static void excludePlayerFromClock(UUID uuid){
+        playersWithRunningEnchantments.remove(uuid);
+    }
 
     public static void startClock(){
         enchantmentsPerClock = new HashMap<>();
@@ -31,7 +37,12 @@ public class RegularIntervalEnchantmentClockManager {
 
         for (Long l : enchantmentsPerClock.keySet()){
             runningTasks.add(EnchantsSquared.getPlugin().getServer().getScheduler().runTaskTimer(EnchantsSquared.getPlugin(), () -> {
-                for (Player p : EnchantsSquared.getPlugin().getServer().getOnlinePlayers()){
+                for (UUID uuid : new HashSet<>(playersWithRunningEnchantments)){
+                    Player p = EnchantsSquared.getPlugin().getServer().getPlayer(uuid);
+                    if (p == null) { // player is offline, remove from set
+                        playersWithRunningEnchantments.remove(uuid);
+                        continue;
+                    }
                     EntityEquipment cachedEquipment = EntityEquipmentCacheManager.getInstance().getAndCacheEquipment(p);
                     enchantmentsPerClock.get(l).forEach(e -> ((TriggerOnRegularIntervalsEnchantment) e).execute(p, e.getLevelService(false, p).getLevel(cachedEquipment)));
                 }

@@ -6,6 +6,7 @@ import me.athlaeos.enchantssquared.domain.EntityEquipment;
 import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
 import me.athlaeos.enchantssquared.enchantments.on_potion_effect.TriggerOnPotionEffectEnchantment;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
+import me.athlaeos.enchantssquared.managers.EntityEquipmentCacheManager;
 import me.athlaeos.enchantssquared.utility.EntityUtils;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
@@ -23,7 +24,7 @@ public class EntityPotionEffectListener implements Listener {
             LivingEntity affected = (LivingEntity) e.getEntity();
 
             if (EnchantsSquared.isWorldGuardAllowed(affected, affected.getLocation(), "es-deny-all")){
-                EntityEquipment equipment = EntityUtils.getEntityEquipment(affected);
+                EntityEquipment equipment = EntityEquipmentCacheManager.getInstance().getAndCacheEquipment(affected);
 
                 for (CustomEnchant enchantment : CustomEnchantManager.getInstance().getEnchantmentsMatchingFilter(c -> c instanceof TriggerOnPotionEffectEnchantment)){
                     ((TriggerOnPotionEffectEnchantment) enchantment).onPotionEffect(e, enchantment.getLevelService(false, affected).getLevel(equipment));

@@ -5,7 +5,9 @@ import me.athlaeos.enchantssquared.config.ConfigManager;
 import me.athlaeos.enchantssquared.domain.EntityEquipment;
 import me.athlaeos.enchantssquared.domain.MaterialClassType;
 import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
+import me.athlaeos.enchantssquared.enchantments.regular_interval.TriggerOnRegularIntervalsEnchantment;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
+import me.athlaeos.enchantssquared.managers.RegularIntervalEnchantmentClockManager;
 import me.athlaeos.valhallatrinkets.TrinketsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
@@ -17,26 +19,20 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 public class EntityUtils {
-    public static EntityEquipment getEntityEquipment(LivingEntity entity){
-        return getEntityEquipment(entity, true);
+
+    private static boolean include(UUID uuid){
+        RegularIntervalEnchantmentClockManager.includePlayerIntoClock(uuid);
+        return true;
     }
 
-    /**
-     * Collects all entity equipment, as well as enchantments, into a single easy to use object.
-     * Items that should not function in main hand or off hand will be considered enchantless
-     * @param e the entity to fetch equipment from
-     * @param getEnchantments whether to also get enchantments or not
-     * @return the EntityEquipment of the entity
-     */
     public static EntityEquipment getEntityEquipment(LivingEntity e, boolean getEnchantments){
         EntityEquipment equipment = new EntityEquipment(e);
         if (e == null) return equipment;
         if (e.getEquipment() != null) {
+            boolean included = false;
             equipment.setHelmet(e.getEquipment().getHelmet());
             equipment.setChestplate(e.getEquipment().getChestplate());
             equipment.setLeggings(e.getEquipment().getLeggings());
@@ -45,15 +41,20 @@ public class EntityUtils {
             equipment.setOffHand(e.getEquipment().getItemInOffHand());
             if (getEnchantments){
                 if (!ItemUtils.isAirOrNull(equipment.getHelmet())) equipment.setHelmetEnchantments(CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(equipment.getHelmet()));
+                if (equipment.getHelmetEnchantments().keySet().stream().anyMatch(en -> en instanceof TriggerOnRegularIntervalsEnchantment)) included = include(e.getUniqueId());
                 if (!ItemUtils.isAirOrNull(equipment.getChestplate())) equipment.setChestplateEnchantments(CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(equipment.getChestplate()));
+                if (!included && equipment.getChestplateEnchantments().keySet().stream().anyMatch(en -> en instanceof TriggerOnRegularIntervalsEnchantment)) included = include(e.getUniqueId());
                 if (!ItemUtils.isAirOrNull(equipment.getLeggings())) equipment.setLeggingsEnchantments(CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(equipment.getLeggings()));
+                if (!included && equipment.getLeggingsEnchantments().keySet().stream().anyMatch(en -> en instanceof TriggerOnRegularIntervalsEnchantment)) included = include(e.getUniqueId());
                 if (!ItemUtils.isAirOrNull(equipment.getBoots())) equipment.setBootsEnchantments(CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(equipment.getBoots()));
+                if (!included && equipment.getBootsEnchantments().keySet().stream().anyMatch(en -> en instanceof TriggerOnRegularIntervalsEnchantment)) included = include(e.getUniqueId());
                 if (
                         !ItemUtils.isAirOrNull(equipment.getMainHand()) &&
                         !MaterialClassType.isArmor(equipment.getMainHand()) &&
                         MaterialClassType.getClass(equipment.getMainHand()) != MaterialClassType.TRINKETS
                 ){
                     equipment.setMainHandEnchantments(CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(equipment.getMainHand()));
+                    if (!included && equipment.getMainHandEnchantments().keySet().stream().anyMatch(en -> en instanceof TriggerOnRegularIntervalsEnchantment)) included = include(e.getUniqueId());
                 }
                 if (
                         !ItemUtils.isAirOrNull(equipment.getOffHand()) &&
@@ -61,20 +62,83 @@ public class EntityUtils {
                         MaterialClassType.getClass(equipment.getOffHand()) != MaterialClassType.TRINKETS
                 ){
                     equipment.setOffHandEnchantments(CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(equipment.getOffHand()));
+                    if (!included && equipment.getOffHandEnchantments().keySet().stream().anyMatch(en -> en instanceof TriggerOnRegularIntervalsEnchantment)) included = include(e.getUniqueId());
                 }
             }
-        }
-        if (EnchantsSquared.isTrinketsHooked()){
-            if (e instanceof Player){
-                Map<Integer, ItemStack> trinkets = TrinketsManager.getInstance().getTrinketInventory((Player) e);
-                equipment.getMiscEquipment().addAll(trinkets.values());
-                if (getEnchantments){
-                    for (ItemStack i : trinkets.values())
-                        equipment.getMiscEquipmentEnchantments().put(i, CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(i));
+            if (EnchantsSquared.isTrinketsHooked()){
+                if (e instanceof Player){
+                    Map<Integer, ItemStack> trinkets = TrinketsManager.getInstance().getTrinketInventory((Player) e);
+                    equipment.getMiscEquipment().addAll(trinkets.values());
+                    if (getEnchantments){
+                        for (ItemStack i : trinkets.values()){
+                            equipment.getMiscEquipmentEnchantments().put(i, CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(i));
+                            if (!included && equipment.getMiscEquipmentEnchantments().get(i).keySet().stream().anyMatch(en -> en instanceof TriggerOnRegularIntervalsEnchantment)) included = include(e.getUniqueId());
+                        }
+                    }
                 }
             }
+            if (!included) RegularIntervalEnchantmentClockManager.excludePlayerFromClock(e.getUniqueId());
         }
         return equipment;
+    }
+
+    public static EntityEquipment updateEnchantments(EntityEquipment equipment, LivingEntity e, boolean getEnchantments, boolean getEquipment, boolean getHands){
+        if (e.getEquipment() != null) {
+            boolean included = false;
+            if (getEquipment){
+                equipment.setHelmet(e.getEquipment().getHelmet());
+                equipment.setChestplate(e.getEquipment().getChestplate());
+                equipment.setLeggings(e.getEquipment().getLeggings());
+                equipment.setBoots(e.getEquipment().getBoots());
+
+                if (getEnchantments && equipment.getHelmet() != null) equipment.setHelmetEnchantments(CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(equipment.getHelmet()));
+                if (equipment.getHelmetEnchantments().keySet().stream().anyMatch(en -> en instanceof TriggerOnRegularIntervalsEnchantment)) included = include(e.getUniqueId());
+                if (getEnchantments && equipment.getChestplate() != null) equipment.setChestplateEnchantments(CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(equipment.getHelmet()));
+                if (equipment.getChestplateEnchantments().keySet().stream().anyMatch(en -> en instanceof TriggerOnRegularIntervalsEnchantment)) included = include(e.getUniqueId());
+                if (getEnchantments && equipment.getLeggings() != null) equipment.setLeggingsEnchantments(CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(equipment.getHelmet()));
+                if (equipment.getLeggingsEnchantments().keySet().stream().anyMatch(en -> en instanceof TriggerOnRegularIntervalsEnchantment)) included = include(e.getUniqueId());
+                if (getEnchantments && equipment.getBoots() != null) equipment.setBootsEnchantments(CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(equipment.getHelmet()));
+                if (equipment.getBootsEnchantments().keySet().stream().anyMatch(en -> en instanceof TriggerOnRegularIntervalsEnchantment)) included = include(e.getUniqueId());
+                if (EnchantsSquared.isTrinketsHooked()){
+                    if (e instanceof Player){
+                        Map<Integer, ItemStack> trinkets = TrinketsManager.getInstance().getTrinketInventory((Player) e);
+                        equipment.getMiscEquipment().addAll(trinkets.values());
+                        for (ItemStack i : trinkets.values()){
+                            if (getEnchantments) equipment.getMiscEquipmentEnchantments().put(i, CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(i));
+                            if (!included && equipment.getMiscEquipmentEnchantments().get(i).keySet().stream().anyMatch(en -> en instanceof TriggerOnRegularIntervalsEnchantment)) included = include(e.getUniqueId());
+                        }
+                    }
+                }
+            }
+            if (getHands){
+                equipment.setMainHand(e.getEquipment().getItemInMainHand());
+                equipment.setOffHand(e.getEquipment().getItemInOffHand());
+                if (getEnchantments && equipment.getMainHand() != null &&
+                        !MaterialClassType.isArmor(equipment.getMainHand()) &&
+                        MaterialClassType.getClass(equipment.getMainHand()) != MaterialClassType.TRINKETS
+                ) {
+                    equipment.setMainHandEnchantments(CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(equipment.getMainHand()));
+                    if (!included && equipment.getOffHandEnchantments().keySet().stream().anyMatch(en -> en instanceof TriggerOnRegularIntervalsEnchantment)) included = include(e.getUniqueId());
+                }
+
+                if (getEnchantments && equipment.getOffHand() != null &&
+                        !MaterialClassType.isArmor(equipment.getOffHand()) &&
+                        MaterialClassType.getClass(equipment.getOffHand()) != MaterialClassType.TRINKETS
+                ) {
+                    equipment.setOffHandEnchantments(CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(equipment.getOffHand()));
+                    if (!included && equipment.getOffHandEnchantments().keySet().stream().anyMatch(en -> en instanceof TriggerOnRegularIntervalsEnchantment)) included = include(e.getUniqueId());
+                }
+            }
+            if (!included) RegularIntervalEnchantmentClockManager.excludePlayerFromClock(e.getUniqueId());
+        }
+
+        return equipment;
+    }
+
+    public static EntityEquipment getEntityEquipment(LivingEntity e, boolean getEnchantments, boolean getEquipment, boolean getHands){
+        EntityEquipment equipment = new EntityEquipment(e);
+        if (e == null) return equipment;
+        return updateEnchantments(equipment, e, getEnchantments, getEquipment, getHands);
     }
 
     public static SlotEquipment getFirstEquipmentItemStackWithEnchantment(EntityEquipment equipment, CustomEnchant customEnchant){

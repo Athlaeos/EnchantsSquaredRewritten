@@ -27,6 +27,21 @@ public class EntityEquipmentCacheManager {
         return manager;
     }
 
+    public void resetHands(LivingEntity entity){
+        cachedEquipment.put(entity.getUniqueId(), EntityUtils.updateEnchantments(cachedEquipment.getOrDefault(entity.getUniqueId(), getAndCacheEquipment(entity)),
+                entity, false, false, true));
+    }
+
+    public void resetEquipment(LivingEntity entity){
+        cachedEquipment.put(entity.getUniqueId(), EntityUtils.updateEnchantments(cachedEquipment.getOrDefault(entity.getUniqueId(), getAndCacheEquipment(entity)),
+                entity, false, true, false));
+    }
+
+    public void resetEnchantments(LivingEntity entity){
+        cachedEquipment.put(entity.getUniqueId(), EntityUtils.updateEnchantments(cachedEquipment.getOrDefault(entity.getUniqueId(), getAndCacheEquipment(entity)),
+                entity, true, false, false));
+    }
+
     public void unCacheEquipment(LivingEntity entity) {
         cachedEquipment.remove(entity.getUniqueId());
     }
@@ -34,12 +49,12 @@ public class EntityEquipmentCacheManager {
     public EntityEquipment getAndCacheEquipment(LivingEntity entity){
         cleanCache();
         if (!cachedEquipment.containsKey(entity.getUniqueId())) {
-            cachedEquipment.put(entity.getUniqueId(), EntityUtils.getEntityEquipment(entity, true));
+            cachedEquipment.put(entity.getUniqueId(), EntityUtils.getEntityEquipment(entity, true, true, true));
             lastCacheRefreshAt.put(entity.getUniqueId(), System.currentTimeMillis());
         } else if (lastCacheRefreshAt.containsKey(entity.getUniqueId())){
             if (lastCacheRefreshAt.get(entity.getUniqueId()) + cacheRefreshDelay < System.currentTimeMillis()){
                 // last cache refresh was longer than cacheRefreshDelay milliseconds ago, refresh cached equipment
-                cachedEquipment.put(entity.getUniqueId(), EntityUtils.getEntityEquipment(entity, true));
+                cachedEquipment.put(entity.getUniqueId(), EntityUtils.getEntityEquipment(entity, true, true, true));
                 lastCacheRefreshAt.put(entity.getUniqueId(), System.currentTimeMillis());
             }
         }

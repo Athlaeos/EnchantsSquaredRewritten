@@ -102,6 +102,7 @@ public final class EnchantsSquared extends JavaPlugin {
         itemDamageListener = registerListener(new ItemDamageListener());
         projectileListener = registerListener(new ProjectileListener());
         registerListener(new PluginEnableListener());
+        registerListener(new HandSwitchListener());
 
         AnimationRegistry.registerDefaults();
 

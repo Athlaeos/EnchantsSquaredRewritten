@@ -6,6 +6,7 @@ import me.athlaeos.enchantssquared.domain.MaterialClassType;
 import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
 import me.athlaeos.enchantssquared.enchantments.LevelService;
 import me.athlaeos.enchantssquared.enchantments.Levels1IfPresent;
+import me.athlaeos.enchantssquared.managers.EntityEquipmentCacheManager;
 import me.athlaeos.enchantssquared.utility.EntityUtils;
 import me.athlaeos.enchantssquared.utility.ItemUtils;
 import me.athlaeos.enchantssquared.utility.Utils;
@@ -164,7 +165,7 @@ public class CurseBrittle extends CustomEnchant implements TriggerOnItemDamageEn
     public void onItemDamage(PlayerItemDamageEvent e, int level) {
         if (shouldEnchantmentCancel(level, e.getPlayer(), e.getPlayer().getLocation())) return;
 
-        EntityEquipment cachedEquipment = EntityUtils.getEntityEquipment(e.getPlayer());
+        EntityEquipment cachedEquipment = EntityEquipmentCacheManager.getInstance().getAndCacheEquipment(e.getPlayer());
         Map<ItemStack, Map<CustomEnchant, Integer>> equipment = cachedEquipment.getIterableWithEnchantments(true);
         if (equipment.containsKey(e.getItem())){
             int brittleLevel = equipment.getOrDefault(e.getItem(), new HashMap<>()).getOrDefault(this, 0);

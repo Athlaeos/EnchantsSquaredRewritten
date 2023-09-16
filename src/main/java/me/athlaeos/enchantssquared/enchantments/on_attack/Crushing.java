@@ -56,7 +56,7 @@ public class Crushing extends CustomEnchant implements TriggerOnAttackEnchantmen
         if (EnchantsSquared.isValhallaHooked()){
             count = ArmorType.getArmorTypeCount(victim, ArmorType.HEAVY);
         } else {
-            for (ItemStack i : EntityUtils.getEntityEquipment(victim, false).getIterable(false)){
+            for (ItemStack i : EntityUtils.getEntityEquipment(victim, false, true, false).getIterable(false)){
                 if (MaterialClassType.isArmor(i)) {
                     if (i.toString().contains("IRON_") || i.toString().contains("GOLD_") || i.toString().contains("NETHERITE_")){
                         count++;

@@ -56,7 +56,7 @@ public class Perforating extends CustomEnchant implements TriggerOnAttackEnchant
         if (EnchantsSquared.isValhallaHooked()){
             count = ArmorType.getArmorTypeCount(victim, ArmorType.LIGHT);
         } else {
-            for (ItemStack i : EntityUtils.getEntityEquipment(victim, false).getIterable(false)){
+            for (ItemStack i : EntityUtils.getEntityEquipment(victim, false, true, false).getIterable(false)){
                 if (MaterialClassType.isArmor(i)) {
                     if (i.toString().contains("LEATHER_") || i.toString().contains("CHAINMAIL_") || i.toString().contains("DIAMOND_")){
                         count++;
