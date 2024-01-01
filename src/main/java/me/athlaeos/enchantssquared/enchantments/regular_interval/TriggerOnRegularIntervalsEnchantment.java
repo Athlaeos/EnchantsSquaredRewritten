@@ -13,4 +13,8 @@ public interface TriggerOnRegularIntervalsEnchantment {
      * @param e the entity on which the enchantment is executed
      */
     void execute(Entity e, int level);
+
+    default void onRemove(Entity e){
+        // do nothing by default
+    }
 }

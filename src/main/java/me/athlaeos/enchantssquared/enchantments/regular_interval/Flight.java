@@ -1,6 +1,7 @@
 package me.athlaeos.enchantssquared.enchantments.regular_interval;
 
 import me.athlaeos.enchantssquared.config.ConfigManager;
+import me.athlaeos.enchantssquared.domain.EntityEquipment;
 import me.athlaeos.enchantssquared.domain.MaterialClassType;
 import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
 import me.athlaeos.enchantssquared.enchantments.LevelService;
@@ -311,6 +312,19 @@ public class Flight extends CustomEnchant implements TriggerOnRegularIntervalsEn
         }
     }
 
+    @Override
+    public void onRemove(Entity e) {
+        if (!(e instanceof Player)) return;
+        Player p = (Player) e;
+        EntityEquipment cachedEquipment = EntityEquipmentCacheManager.getInstance().getAndCacheEquipment(p);
+        if (getLevelService(false, p).getLevel(cachedEquipment) > 0) return;
+        boolean allowFlightNaturally = p.getGameMode() == GameMode.CREATIVE || p.getGameMode() == GameMode.SPECTATOR
+                || p.hasPermission("essentials.fly");
+        if (allowFlightNaturally) return;
+        playersWhoHadFlight.remove(p.getUniqueId());
+        p.setFlying(false);
+        p.setAllowFlight(false);
+    }
 
     private String fuelBarBuilder(double fraction){
         int full = (int) Math.floor(fraction * 40D);

@@ -1,7 +1,6 @@
 package me.athlaeos.enchantssquared.commands;
 
 import me.athlaeos.enchantssquared.config.ConfigManager;
-import me.athlaeos.enchantssquared.enchantments.CosmeticGlintEnchantment;
 import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.utility.ChatUtils;
@@ -11,7 +10,6 @@ import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 
 import java.util.*;
 import java.util.stream.Collectors;

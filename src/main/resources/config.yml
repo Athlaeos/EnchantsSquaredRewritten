@@ -282,7 +282,6 @@ enchantment_configuration:
     is_treasure: false
     compatible_with:
       - CHESTPLATES
-      - SHIELDS
       - ELYTRA
 
   steady:
