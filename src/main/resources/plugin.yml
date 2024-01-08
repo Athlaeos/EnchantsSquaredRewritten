@@ -24,10 +24,10 @@ permissions:
     default: op
     description: When using an enchant that normally has a cooldown, it will not go on cooldown
   es.list:
-    default: op
+    default: true
     description: Permission to use the /es help command
   es.menu:
-    default: op
+    default: true
     description: Permission to use the /es menu command
   es.noregionrestrictions:
     default: op
