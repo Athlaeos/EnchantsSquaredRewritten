@@ -25,8 +25,10 @@ import me.athlaeos.enchantssquared.hooks.valhallammo.*;
 import me.athlaeos.enchantssquared.utility.ChatUtils;
 import me.athlaeos.enchantssquared.utility.ItemUtils;
 import me.athlaeos.enchantssquared.utility.Utils;
-import me.athlaeos.valhallammo.managers.AccumulativeStatManager;
-import me.athlaeos.valhallammo.statsources.EvEAccumulativeStatSource;
+import me.athlaeos.valhallammo.crafting.dynamicitemmodifiers.ModifierRegistry;
+import me.athlaeos.valhallammo.playerstats.AccumulativeStatManager;
+import me.athlaeos.valhallammo.playerstats.EvEAccumulativeStatSource;
+import me.athlaeos.valhallammo.playerstats.StatCollector;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -360,6 +362,7 @@ public class CustomEnchantManager {
     private void registerEnchant(CustomEnchant enchant){
         if (enchant.isEnabled()){
             allEnchants.put(enchant.getId(), enchant);
+            if (EnchantsSquared.isValhallaHooked()) ModifierRegistry.register(new CustomEnchantmentAddModifier(enchant));
         }
     }
 
@@ -519,15 +522,18 @@ public class CustomEnchantManager {
                         for (String stat : statSection.getKeys(false)){
                             double base = valhallaConfig.getDouble("enchantments." + key + ".stats." + stat + ".base");
                             double lv = valhallaConfig.getDouble("enchantments." + key + ".stats." + stat + ".lv");
-                            if (AccumulativeStatManager.getInstance().getSources().getOrDefault(stat, new HashSet<>()).stream()
-                                    .anyMatch(source -> source instanceof EvEAccumulativeStatSource)){
-                                if (AccumulativeStatManager.getInstance().getAttackerStatPossessiveMap().getOrDefault(stat, false)){
-                                    AccumulativeStatManager.getInstance().register(stat, new OffensiveEnchantmentStatSource(newEnchantment, base, lv));
+                            StatCollector collector = AccumulativeStatManager.getSources().get(stat);
+                            if (collector != null){
+                                if (collector.getStatSources().stream()
+                                        .anyMatch(source -> source instanceof EvEAccumulativeStatSource)){
+                                    if (collector.isAttackerPossessive()){
+                                        AccumulativeStatManager.register(stat, new OffensiveEnchantmentStatSource(newEnchantment, base, lv));
+                                    } else {
+                                        AccumulativeStatManager.register(stat, new DefensiveEnchantmentStatSource(newEnchantment, base, lv));
+                                    }
                                 } else {
-                                    AccumulativeStatManager.getInstance().register(stat, new DefensiveEnchantmentStatSource(newEnchantment, base, lv));
+                                    AccumulativeStatManager.register(stat, new EnchantmentStatSource(newEnchantment, base, lv));
                                 }
-                            } else {
-                                AccumulativeStatManager.getInstance().register(stat, new EnchantmentStatSource(newEnchantment, base, lv));
                             }
                         }
                     }

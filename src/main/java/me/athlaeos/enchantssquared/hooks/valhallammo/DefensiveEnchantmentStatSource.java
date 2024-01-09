@@ -5,11 +5,12 @@ import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
 import me.athlaeos.enchantssquared.enchantments.LevelService;
 import me.athlaeos.enchantssquared.enchantments.LevelsFromAllEquipment;
 import me.athlaeos.enchantssquared.managers.EntityEquipmentCacheManager;
-import me.athlaeos.valhallammo.statsources.EvEAccumulativeStatSource;
+import me.athlaeos.valhallammo.playerstats.AccumulativeStatSource;
+import me.athlaeos.valhallammo.playerstats.EvEAccumulativeStatSource;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 
-public class DefensiveEnchantmentStatSource extends EvEAccumulativeStatSource {
+public class DefensiveEnchantmentStatSource implements AccumulativeStatSource, EvEAccumulativeStatSource {
     private final double base;
     private final double lv;
 
@@ -22,7 +23,7 @@ public class DefensiveEnchantmentStatSource extends EvEAccumulativeStatSource {
     private final LevelService levelService;
 
     @Override
-    public double add(Entity entity, boolean b) {
+    public double fetch(Entity entity, boolean b) {
         if (entity instanceof LivingEntity){
             EntityEquipment equipment = EntityEquipmentCacheManager.getInstance().getAndCacheEquipment((LivingEntity) entity);
             int level = levelService.getLevel(equipment);
@@ -33,7 +34,7 @@ public class DefensiveEnchantmentStatSource extends EvEAccumulativeStatSource {
     }
 
     @Override
-    public double add(Entity entity, Entity entity1, boolean b) {
+    public double fetch(Entity entity, Entity entity1, boolean b) {
         if (entity instanceof LivingEntity){
             EntityEquipment equipment = EntityEquipmentCacheManager.getInstance().getAndCacheEquipment((LivingEntity) entity);
             int level = levelService.getLevel(equipment);

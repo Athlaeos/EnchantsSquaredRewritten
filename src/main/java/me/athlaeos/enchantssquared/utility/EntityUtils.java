@@ -8,6 +8,7 @@ import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
 import me.athlaeos.enchantssquared.enchantments.regular_interval.TriggerOnRegularIntervalsEnchantment;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.managers.RegularIntervalEnchantmentClockManager;
+import me.athlaeos.valhallatrinkets.TrinketItem;
 import me.athlaeos.valhallatrinkets.TrinketsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
@@ -20,6 +21,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class EntityUtils {
 
@@ -67,12 +69,12 @@ public class EntityUtils {
             }
             if (EnchantsSquared.isTrinketsHooked()){
                 if (e instanceof Player){
-                    Map<Integer, ItemStack> trinkets = TrinketsManager.getInstance().getTrinketInventory((Player) e);
-                    equipment.getMiscEquipment().addAll(trinkets.values());
+                    Map<Integer, TrinketItem> trinkets = TrinketsManager.getTrinketInventory((Player) e);
+                    equipment.getMiscEquipment().addAll(trinkets.values().stream().map(TrinketItem::getItem).collect(Collectors.toList()));
                     if (getEnchantments){
-                        for (ItemStack i : trinkets.values()){
-                            equipment.getMiscEquipmentEnchantments().put(i, CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(i));
-                            if (!included && equipment.getMiscEquipmentEnchantments().get(i).keySet().stream().anyMatch(en -> en instanceof TriggerOnRegularIntervalsEnchantment)) included = include(e.getUniqueId());
+                        for (TrinketItem i : trinkets.values()){
+                            equipment.getMiscEquipmentEnchantments().put(i.getItem(), CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(i.getItem()));
+                            if (!included && equipment.getMiscEquipmentEnchantments().get(i.getItem()).keySet().stream().anyMatch(en -> en instanceof TriggerOnRegularIntervalsEnchantment)) included = include(e.getUniqueId());
                         }
                     }
                 }
@@ -106,11 +108,13 @@ public class EntityUtils {
                 if (equipment.getBootsEnchantments().keySet().stream().anyMatch(en -> en instanceof TriggerOnRegularIntervalsEnchantment)) included = include(e.getUniqueId());
                 if (EnchantsSquared.isTrinketsHooked()){
                     if (e instanceof Player){
-                        Map<Integer, ItemStack> trinkets = TrinketsManager.getInstance().getTrinketInventory((Player) e);
-                        equipment.getMiscEquipment().addAll(trinkets.values());
-                        for (ItemStack i : trinkets.values()){
-                            if (getEnchantments) equipment.getMiscEquipmentEnchantments().put(i, CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(i));
-                            if (!included && equipment.getMiscEquipmentEnchantments().get(i).keySet().stream().anyMatch(en -> en instanceof TriggerOnRegularIntervalsEnchantment)) included = include(e.getUniqueId());
+                        Map<Integer, TrinketItem> trinkets = TrinketsManager.getTrinketInventory((Player) e);
+                        equipment.getMiscEquipment().addAll(trinkets.values().stream().map(TrinketItem::getItem).collect(Collectors.toList()));
+                        if (getEnchantments){
+                            for (TrinketItem i : trinkets.values()){
+                                equipment.getMiscEquipmentEnchantments().put(i.getItem(), CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(i.getItem()));
+                                if (!included && equipment.getMiscEquipmentEnchantments().get(i.getItem()).keySet().stream().anyMatch(en -> en instanceof TriggerOnRegularIntervalsEnchantment)) included = include(e.getUniqueId());
+                            }
                         }
                     }
                 }

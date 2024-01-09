@@ -4,7 +4,6 @@ main: me.athlaeos.enchantssquared.EnchantsSquared
 api-version: 1.14
 website: https://discord.gg/dUwtmYV
 softdepend: [ ValhallaMMO, ValhallaTrinkets, WorldGuard, Jobs ]
-loadbefore: [ WorldGuard, ValhallaMMO ]
 authors: [ Athlaeos ]
 description: Now rewritten, EnchantsSquared is a plugin adding in many new enchantments with the intent to mimic vanilla as closely as possible. With special ValhallaMMO integration!
 

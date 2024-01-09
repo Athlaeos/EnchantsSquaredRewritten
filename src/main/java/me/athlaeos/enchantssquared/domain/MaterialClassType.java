@@ -43,7 +43,7 @@ public enum MaterialClassType {
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return null;
         if (EnchantsSquared.isTrinketsHooked()){
-            if (TrinketsManager.getInstance().getTrinketType(item) != null) return TRINKETS;
+            if (TrinketsManager.getTrinketType(item.getItemMeta()) != null) return TRINKETS;
         }
         for (MaterialClassType tc : MaterialClassType.values()) {
             if (tc.getMatches().contains(item.getType())) {
