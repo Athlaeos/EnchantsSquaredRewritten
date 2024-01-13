@@ -1,6 +1,5 @@
 package me.athlaeos.enchantssquared.enchantments.regular_interval;
 
-import me.athlaeos.enchantssquared.EnchantsSquared;
 import me.athlaeos.enchantssquared.config.ConfigManager;
 import me.athlaeos.enchantssquared.domain.MaterialClassType;
 import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
@@ -158,6 +157,11 @@ public class CurseHeavy extends CustomEnchant implements TriggerOnRegularInterva
     @Override
     public String getWorldGuardFlagName() {
         return "es-deny-curse-heavy";
+    }
+
+    @Override
+    public boolean isCurse() {
+        return true;
     }
 
     @Override

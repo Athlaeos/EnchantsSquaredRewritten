@@ -2,6 +2,7 @@ package me.athlaeos.enchantssquared.listeners;
 
 import me.athlaeos.enchantssquared.EnchantsSquared;
 import me.athlaeos.enchantssquared.config.ConfigManager;
+import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.utility.ChatUtils;
 import org.bukkit.entity.HumanEntity;
@@ -12,10 +13,12 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.GrindstoneInventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 
 public class GrindstoneListener implements Listener {
 
@@ -37,10 +40,11 @@ public class GrindstoneListener implements Listener {
             if (e.getSlotType() == InventoryType.SlotType.RESULT){
                 ItemStack item = e.getCurrentItem();
                 if (item != null){
-                    ItemStack result = CustomEnchantManager.getInstance().removeAllEnchants(item);
-                    if (result != null) {
-                        e.setCurrentItem(result);
+                    Map<CustomEnchant, Integer> enchantments = CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(item);
+                    for (CustomEnchant enchant : new HashSet<>(enchantments.keySet())){
+                        if (!enchant.isCurse()) enchantments.remove(enchant);
                     }
+                    CustomEnchantManager.getInstance().setItemEnchants(item, enchantments);
                 }
             }
         }
