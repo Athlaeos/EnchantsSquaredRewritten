@@ -10,6 +10,7 @@ import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.managers.RegularIntervalEnchantmentClockManager;
 import me.athlaeos.valhallatrinkets.TrinketsManager;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
@@ -51,6 +52,8 @@ public class EntityUtils {
                 if (
                         !ItemUtils.isAirOrNull(equipment.getMainHand()) &&
                         !MaterialClassType.isArmor(equipment.getMainHand()) &&
+                        equipment.getMainHand().getType() != Material.BOOK &&
+                        equipment.getMainHand().getType() != Material.ENCHANTED_BOOK &&
                         MaterialClassType.getClass(equipment.getMainHand()) != MaterialClassType.TRINKETS
                 ){
                     equipment.setMainHandEnchantments(CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(equipment.getMainHand()));
@@ -59,6 +62,8 @@ public class EntityUtils {
                 if (
                         !ItemUtils.isAirOrNull(equipment.getOffHand()) &&
                         !MaterialClassType.isArmor(equipment.getOffHand()) &&
+                        equipment.getMainHand().getType() != Material.BOOK &&
+                        equipment.getMainHand().getType() != Material.ENCHANTED_BOOK &&
                         MaterialClassType.getClass(equipment.getOffHand()) != MaterialClassType.TRINKETS
                 ){
                     equipment.setOffHandEnchantments(CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(equipment.getOffHand()));

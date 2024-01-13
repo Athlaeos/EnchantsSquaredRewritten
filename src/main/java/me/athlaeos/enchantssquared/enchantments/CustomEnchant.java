@@ -162,6 +162,10 @@ public abstract class CustomEnchant {
      */
     public abstract int getTradingMaxLeveledPrice();
 
+    public boolean isCurse(){
+        return false;
+    }
+
     /**
      * @return the icon the enchantment should be represented with in the enchantment overview menu
      */
