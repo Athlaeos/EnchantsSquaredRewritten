@@ -1,11 +1,14 @@
 package me.athlaeos.enchantssquared.commands;
 
+import com.sk89q.worldedit.util.YAMLConfiguration;
 import me.athlaeos.enchantssquared.EnchantsSquared;
+import me.athlaeos.enchantssquared.commands.shadowcraft_commands.UpdateEnchantmentsCommand;
 import me.athlaeos.enchantssquared.config.ConfigManager;
 import me.athlaeos.enchantssquared.utility.ChatUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabExecutor;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,6 +32,11 @@ public class CommandManager implements TabExecutor {
 		commands.put("list", new GetEnchantListCommand());
 		commands.put("menu", new GetEnchantMenuCommand());
 		commands.put("give", new GetEnchantedItemCommand());
+
+		YamlConfiguration sc2Config = ConfigManager.getInstance().getConfig("config_shadowcraft.yml").get();
+		if (sc2Config.getBoolean("enableUpdateEnchantmentsCommand")) {
+			commands.put("update", new UpdateEnchantmentsCommand());
+		}
 
 	    ((HelpCommand) commands.get("help")).giveCommandMap(commands);
 

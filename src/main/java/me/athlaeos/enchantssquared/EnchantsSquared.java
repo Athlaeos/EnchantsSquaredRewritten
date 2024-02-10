@@ -8,6 +8,7 @@ import me.athlaeos.enchantssquared.enchantments.CosmeticGlintEnchantment;
 import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
 import me.athlaeos.enchantssquared.hooks.WorldGuardHook;
 import me.athlaeos.enchantssquared.listeners.*;
+import me.athlaeos.enchantssquared.listeners.shadowcraft_listeners.PlayerJoinListener;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.managers.AnimationRegistry;
 import me.athlaeos.enchantssquared.managers.RegularIntervalEnchantmentClockManager;
@@ -48,6 +49,9 @@ public final class EnchantsSquared extends JavaPlugin {
     private MenuListener menuListener = null;
     private ItemDamageListener itemDamageListener = null;
 
+    // Shadowcraft listeners
+    private PlayerJoinListener shadowcraftPlayerJoinListener = null;
+
     @Override
     public void onLoad() {
         plugin = this;
@@ -82,9 +86,14 @@ public final class EnchantsSquared extends JavaPlugin {
             new Metrics(this, 10596);
         }
 
+        // SC2 Config
+        saveConfig("config_shadowcraft.yml");
+
         grindstonesEnabled = ConfigManager.getInstance().getConfig("config.yml").get().getBoolean("allow_grindstone_removal", true);
         CommandManager.getInstance();
         CosmeticGlintEnchantment.register();
+
+        // Register listeners
 
         if (Version.currentVersionOrNewerThan(Version.MINECRAFT_1_14) && grindstonesEnabled) grindstoneListener = registerListener(new GrindstoneListener());
         anvilListener = registerListener(new AnvilListener(), "disable_anvil");
@@ -101,8 +110,10 @@ public final class EnchantsSquared extends JavaPlugin {
         menuListener = registerListener(new MenuListener());
         itemDamageListener = registerListener(new ItemDamageListener());
         projectileListener = registerListener(new ProjectileListener());
-        registerListener(new PluginEnableListener());
         registerListener(new HandSwitchListener());
+
+        // Register shadowcraft listeners
+        shadowcraftPlayerJoinListener = registerListener(new PlayerJoinListener());
 
         AnimationRegistry.registerDefaults();
 
@@ -141,18 +152,6 @@ public final class EnchantsSquared extends JavaPlugin {
 
     public static EnchantsSquared getPlugin(){
         return plugin;
-    }
-
-    public static boolean isValhallaHooked() {
-        return valhallaHooked;
-    }
-
-    public static boolean isTrinketsHooked() {
-        return trinketsHooked;
-    }
-
-    public static boolean isJobsHooked() {
-        return jobsHooked;
     }
 
     public static boolean isWorldGuardHooked() {
@@ -248,5 +247,9 @@ public final class EnchantsSquared extends JavaPlugin {
 
     public static void setGrindstonesEnabled(boolean grindstonesEnabled) {
         EnchantsSquared.grindstonesEnabled = grindstonesEnabled;
+    }
+
+    public PlayerJoinListener getShadowcraftPlayerJoinListener() {
+        return shadowcraftPlayerJoinListener;
     }
 }

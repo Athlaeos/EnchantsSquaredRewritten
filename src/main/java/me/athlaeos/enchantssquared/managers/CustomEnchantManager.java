@@ -20,18 +20,10 @@ import me.athlaeos.enchantssquared.enchantments.on_item_damage.*;
 import me.athlaeos.enchantssquared.enchantments.on_potion_effect.*;
 import me.athlaeos.enchantssquared.enchantments.on_shoot.RapidShot;
 import me.athlaeos.enchantssquared.enchantments.regular_interval.*;
-import me.athlaeos.enchantssquared.hooks.valhallammo.*;
 import me.athlaeos.enchantssquared.utility.ChatUtils;
 import me.athlaeos.enchantssquared.utility.ItemUtils;
 import me.athlaeos.enchantssquared.utility.Utils;
-import me.athlaeos.valhallammo.crafting.DynamicItemModifierManager;
-import me.athlaeos.valhallammo.managers.AccumulativeStatManager;
-import me.athlaeos.valhallammo.statsources.EvEAccumulativeStatSource;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.*;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -500,47 +492,6 @@ public class CustomEnchantManager {
         registerEnchant(new RapidShot(53, "rapid_shot"));
     }
 
-    public void registerValhallaEnchantments(){
-        if (EnchantsSquared.isValhallaHooked()){
-            YamlConfiguration valhallaConfig = ConfigManager.getInstance().getConfig("config_valhallammo.yml").get();
-            ConfigurationSection section = valhallaConfig.getConfigurationSection("enchantments");
-            if (section != null){
-                int registered = 0;
-                for (String key : section.getKeys(false)){
-                    int id = valhallaConfig.getInt("enchantments." + key + ".id");
-                    if (allEnchants.containsKey(id)) {
-                        EnchantsSquared.getPlugin().getServer().getLogger().warning("Enchantment " + key + " has id " + id + ", but it was already registered!");
-                        continue;
-                    }
-                    GenericValhallaStatEnchantment newEnchantment = new GenericValhallaStatEnchantment(id, key);
-
-                    ConfigurationSection statSection = valhallaConfig.getConfigurationSection("enchantments." + key + ".stats");
-                    if (statSection != null){
-                        for (String stat : statSection.getKeys(false)){
-                            double base = valhallaConfig.getDouble("enchantments." + key + ".stats." + stat + ".base");
-                            double lv = valhallaConfig.getDouble("enchantments." + key + ".stats." + stat + ".lv");
-                            if (AccumulativeStatManager.getInstance().getSources().getOrDefault(stat, new HashSet<>()).stream()
-                                    .anyMatch(source -> source instanceof EvEAccumulativeStatSource)){
-                                if (AccumulativeStatManager.getInstance().getAttackerStatPossessiveMap().getOrDefault(stat, false)){
-                                    AccumulativeStatManager.getInstance().register(stat, new OffensiveEnchantmentStatSource(newEnchantment, base, lv));
-                                } else {
-                                    AccumulativeStatManager.getInstance().register(stat, new DefensiveEnchantmentStatSource(newEnchantment, base, lv));
-                                }
-                            } else {
-                                AccumulativeStatManager.getInstance().register(stat, new EnchantmentStatSource(newEnchantment, base, lv));
-                            }
-                        }
-                    }
-
-                    registered++;
-                    registerEnchant(newEnchantment);
-                }
-
-                EnchantsSquared.getPlugin().getServer().getLogger().info("ValhallaMMO enchantments loaded in! " + registered + " were registered.");
-            }
-        }
-    }
-
     public boolean doesItemHaveEnchants(ItemStack item){
         if (ItemUtils.isAirOrNull(item)) return false;
         ItemMeta meta = item.getItemMeta();
@@ -584,5 +535,58 @@ public class CustomEnchantManager {
 
     public BiMap<Integer, CustomEnchant> getAllEnchants() {
         return allEnchants;
+    }
+
+    /**
+     * Custom SC2 Method.
+     * Updates the PDC of an item to reflect its Lore Enchantments
+     * @param i The item to be updated
+     */
+    public void updateItem(ItemStack i) {
+        if (i == null) return;
+        setItemEnchants(i, getItemsEnchantsFromLore(i));
+    }
+
+    /**
+     * The legacy way of getting Enchantments.
+     * @param enchantedItem The item to get the enchantments from
+     * @return A map containing enchantments on the object as well as their levels. The method returns an empty HashMap
+     * if:
+     * - enchantedItem is null
+     * - enchantedItem's meta is null
+     * - enchantedItem does not have lore
+     * - enchantedItem's lore does not have a valid enchantment
+     */
+    public Map<CustomEnchant, Integer> getItemsEnchantsFromLore(ItemStack enchantedItem){
+        //The map is the custom enchant + its level, if the level is 0 the level is not displayed in the lore
+        //and has no real max level. ex: "Flight" rather than "Flight I"
+        Map<CustomEnchant, Integer> itemEnchants = new HashMap<>();
+        if (ItemUtils.isAirOrNull(enchantedItem)) return itemEnchants;
+        if (enchantedItem.getItemMeta() == null) return itemEnchants;
+        if (!enchantedItem.getItemMeta().hasLore()) return itemEnchants;
+
+        List<String> itemLore = enchantedItem.getItemMeta().getLore();
+
+        assert itemLore != null;
+        for (String l : itemLore) {
+            for (CustomEnchant e : getCompatibleEnchants(enchantedItem, GameMode.CREATIVE)){
+                if (l.matches(ChatColor.translateAlternateColorCodes('&', e.getDisplayEnchantment() + ".*"))) { // if the String contains the enchantment name w/o level
+                    Bukkit.getLogger().severe("Match found on Item material " + enchantedItem.getType() + " for enchantment " + e.getDisplayEnchantment());
+                    String[] splitLine = l.split(" ");
+                    if (splitLine.length == 1) { // Assume that the level is one
+                        itemEnchants.put(e, 1);
+                    } else if (isUsingRomanNumerals) { // The enchantment should have a roman numeral number
+                        int level = Utils.translateRomanToLevel(splitLine[splitLine.length - 1]);
+                        itemEnchants.put(e, level);
+                    } else { // The enchantment should have a number level
+                        int level = Integer.parseInt(splitLine[splitLine.length - 1]);
+                        itemEnchants.put(e, level);
+                    }
+                    break;
+                }
+            }
+        }
+
+        return itemEnchants;
     }
 }

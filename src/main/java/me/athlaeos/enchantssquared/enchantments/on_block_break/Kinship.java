@@ -7,7 +7,6 @@ import me.athlaeos.enchantssquared.enchantments.LevelService;
 import me.athlaeos.enchantssquared.enchantments.LevelsFromMainHandAndEquipment;
 import me.athlaeos.enchantssquared.utility.ItemUtils;
 import me.athlaeos.enchantssquared.utility.Utils;
-import me.athlaeos.valhallammo.managers.CustomDurabilityManager;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.LivingEntity;
@@ -191,10 +190,6 @@ public class Kinship extends CustomEnchant implements TriggerOnBlockBreakEnchant
         if (pickaxe.getItemMeta() instanceof Damageable && pickaxe.getType().getMaxDurability() > 0){
             PlayerItemDamageEvent event = new PlayerItemDamageEvent(e.getPlayer(), pickaxe, -durabilityToRepair);
             EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(event);
-            if (EnchantsSquared.isValhallaHooked()) {
-                // if ValhallaMMO is active, it handles custom durability itself
-                if (CustomDurabilityManager.getInstance().hasCustomDurability(pickaxe)) return;
-            }
             if (!event.isCancelled()){
                 Damageable toolMeta = (Damageable) pickaxe.getItemMeta();
                 toolMeta.setDamage(toolMeta.getDamage() + event.getDamage());

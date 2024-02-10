@@ -4,15 +4,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>me.athlaeos</groupId>
+    <groupId>world.sc2</groupId>
     <artifactId>enchantssquared</artifactId>
     <version>2.5</version>
     <packaging>jar</packaging>
 
     <name>EnchantsSquared</name>
 
-    <description>Now rewritten, EnchantsSquared is a plugin adding in many new enchantments with the intent to mimic
-        vanilla as closely as possible. With special ValhallaMMO integration!
+    <description>EnchantsSquared is a plugin written by Athlaeos adding in many new enchantments with the intent to mimic
+        vanilla as closely as possible. This version is a fork created by ChillyTheEevee to add features for SC2 Development
     </description>
     <properties>
         <java.version>1.8</java.version>
@@ -74,13 +74,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.14-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.20-R0.1-SNAPSHOT</version>
+            <version>1.19.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

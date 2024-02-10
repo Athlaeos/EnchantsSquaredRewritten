@@ -1,8 +1,6 @@
 package me.athlaeos.enchantssquared.domain;
 
-import me.athlaeos.enchantssquared.EnchantsSquared;
 import me.athlaeos.enchantssquared.utility.ItemUtils;
-import me.athlaeos.valhallatrinkets.TrinketsManager;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -42,9 +40,6 @@ public enum MaterialClassType {
     public static MaterialClassType getClass(ItemStack item) {
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return null;
-        if (EnchantsSquared.isTrinketsHooked()){
-            if (TrinketsManager.getInstance().getTrinketType(item) != null) return TRINKETS;
-        }
         for (MaterialClassType tc : MaterialClassType.values()) {
             if (tc.getMatches().contains(item.getType())) {
                 return tc;

@@ -217,7 +217,7 @@ public class PlaceTorch extends CustomEnchant implements TriggerOnInteractEnchan
                 }
                 PlayerItemDamageEvent damageEvent = new PlayerItemDamageEvent(e.getPlayer(), heldItem, damage);
                 EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(damageEvent);
-                if (!damageEvent.isCancelled() || EnchantsSquared.isValhallaHooked()){
+                if (!damageEvent.isCancelled()){
                     Damageable toolMeta = (Damageable) heldItem.getItemMeta();
                     toolMeta.setDamage(toolMeta.getDamage() + damage);
                     heldItem.setItemMeta(toolMeta);

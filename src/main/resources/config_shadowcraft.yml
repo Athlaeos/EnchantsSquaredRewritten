@@ -1,0 +1,12 @@
+# This config is for turning on and off SC2 Features specially programmed by Dan
+
+# Listeners
+
+enableLegacyEnchantmentUpdateOnRelog: false # If enabled, the server will attempt to update every item in a Player's
+# inventory from the legacy lore system to the new Persistent Data Container system every time that player joins. This
+# might be practical for quick development, but it would be pretty inefficient if left on during gameplay.
+
+# Commands
+
+enableUpdateEnchantmentsCommand: true # Enables the '/es update' command, which updates the player's held item from
+# the legacy lore system to the new Persistent Data Container system.

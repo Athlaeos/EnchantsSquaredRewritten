@@ -2,7 +2,6 @@ package me.athlaeos.enchantssquared.utility;
 
 import me.athlaeos.enchantssquared.EnchantsSquared;
 import me.athlaeos.enchantssquared.managers.EntityEquipmentCacheManager;
-import me.athlaeos.valhallammo.managers.CustomDurabilityManager;
 import org.bukkit.EntityEffect;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -84,10 +83,6 @@ public class ItemUtils {
             PlayerItemDamageEvent event = new PlayerItemDamageEvent(damager, i, damage);
             EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(event);
 
-            if (EnchantsSquared.isValhallaHooked()) {
-                // if ValhallaMMO is active, it handles custom durability itself
-                if (CustomDurabilityManager.getInstance().hasCustomDurability(i)) return false;
-            }
             if (!event.isCancelled()){
                 Damageable toolMeta = (Damageable) i.getItemMeta();
                 if (toolMeta == null) return false;

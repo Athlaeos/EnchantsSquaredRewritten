@@ -1,6 +1,5 @@
 package me.athlaeos.enchantssquared.enchantments.on_attack;
 
-import me.athlaeos.enchantssquared.EnchantsSquared;
 import me.athlaeos.enchantssquared.config.ConfigManager;
 import me.athlaeos.enchantssquared.domain.MaterialClassType;
 import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
@@ -9,7 +8,6 @@ import me.athlaeos.enchantssquared.enchantments.LevelsFromMainHandAndEquipment;
 import me.athlaeos.enchantssquared.enchantments.LevelsFromOffHandAndEquipment;
 import me.athlaeos.enchantssquared.utility.EntityUtils;
 import me.athlaeos.enchantssquared.utility.ItemUtils;
-import me.athlaeos.valhallammo.dom.ArmorType;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.LivingEntity;
@@ -53,16 +51,12 @@ public class Crushing extends CustomEnchant implements TriggerOnAttackEnchantmen
 
         double damage = damageBase + ((level - 1) * damageLv);
         int count = 0;
-        if (EnchantsSquared.isValhallaHooked()){
-            count = ArmorType.getArmorTypeCount(victim, ArmorType.HEAVY);
-        } else {
-            for (ItemStack i : EntityUtils.getEntityEquipment(victim, false, true, false).getIterable(false)){
+        for (ItemStack i : EntityUtils.getEntityEquipment(victim, false, true, false).getIterable(false)){
                 if (MaterialClassType.isArmor(i)) {
                     if (i.toString().contains("IRON_") || i.toString().contains("GOLD_") || i.toString().contains("NETHERITE_")){
                         count++;
                     }
                 }
-            }
         }
         double multiplier = 1 + ((count * damage) / 100D);
         e.setDamage(e.getDamage() * multiplier);
