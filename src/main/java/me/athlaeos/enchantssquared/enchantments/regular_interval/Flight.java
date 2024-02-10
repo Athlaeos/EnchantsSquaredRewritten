@@ -1,6 +1,7 @@
 package me.athlaeos.enchantssquared.enchantments.regular_interval;
 
 import me.athlaeos.enchantssquared.config.ConfigManager;
+import me.athlaeos.enchantssquared.domain.EntityEquipment;
 import me.athlaeos.enchantssquared.domain.MaterialClassType;
 import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
 import me.athlaeos.enchantssquared.enchantments.LevelService;
@@ -19,13 +20,14 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
 
-public class Flight extends CustomEnchant implements TriggerOnRegularIntervalsEnchantment {
+public class Flight extends CustomEnchant implements TriggerOnRegularIntervalsEnchantment, Listener {
     private final YamlConfiguration config;
     private final Collection<String> incompatibleVanillaEnchantments;
     private final Collection<String> incompatibleCustomEnchantments;
@@ -75,6 +77,8 @@ public class Flight extends CustomEnchant implements TriggerOnRegularIntervalsEn
         this.barStyle = style;
 
         this.icon = ItemUtils.getIconFromConfig(config, "enchantment_configuration.flight.icon", createIcon(Material.FEATHER));
+
+
     }
 
     private final LevelService levelService = new LevelsFromMainHandAndEquipment(this);
@@ -210,7 +214,7 @@ public class Flight extends CustomEnchant implements TriggerOnRegularIntervalsEn
         return 10;
     }
 
-    private final Set<UUID> playersWhoHadFlight = new HashSet<>();
+    private final Set<UUID> playersGivenFlight = new HashSet<>();
 
     @Override
     public void execute(Entity e, int level) {
@@ -226,7 +230,10 @@ public class Flight extends CustomEnchant implements TriggerOnRegularIntervalsEn
 //                p.setFlying(false);
 //            }
 //        } else {
-            p.setAllowFlight(true);
+            if (!p.getAllowFlight()){
+                playersGivenFlight.add(p.getUniqueId());
+                p.setAllowFlight(true);
+            }
 
             if (!allowFlightNaturally) {
                 EntityUtils.SlotEquipment firstFlightItem = EntityUtils.getFirstEquipmentItemStackWithEnchantment(EntityEquipmentCacheManager.getInstance().getAndCacheEquipment(p), this);
@@ -299,18 +306,30 @@ public class Flight extends CustomEnchant implements TriggerOnRegularIntervalsEn
         }
         // the following code runs regardless if the player has the enchantment or not, to later test if they're still supposed to fly
         if (allowFlightNaturally) return;
-        if (level > 0) {
-            playersWhoHadFlight.add(p.getUniqueId());
-            return;
-        }
-        if (playersWhoHadFlight.contains(p.getUniqueId())){
+        if (level <= 0 && playersGivenFlight.contains(p.getUniqueId())){
             // only if the player previously was allowed to fly, check if they're still allowed to fly
-            playersWhoHadFlight.remove(p.getUniqueId());
+            playersGivenFlight.remove(p.getUniqueId());
             p.setFlying(false);
             p.setAllowFlight(false);
         }
     }
 
+    @Override
+    public void onRemove(Entity e) {
+        if (!(e instanceof Player)) return;
+        Player p = (Player) e;
+        EntityEquipment cachedEquipment = EntityEquipmentCacheManager.getInstance().getAndCacheEquipment(p);
+        if (getLevelService(false, p).getLevel(cachedEquipment) > 0) return;
+        boolean allowFlightNaturally = p.getGameMode() == GameMode.CREATIVE || p.getGameMode() == GameMode.SPECTATOR
+                || p.hasPermission("essentials.fly");
+        if (allowFlightNaturally) return;
+        if (playersGivenFlight.contains(p.getUniqueId())){
+            // only if the player previously was allowed to fly, check if they're still allowed to fly
+            playersGivenFlight.remove(p.getUniqueId());
+            p.setFlying(false);
+            p.setAllowFlight(false);
+        }
+    }
 
     private String fuelBarBuilder(double fraction){
         int full = (int) Math.floor(fraction * 40D);

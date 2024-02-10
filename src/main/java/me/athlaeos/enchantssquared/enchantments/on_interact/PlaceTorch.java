@@ -8,6 +8,7 @@ import me.athlaeos.enchantssquared.enchantments.LevelsFromMainHandOnly;
 import me.athlaeos.enchantssquared.managers.CooldownManager;
 import me.athlaeos.enchantssquared.utility.ItemUtils;
 import me.athlaeos.enchantssquared.utility.Utils;
+import org.bukkit.EntityEffect;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -220,7 +221,10 @@ public class PlaceTorch extends CustomEnchant implements TriggerOnInteractEnchan
                 if (!damageEvent.isCancelled()){
                     Damageable toolMeta = (Damageable) heldItem.getItemMeta();
                     toolMeta.setDamage(toolMeta.getDamage() + damage);
-                    heldItem.setItemMeta(toolMeta);
+                    if (toolMeta.getDamage() >= heldItem.getType().getMaxDurability()) {
+                        e.getPlayer().getInventory().setItemInMainHand(null);
+                        e.getPlayer().playEffect(EntityEffect.BREAK_EQUIPMENT_MAIN_HAND);
+                    } else heldItem.setItemMeta(toolMeta);
                 }
             }
         }

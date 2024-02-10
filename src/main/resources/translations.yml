@@ -56,8 +56,6 @@ equipment_translations:
   ALL: "Everything"
   TRINKETS: "Accessories"
 
-
-
 # Warning when player attempts to combine items, but the item would have too many enchants as a result
 warning_allowed_enchants_exceeded: "&cYou've exceeded the allowed amount of enchants: 5"
 # (1.14+) Warning when player clears items enchants with grindstone

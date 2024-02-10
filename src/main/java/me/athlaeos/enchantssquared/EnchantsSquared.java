@@ -3,6 +3,7 @@ package me.athlaeos.enchantssquared;
 import me.athlaeos.enchantssquared.commands.CommandManager;
 import me.athlaeos.enchantssquared.config.ConfigManager;
 import me.athlaeos.enchantssquared.config.ConfigUpdater;
+import me.athlaeos.enchantssquared.domain.MinecraftVersion;
 import me.athlaeos.enchantssquared.domain.Version;
 import me.athlaeos.enchantssquared.enchantments.CosmeticGlintEnchantment;
 import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
@@ -91,7 +92,7 @@ public final class EnchantsSquared extends JavaPlugin {
 
         grindstonesEnabled = ConfigManager.getInstance().getConfig("config.yml").get().getBoolean("allow_grindstone_removal", true);
         CommandManager.getInstance();
-        CosmeticGlintEnchantment.register();
+        if (MinecraftVersion.currentVersionOlderThan(MinecraftVersion.MINECRAFT_1_19)) CosmeticGlintEnchantment.register();
 
         // Register listeners
 
@@ -111,6 +112,9 @@ public final class EnchantsSquared extends JavaPlugin {
         itemDamageListener = registerListener(new ItemDamageListener());
         projectileListener = registerListener(new ProjectileListener());
         registerListener(new HandSwitchListener());
+        registerListener(new LeaveJoinListener());
+        registerListener(new ArmorSwitchListener());
+        registerListener(new MovementListener());
 
         // Register shadowcraft listeners
         shadowcraftPlayerJoinListener = registerListener(new PlayerJoinListener());

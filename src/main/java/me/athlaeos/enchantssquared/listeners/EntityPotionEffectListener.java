@@ -27,7 +27,7 @@ public class EntityPotionEffectListener implements Listener {
                 EntityEquipment equipment = EntityEquipmentCacheManager.getInstance().getAndCacheEquipment(affected);
 
                 for (CustomEnchant enchantment : CustomEnchantManager.getInstance().getEnchantmentsMatchingFilter(c -> c instanceof TriggerOnPotionEffectEnchantment)){
-                    ((TriggerOnPotionEffectEnchantment) enchantment).onPotionEffect(e, enchantment.getLevelService(false, affected).getLevel(equipment));
+                    ((TriggerOnPotionEffectEnchantment) enchantment).onPotionEffect(e, enchantment.getLevelService(true, affected).getLevel(equipment));
                 }
             }
         }

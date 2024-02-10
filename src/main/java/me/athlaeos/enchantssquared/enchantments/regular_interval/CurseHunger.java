@@ -113,6 +113,11 @@ public class CurseHunger extends CustomEnchant implements TriggerOnRegularInterv
     }
 
     @Override
+    public boolean isCurse() {
+        return true;
+    }
+
+    @Override
     public boolean isTradingEnabled() {
         return config.getBoolean("enchantment_configuration.curse_hunger.trade_enabled");
     }

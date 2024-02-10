@@ -6,6 +6,7 @@ import me.athlaeos.enchantssquared.EnchantsSquared;
 import me.athlaeos.enchantssquared.config.ConfigManager;
 import me.athlaeos.enchantssquared.domain.AnvilCombinationResult;
 import me.athlaeos.enchantssquared.domain.MaterialClassType;
+import me.athlaeos.enchantssquared.domain.MinecraftVersion;
 import me.athlaeos.enchantssquared.enchantments.CosmeticGlintEnchantment;
 import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
 import me.athlaeos.enchantssquared.enchantments.on_attack.*;
@@ -162,7 +163,7 @@ public class CustomEnchantManager {
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return;
         if (enchantments.isEmpty()){
-            item.removeEnchantment(CosmeticGlintEnchantment.getEnchantsSquaredGlint());
+            if (MinecraftVersion.currentVersionOlderThan(MinecraftVersion.MINECRAFT_1_19)) item.removeEnchantment(CosmeticGlintEnchantment.getEnchantsSquaredGlint());
             if (meta.getPersistentDataContainer().has(enchantmentsKey, PersistentDataType.STRING)){
                 meta.getPersistentDataContainer().remove(enchantmentsKey);
                 item.setItemMeta(meta);
@@ -171,7 +172,7 @@ public class CustomEnchantManager {
         } else {
             if (item.getType() == Material.BOOK) item.setType(Material.ENCHANTED_BOOK);
 
-            if (enableCosmeticGlint){
+            if (enableCosmeticGlint && MinecraftVersion.currentVersionOlderThan(MinecraftVersion.MINECRAFT_1_19)){
                 item.addUnsafeEnchantment(CosmeticGlintEnchantment.getEnchantsSquaredGlint(), 1);
             }
             //updating PersistentDataContainer to be accurate with enchantments
@@ -229,21 +230,21 @@ public class CustomEnchantManager {
             if (!enchantments.isEmpty() && enableCosmeticGlint){
                 if (meta instanceof EnchantmentStorageMeta){
                     EnchantmentStorageMeta storageMeta = (EnchantmentStorageMeta) meta;
-                    storageMeta.addStoredEnchant(CosmeticGlintEnchantment.getEnchantsSquaredGlint(), 1, true);
+                    if (MinecraftVersion.currentVersionOlderThan(MinecraftVersion.MINECRAFT_1_19)) storageMeta.addStoredEnchant(CosmeticGlintEnchantment.getEnchantsSquaredGlint(), 1, true);
                     storageMeta.setLore(finalLore);
                     i.setItemMeta(storageMeta);
                     return;
-                } else {
+                } else if (MinecraftVersion.currentVersionOlderThan(MinecraftVersion.MINECRAFT_1_19)){
                     i.addUnsafeEnchantment(CosmeticGlintEnchantment.getEnchantsSquaredGlint(), 1);
                 }
             } else {
                 if (meta instanceof EnchantmentStorageMeta){
                     EnchantmentStorageMeta storageMeta = (EnchantmentStorageMeta) meta;
-                    storageMeta.removeStoredEnchant(CosmeticGlintEnchantment.getEnchantsSquaredGlint());
+                    if (MinecraftVersion.currentVersionOlderThan(MinecraftVersion.MINECRAFT_1_19)) storageMeta.removeStoredEnchant(CosmeticGlintEnchantment.getEnchantsSquaredGlint());
                     storageMeta.setLore(finalLore);
                     i.setItemMeta(storageMeta);
                     return;
-                } else {
+                } else if (MinecraftVersion.currentVersionOlderThan(MinecraftVersion.MINECRAFT_1_19)) {
                     i.removeEnchantment(CosmeticGlintEnchantment.getEnchantsSquaredGlint());
                 }
             }

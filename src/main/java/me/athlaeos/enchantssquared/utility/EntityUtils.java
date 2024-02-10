@@ -9,6 +9,7 @@ import me.athlaeos.enchantssquared.enchantments.regular_interval.TriggerOnRegula
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.managers.RegularIntervalEnchantmentClockManager;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
@@ -50,6 +51,8 @@ public class EntityUtils {
                 if (
                         !ItemUtils.isAirOrNull(equipment.getMainHand()) &&
                         !MaterialClassType.isArmor(equipment.getMainHand()) &&
+                        equipment.getMainHand().getType() != Material.BOOK &&
+                        equipment.getMainHand().getType() != Material.ENCHANTED_BOOK &&
                         MaterialClassType.getClass(equipment.getMainHand()) != MaterialClassType.TRINKETS
                 ){
                     equipment.setMainHandEnchantments(CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(equipment.getMainHand()));
@@ -58,13 +61,14 @@ public class EntityUtils {
                 if (
                         !ItemUtils.isAirOrNull(equipment.getOffHand()) &&
                         !MaterialClassType.isArmor(equipment.getOffHand()) &&
+                        equipment.getMainHand().getType() != Material.BOOK &&
+                        equipment.getMainHand().getType() != Material.ENCHANTED_BOOK &&
                         MaterialClassType.getClass(equipment.getOffHand()) != MaterialClassType.TRINKETS
                 ){
                     equipment.setOffHandEnchantments(CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(equipment.getOffHand()));
                     if (!included && equipment.getOffHandEnchantments().keySet().stream().anyMatch(en -> en instanceof TriggerOnRegularIntervalsEnchantment)) included = include(e.getUniqueId());
                 }
             }
-            if (!included) RegularIntervalEnchantmentClockManager.excludePlayerFromClock(e.getUniqueId());
         }
         return equipment;
     }
@@ -77,14 +81,13 @@ public class EntityUtils {
                 equipment.setChestplate(e.getEquipment().getChestplate());
                 equipment.setLeggings(e.getEquipment().getLeggings());
                 equipment.setBoots(e.getEquipment().getBoots());
-
                 if (getEnchantments && equipment.getHelmet() != null) equipment.setHelmetEnchantments(CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(equipment.getHelmet()));
                 if (equipment.getHelmetEnchantments().keySet().stream().anyMatch(en -> en instanceof TriggerOnRegularIntervalsEnchantment)) included = include(e.getUniqueId());
-                if (getEnchantments && equipment.getChestplate() != null) equipment.setChestplateEnchantments(CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(equipment.getHelmet()));
+                if (getEnchantments && equipment.getChestplate() != null) equipment.setChestplateEnchantments(CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(equipment.getChestplate()));
                 if (equipment.getChestplateEnchantments().keySet().stream().anyMatch(en -> en instanceof TriggerOnRegularIntervalsEnchantment)) included = include(e.getUniqueId());
-                if (getEnchantments && equipment.getLeggings() != null) equipment.setLeggingsEnchantments(CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(equipment.getHelmet()));
+                if (getEnchantments && equipment.getLeggings() != null) equipment.setLeggingsEnchantments(CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(equipment.getLeggings()));
                 if (equipment.getLeggingsEnchantments().keySet().stream().anyMatch(en -> en instanceof TriggerOnRegularIntervalsEnchantment)) included = include(e.getUniqueId());
-                if (getEnchantments && equipment.getBoots() != null) equipment.setBootsEnchantments(CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(equipment.getHelmet()));
+                if (getEnchantments && equipment.getBoots() != null) equipment.setBootsEnchantments(CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(equipment.getBoots()));
                 if (equipment.getBootsEnchantments().keySet().stream().anyMatch(en -> en instanceof TriggerOnRegularIntervalsEnchantment)) included = include(e.getUniqueId());
             }
             if (getHands){
@@ -95,7 +98,7 @@ public class EntityUtils {
                         MaterialClassType.getClass(equipment.getMainHand()) != MaterialClassType.TRINKETS
                 ) {
                     equipment.setMainHandEnchantments(CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(equipment.getMainHand()));
-                    if (!included && equipment.getOffHandEnchantments().keySet().stream().anyMatch(en -> en instanceof TriggerOnRegularIntervalsEnchantment)) included = include(e.getUniqueId());
+                    if (!included && equipment.getMainHandEnchantments().keySet().stream().anyMatch(en -> en instanceof TriggerOnRegularIntervalsEnchantment)) included = include(e.getUniqueId());
                 }
 
                 if (getEnchantments && equipment.getOffHand() != null &&
@@ -106,7 +109,13 @@ public class EntityUtils {
                     if (!included && equipment.getOffHandEnchantments().keySet().stream().anyMatch(en -> en instanceof TriggerOnRegularIntervalsEnchantment)) included = include(e.getUniqueId());
                 }
             }
-            if (!included) RegularIntervalEnchantmentClockManager.excludePlayerFromClock(e.getUniqueId());
+            if (!included) {
+                RegularIntervalEnchantmentClockManager.excludePlayerFromClock(e.getUniqueId());
+                EnchantsSquared.getPlugin().getServer().getScheduler().runTaskLater(EnchantsSquared.getPlugin(), () ->
+                        CustomEnchantManager.getInstance().getAllEnchants().values().stream()
+                                .filter(ce -> ce instanceof TriggerOnRegularIntervalsEnchantment)
+                                .forEach(ce -> ((TriggerOnRegularIntervalsEnchantment) ce).onRemove(e)), 5L);
+            }
         }
 
         return equipment;

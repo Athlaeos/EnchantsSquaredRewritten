@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -56,7 +57,8 @@ public class AOEArrows extends CustomEnchant implements TriggerOnAttackEnchantme
     @Override
     public void onAttack(EntityDamageByEntityEvent e, int level, LivingEntity realAttacker) {
         LivingEntity victim = (LivingEntity) e.getEntity();
-        if (ignoreArrows.contains(e.getDamager().getUniqueId()) || shouldEnchantmentCancel(level, realAttacker, victim.getLocation())) return;
+        if (ignoreArrows.contains(e.getDamager().getUniqueId()) || shouldEnchantmentCancel(level, realAttacker, victim.getLocation())
+        || e.getDamager() instanceof LivingEntity) return;
 
         double finalRadius = this.radius_base + ((level - 1) * radius_lv);
         double finalDamage = this.aoe_damage_base + ((level - 1) * aoe_damage_lv);

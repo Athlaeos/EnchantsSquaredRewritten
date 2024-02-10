@@ -13,6 +13,7 @@ fortune_ignored: # These drops aren't affected by fortune, and so will always dr
   ANCIENT_DEBRIS: NETHERITE_SCRAP
   QUARTZ_BLOCK: SMOOTH_QUARTZ
   CLAY: TERRACOTTA
+  CLAY_BALL: BRICK
   ACACIA_WOOD: CHARCOAL
   OAK_WOOD: CHARCOAL
   DARK_OAK_WOOD: CHARCOAL

@@ -1,6 +1,7 @@
 package me.athlaeos.enchantssquared.enchantments;
 
 import me.athlaeos.enchantssquared.EnchantsSquared;
+import me.athlaeos.enchantssquared.domain.MinecraftVersion;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
@@ -12,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class CosmeticGlintEnchantment extends Enchantment {
     private static final NamespacedKey enchantmentKey = new NamespacedKey(EnchantsSquared.getPlugin(), "glint_enchantment");
-    private static final CosmeticGlintEnchantment ENCHANTSSQUARED_GLINT = new CosmeticGlintEnchantment();
+    private static final CosmeticGlintEnchantment ENCHANTSSQUARED_GLINT = MinecraftVersion.currentVersionOlderThan(MinecraftVersion.MINECRAFT_1_19) ? new CosmeticGlintEnchantment() : null;
 
     public CosmeticGlintEnchantment() {
         super(enchantmentKey);

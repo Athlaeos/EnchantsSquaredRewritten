@@ -1,5 +1,5 @@
 name: EnchantsSquared
-version: '2.5.7'
+version: '2.5.9'
 main: me.athlaeos.enchantssquared.EnchantsSquared
 api-version: 1.14
 website: https://discord.gg/dUwtmYV
@@ -12,9 +12,6 @@ commands:
   enchantssquared:
     description: base command for Enchants Squared command
     aliases: [es]
-  esanvil:
-    description: allows bedrock users to combine custom enchantments on items, at a higher level cost
-    aliases: [ea]
 
 permissions:
   es.reload:
@@ -27,10 +24,10 @@ permissions:
     default: op
     description: When using an enchant that normally has a cooldown, it will not go on cooldown
   es.list:
-    default: op
+    default: true
     description: Permission to use the /es help command
   es.menu:
-    default: op
+    default: true
     description: Permission to use the /es menu command
   es.noregionrestrictions:
     default: op
