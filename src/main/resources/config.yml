@@ -173,7 +173,7 @@ enchantment_configuration:
       - excavation
 
   rejuvenation:
-    description: '&8> Slowly regenerates durability while moving'
+    description: '&8> Slowly regenerates durability'
     enchant_name: '&7Rejuvenation %lv_roman%' # For enchantments that have a max level higher than 0 you can use either
     # %lv_roman% for roman numeral levels or %lv_number% for regular number levels, if you prefer lame virgin arabic numbers over epic chad roman numerals
     enabled: true

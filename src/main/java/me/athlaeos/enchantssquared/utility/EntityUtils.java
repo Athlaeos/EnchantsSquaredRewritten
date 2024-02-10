@@ -129,6 +129,8 @@ public class EntityUtils {
                 equipment.setOffHand(e.getEquipment().getItemInOffHand());
                 if (getEnchantments && equipment.getMainHand() != null &&
                         !MaterialClassType.isArmor(equipment.getMainHand()) &&
+                        equipment.getMainHand().getType() != Material.BOOK &&
+                        equipment.getMainHand().getType() != Material.ENCHANTED_BOOK &&
                         MaterialClassType.getClass(equipment.getMainHand()) != MaterialClassType.TRINKETS
                 ) {
                     equipment.setMainHandEnchantments(CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(equipment.getMainHand()));
@@ -137,6 +139,8 @@ public class EntityUtils {
 
                 if (getEnchantments && equipment.getOffHand() != null &&
                         !MaterialClassType.isArmor(equipment.getOffHand()) &&
+                        equipment.getMainHand().getType() != Material.BOOK &&
+                        equipment.getMainHand().getType() != Material.ENCHANTED_BOOK &&
                         MaterialClassType.getClass(equipment.getOffHand()) != MaterialClassType.TRINKETS
                 ) {
                     equipment.setOffHandEnchantments(CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(equipment.getOffHand()));

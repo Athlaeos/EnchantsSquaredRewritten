@@ -60,6 +60,7 @@ public final class EnchantsSquared extends JavaPlugin {
         if (valhallaHooked){
             this.getLogger().info("ValhallaMMO hooked! Adding a bunch of cool stuff.");
             saveConfig("config_valhallammo.yml");
+            CustomEnchantManager.getInstance().registerValhallaEnchantments();
         }
         worldGuardHooked = hasPlugin("WorldGuard");
         if (worldGuardHooked){
