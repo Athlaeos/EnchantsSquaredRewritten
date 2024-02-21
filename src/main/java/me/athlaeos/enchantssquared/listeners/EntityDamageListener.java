@@ -7,11 +7,13 @@ import me.athlaeos.enchantssquared.domain.MaterialClassType;
 import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
 import me.athlaeos.enchantssquared.enchantments.on_attack.TriggerOnAttackEnchantment;
 import me.athlaeos.enchantssquared.enchantments.on_attacked.TriggerOnAttackedEnchantment;
+import me.athlaeos.enchantssquared.hooks.WorldGuardHook;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.managers.EntityEquipmentCacheManager;
 import me.athlaeos.enchantssquared.utility.EntityUtils;
 import me.athlaeos.enchantssquared.utility.ItemUtils;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Trident;
 import org.bukkit.event.EventHandler;
@@ -27,11 +29,13 @@ public class EntityDamageListener implements Listener {
 
     }
 
-    @EventHandler(priority = EventPriority.NORMAL)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onEntityDamagedByEntity(EntityDamageByEntityEvent e){
+        if (e.getDamager() instanceof Player && e.getEntity() instanceof Player &&
+                EnchantsSquared.isWorldGuardHooked() && WorldGuardHook.getHook().isPVPDenied((Player) e.getDamager())) return;
         // Listener may only proceed if event is not cancelled, if the attacked entity is a living entity, and if this entity isn't
         // an unalive entity such as ARMOR_STAND
-        if (!e.isCancelled() &&
+        if (!e.isCancelled() && e.getDamage() > 0 &&
                 e.getEntity() instanceof LivingEntity &&
                 !EntityClassificationType.isMatchingClassification(e.getEntity().getType(), EntityClassificationType.UNALIVE)){
             LivingEntity victim = (LivingEntity) e.getEntity();

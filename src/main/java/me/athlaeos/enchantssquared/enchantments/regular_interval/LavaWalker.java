@@ -71,7 +71,7 @@ public class LavaWalker extends CustomEnchant implements TriggerOnRegularInterva
         if (duration > 0){
             EnchantsSquared.getPlugin().getServer().getScheduler().runTaskTimer(EnchantsSquared.getPlugin(), () ->
                             new HashMap<>(convertedBlocks).entrySet().stream()
-                                    .filter(e -> e.getValue() + duration >= System.currentTimeMillis())
+                                    .filter(e -> e.getValue() + duration < System.currentTimeMillis())
                                     .forEach(e -> {
                                         e.getKey().setType(Material.LAVA);
                                         convertedBlocks.remove(e.getKey());
@@ -197,7 +197,7 @@ public class LavaWalker extends CustomEnchant implements TriggerOnRegularInterva
 
     @Override
     public long getInterval() {
-        return 5;
+        return 3;
     }
 
     @Override
@@ -213,8 +213,8 @@ public class LavaWalker extends CustomEnchant implements TriggerOnRegularInterva
         int lavaWalkerLevel = iterable.getOrDefault(i, new HashMap<>()).getOrDefault(this, 0);
         if (lavaWalkerLevel > 0){
             Collection<Block> blocksToReplace = BlockUtils.getBlocksInArea(
-                    e.getLocation().add(-(lavaWalkerLevel - 1), -0.2, -(lavaWalkerLevel - 1)),
-                    e.getLocation().add((lavaWalkerLevel - 1), -0.2, (lavaWalkerLevel - 1)))
+                    e.getLocation().add(-(lavaWalkerLevel - 1), -0.8, -(lavaWalkerLevel - 1)),
+                    e.getLocation().add((lavaWalkerLevel - 1), -0.8, (lavaWalkerLevel - 1)))
                     .stream().map(Location::getBlock)
                     .filter(b -> {
                         if (b.getType() == Material.LAVA && b.getBlockData() instanceof Levelled){

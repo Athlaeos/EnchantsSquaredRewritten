@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 public class BlockUtils {
     public static Collection<Location> getBlocksInArea(Location loc1, Location loc2){
         Collection<Location> blocks = new HashSet<>();
-        if (loc1.getWorld() == null) return blocks;
 
         int topBlockX = Math.max(loc1.getBlockX(), loc2.getBlockX());
         int bottomBlockX = Math.min(loc1.getBlockX(), loc2.getBlockX());
@@ -35,14 +34,30 @@ public class BlockUtils {
         for(int x = bottomBlockX; x <= topBlockX; x++) {
             for(int z = bottomBlockZ; z <= topBlockZ; z++) {
                 for(int y = bottomBlockY; y <= topBlockY; y++) {
-                    Location l = new Location(loc1.getWorld(), x, y, z);
-                    if (!loc1.getWorld().getBlockAt(l).getType().toString().contains("AIR")){
-                        blocks.add(l);
-                    }
+                    blocks.add(new Location(null, x, y, z));
                 }
             }
         }
         return blocks;
+    }
+
+    public static int[][] getOffsetsBetweenPoints(int[] offset1, int[] offset2){
+        int xOff = Math.abs(offset1[0] - offset2[0]) + 1;
+        int yOff = Math.abs(offset1[1] - offset2[1]) + 1;
+        int zOff = Math.abs(offset1[2] - offset2[2]) + 1;
+        int arraySize = Math.abs(xOff) * Math.abs(yOff) * Math.abs(zOff);
+        int[][] offsets = new int[arraySize][3];
+        int index = 0;
+        for (int x = offset1[0]; x <= offset2[0]; x++){
+            for (int y = offset1[1]; y <= offset2[1]; y++){
+                for (int z = offset1[2]; z <= offset2[2]; z++){
+                    offsets[index] = new int[]{x, y, z};
+                    index++;
+                }
+            }
+        }
+
+        return offsets;
     }
 
     public static void breakBlock(Player player, Block block){

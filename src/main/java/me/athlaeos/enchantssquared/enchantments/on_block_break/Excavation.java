@@ -71,44 +71,51 @@ public class Excavation extends CustomEnchant implements TriggerOnBlockBreakEnch
         }
     }
 
-    private Collection<Location> getExcavationPattern(Location originalSpot, BlockFace face, int type){
+    private final Map<BlockFace, Map<Integer, Collection<Location>>> patternCache = new HashMap<>();
+
+    private Collection<Location> getExcavationPattern(BlockFace face, int type){
+        if (patternCache.containsKey(face) && patternCache.get(face).containsKey(type))
+            return patternCache.get(face).get(type);
         Collection<Location> pattern = new HashSet<>();
         switch(type){
             case 1: {
-                pattern.add(originalSpot);
-                pattern.add(originalSpot.clone().add(0, -1, 0));
+                pattern.add(new Location(null, 0, 0, 0));
+                pattern.add(new Location(null, 0, -1, 0));
                 break;
             }
             case 2: {
                 if (face == BlockFace.NORTH || face == BlockFace.SOUTH) {
-                    pattern.add(originalSpot.clone().add(0, 1, 0));
-                    pattern.add(originalSpot.clone().add(0, -1, 0));
-                    pattern.add(originalSpot.clone().add(1, 0, 0));
-                    pattern.add(originalSpot.clone().add(-1, 0, 0));
+                    pattern.add(new Location(null, 0, 1, 0));
+                    pattern.add(new Location(null, 0, -1, 0));
+                    pattern.add(new Location(null, 1, 0, 0));
+                    pattern.add(new Location(null, -1, 0, 0));
                 } else if (face == BlockFace.EAST || face == BlockFace.WEST) {
-                    pattern.add(originalSpot.clone().add(0, 1, 0));
-                    pattern.add(originalSpot.clone().add(0, -1, 0));
-                    pattern.add(originalSpot.clone().add(0, 0, 1));
-                    pattern.add(originalSpot.clone().add(0, 0, -1));
+                    pattern.add(new Location(null, 0, 1, 0));
+                    pattern.add(new Location(null, 0, -1, 0));
+                    pattern.add(new Location(null, 0, 0, 1));
+                    pattern.add(new Location(null, 0, 0, -1));
                 } else if (face == BlockFace.UP || face == BlockFace.DOWN) {
-                    pattern.add(originalSpot.clone().add(0, 0, 1));
-                    pattern.add(originalSpot.clone().add(0, 0, -1));
-                    pattern.add(originalSpot.clone().add(1, 0, 0));
-                    pattern.add(originalSpot.clone().add(-1, 0, 0));
+                    pattern.add(new Location(null, 0, 0, 1));
+                    pattern.add(new Location(null, 0, 0, -1));
+                    pattern.add(new Location(null, 1, 0, 0));
+                    pattern.add(new Location(null, -1, 0, 0));
                 }
-                pattern.add(originalSpot);
+                pattern.add(new Location(null, 0, 0, 0));
                 break;
             }
             default: {
                 if (face == BlockFace.NORTH || face == BlockFace.SOUTH) {
-                    pattern.addAll(BlockUtils.getBlocksInArea(originalSpot.clone().add(type - 2, type - 2, 0), originalSpot.clone().add(-(type - 2), -(type - 2), 0)));
+                    pattern.addAll(BlockUtils.getBlocksInArea(new Location(null, type - 2, type - 2, 0), new Location(null, -(type - 2), -(type - 2), 0)));
                 } else if (face == BlockFace.EAST || face == BlockFace.WEST) {
-                    pattern.addAll(BlockUtils.getBlocksInArea(originalSpot.clone().add(0, type - 2, type - 2), originalSpot.clone().add(0, -(type - 2), -(type - 2))));
+                    pattern.addAll(BlockUtils.getBlocksInArea(new Location(null, 0, type - 2, type - 2), new Location(null, 0, -(type - 2), -(type - 2))));
                 } else if (face == BlockFace.UP || face == BlockFace.DOWN) {
-                    pattern.addAll(BlockUtils.getBlocksInArea(originalSpot.clone().add(type - 2, 0, type - 2), originalSpot.clone().add(-(type - 2), 0, -(type - 2))));
+                    pattern.addAll(BlockUtils.getBlocksInArea(new Location(null, type - 2, 0, type - 2), new Location(null, -(type - 2), 0, -(type - 2))));
                 }
             }
         }
+        Map<Integer, Collection<Location>> locations = patternCache.getOrDefault(face, new HashMap<>());
+        locations.put(type, pattern);
+        patternCache.put(face, locations);
         return pattern;
     }
 
@@ -235,6 +242,7 @@ public class Excavation extends CustomEnchant implements TriggerOnBlockBreakEnch
     private final Map<UUID, BlockFace> blockFaceMap = new HashMap<>();
     private final Map<UUID, Double> excavatingPlayers = new HashMap<>(); // this map is used to track when players are using
     // excavation, and should take the double value as fraction item durability damage while doing so
+
     @Override
     public void onBlockBreak(BlockBreakEvent e, int level) {
         if (shouldEnchantmentCancel(level, e.getPlayer(), e.getBlock().getLocation())) return;
@@ -244,20 +252,22 @@ public class Excavation extends CustomEnchant implements TriggerOnBlockBreakEnch
         if (!breakableBlocks.contains(e.getBlock().getType()) || excavatingPlayers.containsKey(e.getPlayer().getUniqueId())) return; // not a breakable block, do nothing
         BlockFace face = blockFaceMap.get(e.getPlayer().getUniqueId());
         if (face != null) {
-            Collection<Location> blocksToBreak = getExcavationPattern(e.getBlock().getLocation(), face, areaLeveling ? level : 3);
+            Collection<Location> blocksToBreak = getExcavationPattern(face, areaLeveling ? level : 3);
             double durabilityFraction = durabilityLeveling ? (durabilityMultiplier + ((level - 1) * durabilityMultiplierLv)) : durabilityMultiplier;
 
             if (!blocksToBreak.isEmpty()){
                 blockFaceMap.remove(e.getPlayer().getUniqueId());
                 excavatingPlayers.put(e.getPlayer().getUniqueId(), durabilityFraction);
                 e.setCancelled(true);
+                Location o = e.getBlock().getLocation();
                 for (Location l : blocksToBreak){
                     if (!EnchantsSquared.isWorldGuardAllowed(e.getPlayer(), l, getWorldGuardFlagName())) continue;
-                    if (breakableBlocks.contains(e.getPlayer().getWorld().getBlockAt(l).getType())){
+                    Location offset = o.clone().add(l.getBlockX(), l.getBlockY(), l.getBlockZ());
+                    if (breakableBlocks.contains(e.getPlayer().getWorld().getBlockAt(offset).getType())){
                         if (e.getPlayer().getGameMode() == GameMode.CREATIVE)
-                            e.getPlayer().getWorld().getBlockAt(l).setType(Material.AIR);
+                            e.getPlayer().getWorld().getBlockAt(offset).setType(Material.AIR);
                         else
-                            BlockUtils.breakBlock(e.getPlayer(), e.getPlayer().getWorld().getBlockAt(l));
+                            BlockUtils.breakBlock(e.getPlayer(), e.getPlayer().getWorld().getBlockAt(offset));
                     }
                 }
                 excavatingPlayers.remove(e.getPlayer().getUniqueId());
