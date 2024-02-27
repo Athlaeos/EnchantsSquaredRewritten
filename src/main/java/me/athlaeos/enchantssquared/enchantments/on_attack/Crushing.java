@@ -9,7 +9,7 @@ import me.athlaeos.enchantssquared.enchantments.LevelsFromMainHandAndEquipment;
 import me.athlaeos.enchantssquared.enchantments.LevelsFromOffHandAndEquipment;
 import me.athlaeos.enchantssquared.utility.EntityUtils;
 import me.athlaeos.enchantssquared.utility.ItemUtils;
-import me.athlaeos.valhallammo.dom.ArmorType;
+import me.athlaeos.valhallammo.playerstats.EntityCache;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.LivingEntity;
@@ -54,7 +54,7 @@ public class Crushing extends CustomEnchant implements TriggerOnAttackEnchantmen
         double damage = damageBase + ((level - 1) * damageLv);
         int count = 0;
         if (EnchantsSquared.isValhallaHooked()){
-            count = ArmorType.getArmorTypeCount(victim, ArmorType.HEAVY);
+            count = EntityCache.getAndCacheProperties(victim).getHeavyArmorCount();
         } else {
             for (ItemStack i : EntityUtils.getEntityEquipment(victim, false, true, false).getIterable(false)){
                 if (MaterialClassType.isArmor(i)) {

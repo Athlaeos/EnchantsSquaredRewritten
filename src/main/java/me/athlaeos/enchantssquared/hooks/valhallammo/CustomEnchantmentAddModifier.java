@@ -3,52 +3,111 @@ package me.athlaeos.enchantssquared.hooks.valhallammo;
 import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.valhallammo.crafting.dynamicitemmodifiers.DynamicItemModifier;
-import me.athlaeos.valhallammo.crafting.dynamicitemmodifiers.ModifierCategory;
-import me.athlaeos.valhallammo.crafting.dynamicitemmodifiers.ModifierPriority;
+import me.athlaeos.valhallammo.crafting.dynamicitemmodifiers.ModifierCategoryRegistry;
+import me.athlaeos.valhallammo.item.ItemBuilder;
+import me.athlaeos.valhallammo.utility.ItemUtils;
+import me.athlaeos.valhallammo.utility.StringUtils;
 import me.athlaeos.valhallammo.utility.Utils;
+import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.*;
+
 public class CustomEnchantmentAddModifier extends DynamicItemModifier {
-    private final CustomEnchant enchantment;
+    private final String enchantment;
+    private int level = 1;
 
     public CustomEnchantmentAddModifier(CustomEnchant enchantment) {
-        super("enchantssquared_add_enchantment_" + enchantment.getType().toLowerCase(), 0, ModifierPriority.NEUTRAL);
-        this.enchantment = enchantment;
-
-        this.category = ModifierCategory.CUSTOM_ENCHANTMENTS;
-
-        this.bigStepDecrease = 3D;
-        this.bigStepIncrease = 3D;
-        this.smallStepDecrease = 1D;
-        this.smallStepIncrease = 1D;
-        this.defaultStrength = 1;
-        this.minStrength = 0;
-        this.maxStrength = Integer.MAX_VALUE;
-        this.description = Utils.chat("&7Adds the &e" + enchantment.getDisplayEnchantment() + " &7enchantment from &dEnchantsSquared &7to the item. " +
-                "Enchantment is cancelled if item already has this enchantment. If a level of 0 is chosen, the enchantment is removed instead. ");
-        this.displayName = Utils.chat("&dAdd EnchantsSquared Enchantment: " + enchantment.getDisplayEnchantment());
-        this.icon = enchantment.getIcon().getType();
+        super("enchantssquared_add_enchantment_" + enchantment.getType().toLowerCase());
+        this.enchantment = enchantment.getType();
     }
 
     @Override
-    public ItemStack processItem(Player player, ItemStack itemStack, int i) {
-        if (strength > 0){
-            if (CustomEnchantManager.getInstance().getEnchantStrength(itemStack, enchantment.getType()) == 0){
-                CustomEnchantManager.getInstance().addEnchant(itemStack, enchantment.getType(), (int) strength);
-            } else return null;
-        } else {
-            CustomEnchantManager.getInstance().removeEnchant(itemStack, enchantment.getType());
-        }
-        return itemStack;
+    public ItemStack getModifierIcon() {
+        CustomEnchant enchantment = CustomEnchantManager.getInstance().getEnchantmentFromType(this.enchantment);
+        return new ItemStack(enchantment.getIcon().getType());
     }
 
     @Override
-    public String toString() {
-        if (strength > 0){
-            return Utils.chat("&7Adds &e" + enchantment.getDisplayEnchantment() + " " + Utils.toRoman((int) strength) + "&7 to the item");
-        } else {
-            return Utils.chat("&7Removes the " + enchantment.getDisplayEnchantment() + " enchantment from the item");
+    public String getDisplayName() {
+        return "&fCustom Enchantment: &d" + enchantment;
+    }
+
+    @Override
+    public String getDescription() {
+        return "&fAdds or removes the custom enchantment " + enchantment + " to/from the item";
+    }
+
+    @Override
+    public String getActiveDescription() {
+        if (level > 0) return Utils.chat("&7Adds &e" + enchantment + " " + StringUtils.toRoman(level) + "&7 to the item");
+        else return Utils.chat("&7Removes the " + enchantment + " enchantment from the item");
+    }
+
+    @Override
+    public Collection<String> getCategories() {
+        return new HashSet<>(Collections.singletonList("ENCHANTMENTS"));
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    @Override
+    public DynamicItemModifier copy() {
+        CustomEnchant enchantment = CustomEnchantManager.getInstance().getEnchantmentFromType(this.enchantment);
+        CustomEnchantmentAddModifier modifier = new CustomEnchantmentAddModifier(enchantment);
+        modifier.setLevel(this.level);
+        modifier.setPriority(this.getPriority());
+        return modifier;
+    }
+
+    @Override
+    public String parseCommand(CommandSender commandSender, String[] args) {
+        if (args.length != 1) return "One argument is expected: a level";
+        try {
+            level = Integer.parseInt(args[0]);
+        } catch (NumberFormatException ignored){
+            return "One argument is expected: a level. It was not a number";
         }
+        return null;
+    }
+
+    @Override
+    public List<String> commandSuggestions(CommandSender commandSender, int i) {
+        return Arrays.asList("0", "1", "2", "3", "4", "5");
+    }
+
+    @Override
+    public int commandArgsRequired() {
+        return 1;
+    }
+
+    @Override
+    public Map<Integer, ItemStack> getButtons() {
+        Map<Integer, ItemStack> buttons = new HashMap<>();
+        buttons.put(12, new ItemBuilder(Material.GOLD_NUGGET)
+                .name("&eWhat level should it be?")
+                .lore("&fSet to &e" + (level > 0 ? StringUtils.toRoman(level) : "&cremoval&f"),
+                        "&6Click to add/remove levels").get()
+        );
+        return buttons;
+    }
+
+    @Override
+    public void onButtonPress(InventoryClickEvent inventoryClickEvent, int i) {
+        if (i == 12) level = Math.max(0, level + (inventoryClickEvent.isRightClick() ? -1 : 1));
+    }
+
+    @Override
+    public void processItem(Player player, ItemBuilder itemBuilder, boolean b, boolean b1, int i) {
+        ItemStack item = itemBuilder.getItem();
+        if (level > 0) CustomEnchantManager.getInstance().addEnchant(item, enchantment, level);
+        else CustomEnchantManager.getInstance().removeEnchant(item, enchantment);
+        itemBuilder.setItem(item);
+        itemBuilder.setMeta(ItemUtils.getItemMeta(item));
     }
 }

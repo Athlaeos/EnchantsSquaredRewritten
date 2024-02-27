@@ -5,11 +5,11 @@ import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
 import me.athlaeos.enchantssquared.enchantments.LevelService;
 import me.athlaeos.enchantssquared.enchantments.LevelsFromAllEquipment;
 import me.athlaeos.enchantssquared.managers.EntityEquipmentCacheManager;
-import me.athlaeos.valhallammo.statsources.AccumulativeStatSource;
+import me.athlaeos.valhallammo.playerstats.AccumulativeStatSource;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 
-public class EnchantmentStatSource extends AccumulativeStatSource {
+public class EnchantmentStatSource implements AccumulativeStatSource {
     private final double base;
     private final double lv;
 
@@ -22,7 +22,7 @@ public class EnchantmentStatSource extends AccumulativeStatSource {
     private final LevelService levelService;
 
     @Override
-    public double add(Entity entity, boolean b) {
+    public double fetch(Entity entity, boolean b) {
         if (entity instanceof LivingEntity){
             EntityEquipment equipment = EntityEquipmentCacheManager.getInstance().getAndCacheEquipment((LivingEntity) entity);
             int level = levelService.getLevel(equipment);

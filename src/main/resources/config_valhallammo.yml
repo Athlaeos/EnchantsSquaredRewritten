@@ -2,7 +2,7 @@ enchantments:
   brewing:
     id: 1000 # The ID must not match any other enchantment ID. The default enchantments have an ID between 1 and 100, it is not recommended to use IDs in that range
     enchant_name: '&7Alchemic Fortitude'
-    description: '&8> Increases the speed of your brewing by &e50&8-&e75&8-&e100&8, and quality of your potions by &e20&8-&e35&8-&e50%&8'
+    description: '&8> Increases the speed of your brewing by &e50&8-&e75&8-&e100%&8, and quality of your potions by &e20&8-&e35&8-&e50%&8'
     enabled: true
     weight: 40
     max_level: 3
