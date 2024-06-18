@@ -9,16 +9,11 @@ import me.athlaeos.enchantssquared.enchantments.LevelService;
 import me.athlaeos.enchantssquared.enchantments.Levels1IfPresent;
 import me.athlaeos.enchantssquared.enchantments.on_block_break.TriggerOnBlockBreakEnchantment;
 import me.athlaeos.enchantssquared.managers.EntityEquipmentCacheManager;
-import me.athlaeos.enchantssquared.utility.BlockUtils;
-import me.athlaeos.enchantssquared.utility.EntityUtils;
-import me.athlaeos.enchantssquared.utility.ItemUtils;
-import me.athlaeos.enchantssquared.utility.Utils;
-import org.bukkit.Location;
+import me.athlaeos.enchantssquared.utility.*;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -215,8 +210,10 @@ public class LavaWalker extends CustomEnchant implements TriggerOnRegularInterva
             Collection<Block> blocksToReplace = BlockUtils.getBlocksInArea(
                     e.getLocation().add(-(lavaWalkerLevel - 1), -0.8, -(lavaWalkerLevel - 1)),
                     e.getLocation().add((lavaWalkerLevel - 1), -0.8, (lavaWalkerLevel - 1)))
-                    .stream().map(Location::getBlock)
-                    .filter(b -> {
+                    .stream().map(l -> {
+                        l.setWorld(e.getWorld());
+                        return l.getBlock();
+                    }).filter(b -> {
                         if (b.getType() == Material.LAVA && b.getBlockData() instanceof Levelled){
                             return ((Levelled) b.getBlockData()).getLevel() == 0 &&
                                     b.getLocation().add(0, 1, 0).getBlock().toString().contains("AIR");
@@ -224,7 +221,7 @@ public class LavaWalker extends CustomEnchant implements TriggerOnRegularInterva
                         return false;
                     }).collect(Collectors.toSet());
             if (i.getType().getMaxDurability() > 0 && i.getItemMeta() instanceof Damageable){
-                int unbreakingLevel = i.getEnchantmentLevel(Enchantment.DURABILITY);
+                int unbreakingLevel = i.getEnchantmentLevel(EnchantmentMappings.UNBREAKING.getEnchantment());
                 int damage = Utils.excessChance(blocksToReplace.size() * durabilityPerBlock * (1D/(unbreakingLevel + 1D)));
                 ItemUtils.damageItem((Player) e, i, damage, firstLavaWalkerItem.getSlot());
             }

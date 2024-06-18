@@ -3,7 +3,6 @@ package me.athlaeos.enchantssquared.listeners;
 import me.athlaeos.enchantssquared.EnchantsSquared;
 import me.athlaeos.enchantssquared.config.ConfigManager;
 import me.athlaeos.enchantssquared.domain.MinecraftVersion;
-import me.athlaeos.enchantssquared.enchantments.CosmeticGlintEnchantment;
 import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.utility.Utils;
@@ -72,7 +71,6 @@ public class VillagerClickListener implements Listener {
                             for (Enchantment en : meta.getStoredEnchants().keySet()){
                                 meta.removeStoredEnchant(en);
                             }
-                            if (MinecraftVersion.currentVersionOlderThan(MinecraftVersion.MINECRAFT_1_19)) meta.addStoredEnchant(CosmeticGlintEnchantment.getEnchantsSquaredGlint(), 1, true);
                             newResult.setItemMeta(meta);
 
                             Map.Entry<CustomEnchant, Integer> chosenEnchant = manager.getRandomEnchantments(

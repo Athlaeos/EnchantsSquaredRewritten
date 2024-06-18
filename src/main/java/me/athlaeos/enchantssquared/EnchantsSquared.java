@@ -5,16 +5,14 @@ import me.athlaeos.enchantssquared.config.ConfigManager;
 import me.athlaeos.enchantssquared.config.ConfigUpdater;
 import me.athlaeos.enchantssquared.domain.MinecraftVersion;
 import me.athlaeos.enchantssquared.domain.Version;
-import me.athlaeos.enchantssquared.enchantments.CosmeticGlintEnchantment;
 import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
 import me.athlaeos.enchantssquared.hooks.WorldGuardHook;
-import me.athlaeos.enchantssquared.hooks.valhallammo.CustomEnchantmentAddModifier;
+import me.athlaeos.enchantssquared.hooks.valhallammo.ValhallaHook;
 import me.athlaeos.enchantssquared.listeners.*;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.managers.AnimationRegistry;
 import me.athlaeos.enchantssquared.managers.RegularIntervalEnchantmentClockManager;
 import me.athlaeos.enchantssquared.menus.MenuListener;
-import me.athlaeos.valhallammo.crafting.dynamicitemmodifiers.ModifierRegistry;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Listener;
@@ -60,7 +58,6 @@ public final class EnchantsSquared extends JavaPlugin {
         if (valhallaHooked){
             this.getLogger().info("ValhallaMMO hooked! Adding a bunch of cool stuff.");
             saveConfig("config_valhallammo.yml");
-            CustomEnchantManager.getInstance().registerValhallaEnchantments();
         }
         worldGuardHooked = hasPlugin("WorldGuard");
         if (worldGuardHooked){
@@ -88,7 +85,6 @@ public final class EnchantsSquared extends JavaPlugin {
 
         grindstonesEnabled = ConfigManager.getInstance().getConfig("config.yml").get().getBoolean("allow_grindstone_removal", true);
         CommandManager.getInstance();
-        if (MinecraftVersion.currentVersionOlderThan(MinecraftVersion.MINECRAFT_1_19)) CosmeticGlintEnchantment.register();
 
         if (Version.currentVersionOrNewerThan(Version.MINECRAFT_1_14) && grindstonesEnabled) grindstoneListener = registerListener(new GrindstoneListener());
         anvilListener = registerListener(new AnvilListener(), "disable_anvil");
@@ -120,6 +116,7 @@ public final class EnchantsSquared extends JavaPlugin {
             enchant.onPluginEnable();
         }
         RegularIntervalEnchantmentClockManager.startClock();
+        if (valhallaHooked) ValhallaHook.registerValhallaEnchantments();
     }
 
     public static boolean isWorldGuardAllowed(LivingEntity p, Location l, String flag){

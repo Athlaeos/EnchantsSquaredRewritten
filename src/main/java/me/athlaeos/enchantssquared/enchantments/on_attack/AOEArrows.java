@@ -2,6 +2,7 @@ package me.athlaeos.enchantssquared.enchantments.on_attack;
 
 import me.athlaeos.enchantssquared.config.ConfigManager;
 import me.athlaeos.enchantssquared.domain.EntityClassificationType;
+import me.athlaeos.enchantssquared.domain.MinecraftVersion;
 import me.athlaeos.enchantssquared.enchantments.*;
 import me.athlaeos.enchantssquared.domain.MaterialClassType;
 import me.athlaeos.enchantssquared.utility.ItemUtils;
@@ -9,7 +10,6 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -64,7 +64,7 @@ public class AOEArrows extends CustomEnchant implements TriggerOnAttackEnchantme
         double finalDamage = this.aoe_damage_base + ((level - 1) * aoe_damage_lv);
         double damage = e.getDamage();
         if (explosion){
-            realAttacker.getWorld().spawnParticle(Particle.EXPLOSION_NORMAL, victim.getLocation(), 0);
+            realAttacker.getWorld().spawnParticle(Particle.valueOf(MinecraftVersion.currentVersionNewerThan(MinecraftVersion.MINECRAFT_1_20_5) ? "EXPLOSION" : "EXPLOSION_NORMAL"), victim.getLocation(), 0);
             victim.getWorld().playSound(victim.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1F, 1F);
         }
         Collection<Entity> surroundingEntities = victim.getWorld().getNearbyEntities(victim.getLocation(), finalRadius, finalRadius, finalRadius);

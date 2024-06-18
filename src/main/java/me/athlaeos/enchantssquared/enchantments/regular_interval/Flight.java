@@ -238,7 +238,7 @@ public class Flight extends CustomEnchant implements TriggerOnRegularIntervalsEn
             if (!allowFlightNaturally) {
                 EntityUtils.SlotEquipment firstFlightItem = EntityUtils.getFirstEquipmentItemStackWithEnchantment(EntityEquipmentCacheManager.getInstance().getAndCacheEquipment(p), this);
                 if (p.isFlying() && !ItemUtils.isAirOrNull(firstFlightItem.getEquipment())){
-                    int damage = Utils.excessChance(durabilityDecay * (1D/(firstFlightItem.getEquipment().getEnchantmentLevel(Enchantment.DURABILITY) + 1D)));
+                    int damage = Utils.excessChance(durabilityDecay * (1D/(firstFlightItem.getEquipment().getEnchantmentLevel(EnchantmentMappings.UNBREAKING.getEnchantment()) + 1D)));
                     if (damage > 0 && ItemUtils.damageItem(p, firstFlightItem.getEquipment(), damage, firstFlightItem.getSlot())){
                         p.setAllowFlight(false);
                         p.setFlying(false);

@@ -6,8 +6,6 @@ import me.athlaeos.enchantssquared.EnchantsSquared;
 import me.athlaeos.enchantssquared.config.ConfigManager;
 import me.athlaeos.enchantssquared.domain.AnvilCombinationResult;
 import me.athlaeos.enchantssquared.domain.MaterialClassType;
-import me.athlaeos.enchantssquared.domain.MinecraftVersion;
-import me.athlaeos.enchantssquared.enchantments.CosmeticGlintEnchantment;
 import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
 import me.athlaeos.enchantssquared.enchantments.on_attack.*;
 import me.athlaeos.enchantssquared.enchantments.on_attacked.*;
@@ -25,15 +23,10 @@ import me.athlaeos.enchantssquared.hooks.valhallammo.*;
 import me.athlaeos.enchantssquared.utility.ChatUtils;
 import me.athlaeos.enchantssquared.utility.ItemUtils;
 import me.athlaeos.enchantssquared.utility.Utils;
-import me.athlaeos.valhallammo.crafting.dynamicitemmodifiers.ModifierRegistry;
-import me.athlaeos.valhallammo.playerstats.AccumulativeStatManager;
-import me.athlaeos.valhallammo.playerstats.EvEAccumulativeStatSource;
-import me.athlaeos.valhallammo.playerstats.StatCollector;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -172,7 +165,6 @@ public class CustomEnchantManager {
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return;
         if (enchantments.isEmpty()){
-            if (MinecraftVersion.currentVersionOlderThan(MinecraftVersion.MINECRAFT_1_19)) item.removeEnchantment(CosmeticGlintEnchantment.getEnchantsSquaredGlint());
             if (meta.getPersistentDataContainer().has(enchantmentsKey, PersistentDataType.STRING)){
                 meta.getPersistentDataContainer().remove(enchantmentsKey);
                 item.setItemMeta(meta);
@@ -181,9 +173,6 @@ public class CustomEnchantManager {
         } else {
             if (item.getType() == Material.BOOK) item.setType(Material.ENCHANTED_BOOK);
 
-            if (enableCosmeticGlint && MinecraftVersion.currentVersionOlderThan(MinecraftVersion.MINECRAFT_1_19)){
-                item.addUnsafeEnchantment(CosmeticGlintEnchantment.getEnchantsSquaredGlint(), 1);
-            }
             //updating PersistentDataContainer to be accurate with enchantments
             Collection<String> stringEnchants = new HashSet<>();
             enchantments.forEach((e, l) -> stringEnchants.add(allEnchants.inverse().get(e) + ":" + l));
@@ -233,28 +222,6 @@ public class CustomEnchantManager {
                             (isUsingRomanNumerals ?
                                     ChatUtils.toRoman(enchantments.get(e)) :
                                     enchantments.get(e)) : "")));
-                }
-            }
-            // Add cosmetic enchantment glow if the item has enchantments and the glow is enabled, or attempt removal otherwise
-            if (!enchantments.isEmpty() && enableCosmeticGlint){
-                if (meta instanceof EnchantmentStorageMeta){
-                    EnchantmentStorageMeta storageMeta = (EnchantmentStorageMeta) meta;
-                    if (MinecraftVersion.currentVersionOlderThan(MinecraftVersion.MINECRAFT_1_19)) storageMeta.addStoredEnchant(CosmeticGlintEnchantment.getEnchantsSquaredGlint(), 1, true);
-                    storageMeta.setLore(finalLore);
-                    i.setItemMeta(storageMeta);
-                    return;
-                } else if (MinecraftVersion.currentVersionOlderThan(MinecraftVersion.MINECRAFT_1_19)){
-                    i.addUnsafeEnchantment(CosmeticGlintEnchantment.getEnchantsSquaredGlint(), 1);
-                }
-            } else {
-                if (meta instanceof EnchantmentStorageMeta){
-                    EnchantmentStorageMeta storageMeta = (EnchantmentStorageMeta) meta;
-                    if (MinecraftVersion.currentVersionOlderThan(MinecraftVersion.MINECRAFT_1_19)) storageMeta.removeStoredEnchant(CosmeticGlintEnchantment.getEnchantsSquaredGlint());
-                    storageMeta.setLore(finalLore);
-                    i.setItemMeta(storageMeta);
-                    return;
-                } else if (MinecraftVersion.currentVersionOlderThan(MinecraftVersion.MINECRAFT_1_19)) {
-                    i.removeEnchantment(CosmeticGlintEnchantment.getEnchantsSquaredGlint());
                 }
             }
         }
@@ -359,10 +326,10 @@ public class CustomEnchantManager {
         return allEnchants.values().stream().filter(CustomEnchant::isTradingEnabled).collect(Collectors.toList());
     }
 
-    private void registerEnchant(CustomEnchant enchant){
-        if (enchant.isEnabled()){
+    public void registerEnchant(CustomEnchant enchant){
+        if (enchant.isEnabled()) {
             allEnchants.put(enchant.getId(), enchant);
-            if (EnchantsSquared.isValhallaHooked()) ModifierRegistry.register(new CustomEnchantmentAddModifier(enchant));
+            if (EnchantsSquared.isValhallaHooked()) ValhallaHook.registerEnchantmentModifier(enchant);
         }
     }
 
@@ -503,49 +470,7 @@ public class CustomEnchantManager {
         registerEnchant(new RapidShot(53, "rapid_shot"));
     }
 
-    public void registerValhallaEnchantments(){
-        if (EnchantsSquared.isValhallaHooked()){
-            YamlConfiguration valhallaConfig = ConfigManager.getInstance().getConfig("config_valhallammo.yml").get();
-            ConfigurationSection section = valhallaConfig.getConfigurationSection("enchantments");
-            if (section != null){
-                int registered = 0;
-                for (String key : section.getKeys(false)){
-                    int id = valhallaConfig.getInt("enchantments." + key + ".id");
-                    if (allEnchants.containsKey(id)) {
-                        EnchantsSquared.getPlugin().getServer().getLogger().warning("Enchantment " + key + " has id " + id + ", but it was already registered!");
-                        continue;
-                    }
-                    GenericValhallaStatEnchantment newEnchantment = new GenericValhallaStatEnchantment(id, key);
 
-                    ConfigurationSection statSection = valhallaConfig.getConfigurationSection("enchantments." + key + ".stats");
-                    if (statSection != null){
-                        for (String stat : statSection.getKeys(false)){
-                            double base = valhallaConfig.getDouble("enchantments." + key + ".stats." + stat + ".base");
-                            double lv = valhallaConfig.getDouble("enchantments." + key + ".stats." + stat + ".lv");
-                            StatCollector collector = AccumulativeStatManager.getSources().get(stat);
-                            if (collector != null){
-                                if (collector.getStatSources().stream()
-                                        .anyMatch(source -> source instanceof EvEAccumulativeStatSource)){
-                                    if (collector.isAttackerPossessive()){
-                                        AccumulativeStatManager.register(stat, new OffensiveEnchantmentStatSource(newEnchantment, base, lv));
-                                    } else {
-                                        AccumulativeStatManager.register(stat, new DefensiveEnchantmentStatSource(newEnchantment, base, lv));
-                                    }
-                                } else {
-                                    AccumulativeStatManager.register(stat, new EnchantmentStatSource(newEnchantment, base, lv));
-                                }
-                            }
-                        }
-                    }
-
-                    registered++;
-                    registerEnchant(newEnchantment);
-                }
-
-                EnchantsSquared.getPlugin().getServer().getLogger().info("ValhallaMMO enchantments loaded in! " + registered + " were registered.");
-            }
-        }
-    }
 
     public boolean doesItemHaveEnchants(ItemStack item){
         if (ItemUtils.isAirOrNull(item)) return false;

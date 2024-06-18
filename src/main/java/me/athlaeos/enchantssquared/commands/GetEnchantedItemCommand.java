@@ -1,7 +1,7 @@
 package me.athlaeos.enchantssquared.commands;
 
-import me.athlaeos.enchantssquared.EnchantsSquared;
 import me.athlaeos.enchantssquared.config.ConfigManager;
+import me.athlaeos.enchantssquared.domain.MinecraftVersion;
 import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.utility.ChatUtils;
@@ -9,6 +9,7 @@ import me.athlaeos.enchantssquared.utility.EntityUtils;
 import me.athlaeos.enchantssquared.utility.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
@@ -42,6 +43,7 @@ public class GetEnchantedItemCommand implements Command {
 		warning_invalid_number = ConfigManager.getInstance().getConfig("translations.yml").get().getString("warning_invalid_number");
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
 		if (args.length <= 3) return false;
@@ -68,7 +70,7 @@ public class GetEnchantedItemCommand implements Command {
 				Map<Integer, ItemStack> itemsLeft = target.getInventory().addItem(new ItemStack(itemType, amount));
 				if (!itemsLeft.isEmpty()){
 					for (ItemStack i : itemsLeft.values()){
-						Item item = (Item) target.getWorld().spawnEntity(target.getLocation(), EntityType.DROPPED_ITEM);
+						Item item = (Item) target.getWorld().spawnEntity(target.getLocation(), EntityType.valueOf(MinecraftVersion.currentVersionNewerThan(MinecraftVersion.MINECRAFT_1_20_5) ? "ITEM" : "DROPPED_ITEM"));
 						item.setItemStack(i);
 					}
 				}
@@ -124,7 +126,7 @@ public class GetEnchantedItemCommand implements Command {
 						if (enchantDetails.length != 2) continue;
 						Enchantment enchant;
 						try {
-							enchant = Enchantment.getByKey(NamespacedKey.minecraft(enchantDetails[0]));
+							enchant = MinecraftVersion.currentVersionNewerThan(MinecraftVersion.MINECRAFT_1_20_5) ? Registry.ENCHANTMENT.get(NamespacedKey.minecraft(enchantDetails[0])) : Enchantment.getByKey(NamespacedKey.minecraft(enchantDetails[0]));
 							if (enchant == null) throw new IllegalArgumentException();
 						} catch (IllegalArgumentException ignored){
 							sender.sendMessage(ChatUtils.chat(error_invalid_syntax.replace("%reason%", reason_invalid_enchant)));
@@ -199,6 +201,7 @@ public class GetEnchantedItemCommand implements Command {
 		};
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public List<String> getSubcommandArgs(CommandSender sender, String[] args) {
 		if (args.length == 2){
@@ -220,7 +223,7 @@ public class GetEnchantedItemCommand implements Command {
 			String currentArg = args[args.length - 1];
 			if (currentArg.contains("custom=")) {
 				currentArg = currentArg.replace("custom=", "");
-				if (currentArg.length() > 0) {
+				if (!currentArg.isEmpty()) {
 					if (currentArg.contains(":")) {
 						String[] currentEnchantArgs = currentArg.split(":");
 						if (currentEnchantArgs.length % 2 == 1) {
@@ -258,7 +261,7 @@ public class GetEnchantedItemCommand implements Command {
 					}
 				}
 				List<String> returns = new ArrayList<>();
-				for (Enchantment c : Enchantment.values()) {
+				for (Enchantment c : (MinecraftVersion.currentVersionNewerThan(MinecraftVersion.MINECRAFT_1_20_5) ? Registry.ENCHANTMENT.stream().collect(Collectors.toSet()) : Arrays.asList(Enchantment.values()))) {
 					returns.add("enchants=" + c.getKey().getKey() + ":");
 				}
 				return returns;

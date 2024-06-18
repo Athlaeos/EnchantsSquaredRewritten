@@ -47,7 +47,7 @@ public class WorldGuardHook {
     }
 
     public boolean isLocationInFlaggedRegion(Location l, String flag){
-        if (EnchantsSquared.isWorldGuardHooked()){
+        if (EnchantsSquared.isWorldGuardHooked() && l != null){
             RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
             RegionQuery query = container.createQuery();
 

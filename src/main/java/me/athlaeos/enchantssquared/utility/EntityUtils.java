@@ -4,6 +4,7 @@ import me.athlaeos.enchantssquared.EnchantsSquared;
 import me.athlaeos.enchantssquared.config.ConfigManager;
 import me.athlaeos.enchantssquared.domain.EntityEquipment;
 import me.athlaeos.enchantssquared.domain.MaterialClassType;
+import me.athlaeos.enchantssquared.domain.MinecraftVersion;
 import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
 import me.athlaeos.enchantssquared.enchantments.regular_interval.TriggerOnRegularIntervalsEnchantment;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
@@ -12,12 +13,14 @@ import me.athlaeos.valhallatrinkets.TrinketItem;
 import me.athlaeos.valhallatrinkets.TrinketsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 
@@ -113,7 +116,7 @@ public class EntityUtils {
                 if (equipment.getBootsEnchantments().keySet().stream().anyMatch(en -> en instanceof TriggerOnRegularIntervalsEnchantment)) included = include(e.getUniqueId());
                 if (EnchantsSquared.isTrinketsHooked()){
                     if (e instanceof Player){
-                        Map<Integer, TrinketItem> trinkets = TrinketsManager.getTrinketInventory((Player) e);
+                        Map<Integer, TrinketItem> trinkets = TrinketsManager.getTrinketInventory(e);
                         equipment.getMiscEquipment().addAll(trinkets.values().stream().map(TrinketItem::getItem).collect(Collectors.toList()));
                         if (getEnchantments){
                             for (TrinketItem i : trinkets.values()){
@@ -201,31 +204,50 @@ public class EntityUtils {
         return null;
     }
 
-
-    public static void addUniqueAttribute(LivingEntity e, String identifier, Attribute type, double amount, AttributeModifier.Operation operation){
+    @SuppressWarnings("deprecation")
+    public static void addUniqueAttribute(LivingEntity e, UUID uuid, String identifier, Attribute type, double amount, AttributeModifier.Operation operation){
         AttributeInstance instance = e.getAttribute(type);
         if (instance != null){
-            for (AttributeModifier modifier : instance.getModifiers()){
-                if (modifier.getName().equals(identifier)){
-                    instance.removeModifier(modifier);
-                    break;
-                }
+            if (MinecraftVersion.currentVersionNewerThan(MinecraftVersion.MINECRAFT_1_21)){
+                NamespacedKey key = new NamespacedKey(EnchantsSquared.getPlugin(), identifier);
+                instance.getModifiers().stream().filter(m -> m != null && m.getKey().equals(key)).forEach(instance::removeModifier);
+                if (amount != 0) instance.addModifier(new AttributeModifier(key, amount, operation, EquipmentSlotGroup.ANY));
+            } else {
+                instance.getModifiers().stream().filter(m -> m != null && m.getName().equals(identifier)).forEach(instance::removeModifier);
+                if (amount != 0) instance.addModifier(new AttributeModifier(uuid, identifier, amount, operation));
             }
-            instance.addModifier(
-                    new AttributeModifier(identifier, amount, operation)
-            );
         }
+    }
+
+    public static boolean hasUniqueAttribute(LivingEntity e, UUID uuid, String identifier, Attribute type){
+        AttributeInstance instance = e.getAttribute(type);
+        if (MinecraftVersion.currentVersionNewerThan(MinecraftVersion.MINECRAFT_1_21)){
+            NamespacedKey key = new NamespacedKey(EnchantsSquared.getPlugin(), identifier);
+            return instance != null && instance.getModifiers().stream().anyMatch(m -> m != null && m.getKey().equals(key));
+        } else {
+            return instance != null && instance.getModifiers().stream().anyMatch(m -> m != null && m.getName().equals(identifier));
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    public static double getUniqueAttributeValue(LivingEntity e, UUID uuid, String identifier, Attribute type){
+        AttributeInstance instance = e.getAttribute(type);
+        if (MinecraftVersion.currentVersionNewerThan(MinecraftVersion.MINECRAFT_1_21)){
+            NamespacedKey key = new NamespacedKey(EnchantsSquared.getPlugin(), identifier);
+            if (instance != null) return instance.getModifiers().stream().filter(m -> m != null && m.getName().equals(identifier) && m.getKey().equals(key)).map(AttributeModifier::getAmount).findFirst().orElse(0D);
+        } else {
+            if (instance != null) return instance.getModifiers().stream().filter(m -> m != null && m.getName().equals(identifier) && m.getUniqueId().equals(uuid)).map(AttributeModifier::getAmount).findFirst().orElse(0D);
+        }
+        return 0;
     }
 
     public static void removeUniqueAttribute(LivingEntity e, String identifier, Attribute type){
         AttributeInstance instance = e.getAttribute(type);
-        if (instance != null){
-            for (AttributeModifier modifier : instance.getModifiers()){
-                if (modifier.getName().equals(identifier)){
-                    instance.removeModifier(modifier);
-                    break;
-                }
-            }
+        if (MinecraftVersion.currentVersionNewerThan(MinecraftVersion.MINECRAFT_1_21)){
+            NamespacedKey key = new NamespacedKey(EnchantsSquared.getPlugin(), identifier);
+            if (instance != null) instance.getModifiers().stream().filter(m -> m != null && m.getKey().equals(key)).forEach(instance::removeModifier);
+        } else {
+            if (instance != null) instance.getModifiers().stream().filter(m -> m != null && m.getName().equals(identifier)).forEach(instance::removeModifier);
         }
     }
 

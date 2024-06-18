@@ -25,6 +25,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.UUID;
 
 public class Steady extends CustomEnchant implements TriggerOnRegularIntervalsEnchantment, Listener {
     private final boolean cleanup;
@@ -184,10 +185,12 @@ public class Steady extends CustomEnchant implements TriggerOnRegularIntervalsEn
 
         double resistance = resistanceBase + ((level - 1) * resistanceLv);
 
-        EntityUtils.addUniqueAttribute((LivingEntity) e, "es_steady", Attribute.GENERIC_KNOCKBACK_RESISTANCE, resistance, AttributeModifier.Operation.ADD_NUMBER);
+        EntityUtils.addUniqueAttribute((LivingEntity) e, STEADY_UUID, "es_steady", Attribute.GENERIC_KNOCKBACK_RESISTANCE, resistance, AttributeModifier.Operation.ADD_NUMBER);
 
         if (cleanup && e instanceof Player) stripEnchantmentAttributesFromAllEquipment((Player) e);
     }
+
+    private final UUID STEADY_UUID = UUID.fromString("edcda35d-b144-437d-97d1-489eca0e0499");
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent e){

@@ -1,6 +1,7 @@
 package me.athlaeos.enchantssquared.utility;
 
 import me.athlaeos.enchantssquared.EnchantsSquared;
+import me.athlaeos.enchantssquared.domain.MinecraftVersion;
 import me.athlaeos.enchantssquared.domain.Offset;
 import me.athlaeos.enchantssquared.domain.Version;
 import org.bukkit.Location;
@@ -90,7 +91,7 @@ public class BlockUtils {
                 });
             }
 
-            block.getWorld().spawnParticle(Particle.BLOCK_DUST, block.getLocation().add(0.5, 0.5, 0.5), 16, 0.5, 0.5, 0.5, block.getBlockData());
+            block.getWorld().spawnParticle(Particle.valueOf(MinecraftVersion.currentVersionNewerThan(MinecraftVersion.MINECRAFT_1_20_5) ? "BLOCK" : "BLOCK_DUST"), block.getLocation().add(0.5, 0.5, 0.5), 16, 0.5, 0.5, 0.5, block.getBlockData());
             block.setType(Material.AIR);
 
             ItemUtils.damageItem(player, player.getInventory().getItemInMainHand(), 1, EquipmentSlot.HAND);

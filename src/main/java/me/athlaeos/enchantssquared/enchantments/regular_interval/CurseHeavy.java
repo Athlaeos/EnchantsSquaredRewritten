@@ -7,6 +7,7 @@ import me.athlaeos.enchantssquared.enchantments.LevelService;
 import me.athlaeos.enchantssquared.enchantments.LevelsFromAllEquipment;
 import me.athlaeos.enchantssquared.utility.EntityUtils;
 import me.athlaeos.enchantssquared.utility.ItemUtils;
+import me.athlaeos.enchantssquared.utility.PotionEffectMappings;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -22,6 +23,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.UUID;
 
 public class CurseHeavy extends CustomEnchant implements TriggerOnRegularIntervalsEnchantment, Listener {
     private final YamlConfiguration config;
@@ -195,12 +197,14 @@ public class CurseHeavy extends CustomEnchant implements TriggerOnRegularInterva
         if (fatigue){
             int fatigueAmplifier = fatigueAmplifierBase + ((level - 1) * fatigueAmplifierLv);
             EntityUtils.applyPotionEffectIfStronger(entity,
-                    new PotionEffect(PotionEffectType.SLOW_DIGGING, fatigueDuration, fatigueAmplifier, true, false, false)
+                    new PotionEffect(PotionEffectMappings.MINING_FATIGUE.getPotionEffectType(), fatigueDuration, fatigueAmplifier, true, false, false)
             );
         }
 
-        EntityUtils.addUniqueAttribute((LivingEntity) e, "es_curse_heavy", Attribute.GENERIC_MOVEMENT_SPEED, -slow, AttributeModifier.Operation.ADD_SCALAR);
+        EntityUtils.addUniqueAttribute((LivingEntity) e, CURSE_HEAVY_UUID, "es_curse_heavy", Attribute.GENERIC_MOVEMENT_SPEED, -slow, AttributeModifier.Operation.ADD_SCALAR);
     }
+
+    private final UUID CURSE_HEAVY_UUID = UUID.fromString("03df8c9c-0071-44d7-8b02-3db88f060c64");
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent e){

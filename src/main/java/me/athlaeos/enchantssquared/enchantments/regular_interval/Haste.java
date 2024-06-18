@@ -7,6 +7,7 @@ import me.athlaeos.enchantssquared.enchantments.LevelService;
 import me.athlaeos.enchantssquared.enchantments.LevelsFromAllEquipment;
 import me.athlaeos.enchantssquared.utility.EntityUtils;
 import me.athlaeos.enchantssquared.utility.ItemUtils;
+import me.athlaeos.enchantssquared.utility.PotionEffectMappings;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
@@ -173,7 +174,7 @@ public class Haste extends CustomEnchant implements TriggerOnRegularIntervalsEnc
 
         int finalAmplifier = amplifierBase + ((level - 1) * amplifierLv);
         EntityUtils.applyPotionEffectIfStronger(entity,
-                new PotionEffect(PotionEffectType.FAST_DIGGING, duration, finalAmplifier, true, false, false)
+                new PotionEffect(PotionEffectMappings.HASTE.getPotionEffectType(), duration, finalAmplifier, true, false, false)
         );
     }
 }

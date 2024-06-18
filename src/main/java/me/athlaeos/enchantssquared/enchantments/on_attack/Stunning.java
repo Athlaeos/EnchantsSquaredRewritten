@@ -7,6 +7,7 @@ import me.athlaeos.enchantssquared.enchantments.*;
 import me.athlaeos.enchantssquared.managers.AnimationRegistry;
 import me.athlaeos.enchantssquared.utility.EntityUtils;
 import me.athlaeos.enchantssquared.utility.ItemUtils;
+import me.athlaeos.enchantssquared.utility.PotionEffectMappings;
 import me.athlaeos.enchantssquared.utility.Utils;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -75,19 +76,19 @@ public class Stunning extends CustomEnchant implements TriggerOnAttackEnchantmen
             int duration = durationBase + ((level - 1) * durationLv);
 
             EntityUtils.applyPotionEffectIfStronger(victim,
-                    new PotionEffect(PotionEffectType.SLOW, duration, 15, true, false, true)
+                    new PotionEffect(PotionEffectMappings.SLOWNESS.getPotionEffectType(), duration, 15, true, false, true)
             );
             EntityUtils.applyPotionEffectIfStronger(victim,
-                    new PotionEffect(PotionEffectType.SLOW_DIGGING, duration, 15, true, false, true)
+                    new PotionEffect(PotionEffectMappings.MINING_FATIGUE.getPotionEffectType(), duration, 15, true, false, true)
             );
             EntityUtils.applyPotionEffectIfStronger(victim,
-                    new PotionEffect(PotionEffectType.WEAKNESS, duration, 15, true, false, true)
+                    new PotionEffect(PotionEffectMappings.WEAKNESS.getPotionEffectType(), duration, 15, true, false, true)
             );
             EntityUtils.applyPotionEffectIfStronger(victim,
-                    new PotionEffect(PotionEffectType.BLINDNESS, duration, 15, true, false, true)
+                    new PotionEffect(PotionEffectMappings.BLINDNESS.getPotionEffectType(), duration, 15, true, false, true)
             );
             EntityUtils.applyPotionEffectIfStronger(victim,
-                    new PotionEffect(PotionEffectType.JUMP, duration, 250, true, false, true)
+                    new PotionEffect(PotionEffectMappings.JUMP_BOOST.getPotionEffectType(), duration, 250, true, false, true)
             );
 
             if (sound != null) victim.getWorld().playSound(victim.getLocation(), sound, 0.5f, 1f);

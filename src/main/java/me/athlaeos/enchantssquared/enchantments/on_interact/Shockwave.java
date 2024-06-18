@@ -4,6 +4,7 @@ import me.athlaeos.enchantssquared.EnchantsSquared;
 import me.athlaeos.enchantssquared.config.ConfigManager;
 import me.athlaeos.enchantssquared.domain.EntityClassificationType;
 import me.athlaeos.enchantssquared.domain.MaterialClassType;
+import me.athlaeos.enchantssquared.domain.MinecraftVersion;
 import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
 import me.athlaeos.enchantssquared.enchantments.LevelService;
 import me.athlaeos.enchantssquared.enchantments.LevelsFromMainHandOnly;
@@ -193,7 +194,7 @@ public class Shockwave extends CustomEnchant implements TriggerOnInteractEnchant
                 !CooldownManager.getInstance().isCooldownPassed(e.getPlayer().getUniqueId(), "shockwave_cooldown") ||
                 shouldEnchantmentCancel(level, e.getPlayer(), clickedBlock.getLocation())) return;
         if (!CooldownManager.getInstance().isCooldownPassed(e.getPlayer().getUniqueId(), "shockwave_cooldown")) {
-            if (!cooldownMessage.equals("")){
+            if (!cooldownMessage.isEmpty()){
                 e.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatUtils.chat(cooldownMessage
                         .replace("{cooldown}", String.format("%.2f", CooldownManager.getInstance().getCooldown(e.getPlayer().getUniqueId(), "shockwave_cooldown") / 1000D)))));
             }
@@ -209,22 +210,19 @@ public class Shockwave extends CustomEnchant implements TriggerOnInteractEnchant
 
         for (Entity entity : entitiesInRadius){
             if (entity instanceof LivingEntity && !EntityClassificationType.isMatchingClassification(entity.getType(), EntityClassificationType.UNALIVE)){
-                EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(e.getPlayer(), entity, EntityDamageEvent.DamageCause.ENTITY_EXPLOSION, 0.01);
-                EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(event);
-                if (!event.isCancelled()){
-                    AttributeInstance attribute = ((LivingEntity) entity).getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE);
-                    double forceWithResistance = force;
-                    if (attribute != null) forceWithResistance *= Math.max(0, 1 - attribute.getValue());
+                ((LivingEntity) entity).damage(0.01, e.getPlayer());
+                AttributeInstance attribute = ((LivingEntity) entity).getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE);
+                double forceWithResistance = force;
+                if (attribute != null) forceWithResistance *= Math.max(0, 1 - attribute.getValue());
 
-                    entity.setVelocity(new Vector(
-                            (entity.getLocation().getX() - origin.getX()) * forceWithResistance,
-                            forceWithResistance,
-                            (entity.getLocation().getZ() - origin.getZ()) * forceWithResistance));
-                }
+                entity.setVelocity(new Vector(
+                        (entity.getLocation().getX() - origin.getX()) * forceWithResistance,
+                        forceWithResistance,
+                        (entity.getLocation().getZ() - origin.getZ()) * forceWithResistance));
             }
         }
         if (explode) {
-            e.getPlayer().getWorld().spawnParticle(Particle.EXPLOSION_HUGE, origin, 0);
+            e.getPlayer().getWorld().spawnParticle(Particle.valueOf(MinecraftVersion.currentVersionNewerThan(MinecraftVersion.MINECRAFT_1_20_5) ? "EXPLOSION" : "EXPLOSION_HUGE"), origin, 0);
             e.getPlayer().getWorld().playSound(origin, Sound.ENTITY_GENERIC_EXPLODE, 0.5F, 0.5F);
         }
         CooldownManager.getInstance().setCooldownIgnoreIfPermission(e.getPlayer(), cooldown * 50, "shockwave_cooldown");

@@ -21,6 +21,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.UUID;
 
 public class Luck extends CustomEnchant implements TriggerOnRegularIntervalsEnchantment, Listener {
     private final YamlConfiguration config;
@@ -179,9 +180,11 @@ public class Luck extends CustomEnchant implements TriggerOnRegularIntervalsEnch
 
         double luckBoost = luckBase + ((level - 1) * luckLv);
 
-        EntityUtils.addUniqueAttribute((LivingEntity) e, "es_luck", Attribute.GENERIC_LUCK, luckBoost,
+        EntityUtils.addUniqueAttribute((LivingEntity) e, LUCK_UUID, "es_luck", Attribute.GENERIC_LUCK, luckBoost,
                 percentileIncrease ? AttributeModifier.Operation.ADD_SCALAR : AttributeModifier.Operation.ADD_NUMBER);
     }
+
+    private final UUID LUCK_UUID = UUID.fromString("1d0beb32-39fc-4e69-88b9-c95e953c466a");
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent e){

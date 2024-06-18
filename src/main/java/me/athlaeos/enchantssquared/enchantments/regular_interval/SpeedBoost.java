@@ -1,6 +1,5 @@
 package me.athlaeos.enchantssquared.enchantments.regular_interval;
 
-import me.athlaeos.enchantssquared.EnchantsSquared;
 import me.athlaeos.enchantssquared.config.ConfigManager;
 import me.athlaeos.enchantssquared.domain.MaterialClassType;
 import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
@@ -21,6 +20,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.UUID;
 
 public class SpeedBoost extends CustomEnchant implements TriggerOnRegularIntervalsEnchantment, Listener {
     private final YamlConfiguration config;
@@ -177,8 +177,10 @@ public class SpeedBoost extends CustomEnchant implements TriggerOnRegularInterva
 
         double speedBoost = speedBase + ((level - 1) * speedLv);
 
-        EntityUtils.addUniqueAttribute((LivingEntity) e, "es_speed_boost", Attribute.GENERIC_MOVEMENT_SPEED, speedBoost, AttributeModifier.Operation.ADD_SCALAR);
+        EntityUtils.addUniqueAttribute((LivingEntity) e, SPEED_BOOST_UUID, "es_speed_boost", Attribute.GENERIC_MOVEMENT_SPEED, speedBoost, AttributeModifier.Operation.ADD_SCALAR);
     }
+
+    private final UUID SPEED_BOOST_UUID = UUID.fromString("459f6611-3126-4130-a793-5d5360df0a2e");
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent e){

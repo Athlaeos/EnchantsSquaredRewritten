@@ -6,6 +6,7 @@ import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
 import me.athlaeos.enchantssquared.enchantments.LevelService;
 import me.athlaeos.enchantssquared.enchantments.LevelsFromMainHandOnly;
 import me.athlaeos.enchantssquared.managers.CooldownManager;
+import me.athlaeos.enchantssquared.utility.EnchantmentMappings;
 import me.athlaeos.enchantssquared.utility.ItemUtils;
 import me.athlaeos.enchantssquared.utility.Utils;
 import org.bukkit.EntityEffect;
@@ -15,7 +16,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.data.Directional;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -213,7 +213,7 @@ public class PlaceTorch extends CustomEnchant implements TriggerOnInteractEnchan
                 if (heldItem.getItemMeta().isUnbreakable()) return;
                 int damage = Utils.excessChance(damagePerTorch);
                 if (applyUnbreaking){
-                    int unbreakingLevel = heldItem.getEnchantmentLevel(Enchantment.DURABILITY);
+                    int unbreakingLevel = heldItem.getEnchantmentLevel(EnchantmentMappings.UNBREAKING.getEnchantment());
                     damage = Utils.excessChance(damagePerTorch * (1D/(unbreakingLevel + 1D)));
                 }
                 PlayerItemDamageEvent damageEvent = new PlayerItemDamageEvent(e.getPlayer(), heldItem, damage);

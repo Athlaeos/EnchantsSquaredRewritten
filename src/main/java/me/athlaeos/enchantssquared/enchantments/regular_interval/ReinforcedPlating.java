@@ -25,6 +25,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.UUID;
 
 public class ReinforcedPlating extends CustomEnchant implements TriggerOnRegularIntervalsEnchantment, Listener {
     private final boolean cleanup;
@@ -184,11 +185,13 @@ public class ReinforcedPlating extends CustomEnchant implements TriggerOnRegular
 
         double armorBoost = armorBase + ((level - 1) * armorLv);
 
-        EntityUtils.addUniqueAttribute((LivingEntity) e, "es_reinforced_plating", Attribute.GENERIC_ARMOR, armorBoost,
+        EntityUtils.addUniqueAttribute((LivingEntity) e, PLATING_UUID, "es_reinforced_plating", Attribute.GENERIC_ARMOR, armorBoost,
                 AttributeModifier.Operation.ADD_NUMBER);
 
         if (cleanup && e instanceof Player) stripEnchantmentAttributesFromAllEquipment((Player) e);
     }
+
+    private final UUID PLATING_UUID = UUID.fromString("cbc54ab3-9fa8-40d1-b4ad-8b87ed81ba50");
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent e){

@@ -10,6 +10,7 @@ import me.athlaeos.enchantssquared.enchantments.LevelsFromOffHandAndEquipment;
 import me.athlaeos.enchantssquared.managers.AnimationRegistry;
 import me.athlaeos.enchantssquared.utility.EntityUtils;
 import me.athlaeos.enchantssquared.utility.ItemUtils;
+import me.athlaeos.enchantssquared.utility.PotionEffectMappings;
 import me.athlaeos.enchantssquared.utility.Utils;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -73,7 +74,7 @@ public class Slowness extends CustomEnchant implements TriggerOnAttackEnchantmen
             int amplifier = amplifierBase + ((level - 1) * amplifierLv);
 
             EntityUtils.applyPotionEffectIfStronger(victim,
-                    new PotionEffect(PotionEffectType.SLOW, duration, amplifier, true, false, true)
+                    new PotionEffect(PotionEffectMappings.SLOWNESS.getPotionEffectType(), duration, amplifier, true, false, true)
             );
 
             if (sound != null) victim.getWorld().playSound(victim.getLocation(), sound, 0.5f, 1f);

@@ -9,6 +9,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerItemDamageEvent;
+import org.bukkit.event.player.PlayerItemMendEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
@@ -54,8 +55,6 @@ public class ItemUtils {
         if (i.getItemMeta() != null){
             if (i.getItemMeta().hasDisplayName()){
                 name = ChatUtils.chat(i.getItemMeta().getDisplayName());
-            } else if (i.getItemMeta().hasLocalizedName()){
-                name = ChatUtils.chat(i.getItemMeta().getLocalizedName());
             } else {
                 name = i.getType().toString().toLowerCase().replace("_", " ");
             }
@@ -81,17 +80,22 @@ public class ItemUtils {
     public static boolean damageItem(Player damager, ItemStack i, int damage, EquipmentSlot slot){
         if (i.getItemMeta() instanceof Damageable && i.getType().getMaxDurability() > 0){
             if (damage > 0 && i.getItemMeta().isUnbreakable()) return false;
-            PlayerItemDamageEvent event = new PlayerItemDamageEvent(damager, i, damage);
-            EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(event);
+            boolean cancelled = false;
+            if (damage > 0){
+                PlayerItemDamageEvent event = new PlayerItemDamageEvent(damager, i, damage);
+                EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(event);
+                cancelled = event.isCancelled();
+                damage = event.getDamage();
+            }
 
             if (EnchantsSquared.isValhallaHooked()) {
                 // if ValhallaMMO is active, it handles custom durability itself
                 if (CustomDurabilityManager.hasCustomDurability(me.athlaeos.valhallammo.utility.ItemUtils.getItemMeta(i))) return false;
             }
-            if (!event.isCancelled()){
+            if (!cancelled){
                 Damageable toolMeta = (Damageable) i.getItemMeta();
                 if (toolMeta == null) return false;
-                toolMeta.setDamage(toolMeta.getDamage() + event.getDamage());
+                toolMeta.setDamage(toolMeta.getDamage() + damage);
                 if (toolMeta.getDamage() >= i.getType().getMaxDurability()) {
                     switch(slot){
                         case HAND: {

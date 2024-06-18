@@ -178,7 +178,7 @@ public class TreeFeller extends CustomEnchant implements TriggerOnBlockBreakEnch
             "STRIPPED_DARK_OAK_WOOD", "STRIPPED_MANGROVE_WOOD", "STRIPPED_CHERRY_WOOD", "STRIPPED_WARPED_STEM", "STRIPPED_CRIMSON_STEM",
             "STRIPPED_WARPED_HYPHAE", "STRIPPED_CRIMSON_HYPHAE"));
     private final Collection<Material> leaves = ItemUtils.getMaterialList(Arrays.asList("OAK_LEAVES", "SPRUCE_LEAVES",
-            "BIRCH_LEAVES", "ACACIA_LEAVES", "JUNGLE_LEAVES", "DARK_OAK_LEAVES", "MANGROVE_LEAVES",
+            "BIRCH_LEAVES", "ACACIA_LEAVES", "JUNGLE_LEAVES", "DARK_OAK_LEAVES", "MANGROVE_LEAVES", "AZALEA_LEAVES", "FLOWERING_AZALEA_LEAVES",
             "CHERRY_LEAVES", "NETHER_WART_BLOCK", "WARPED_WART_BLOCK"));
 
     @Override

@@ -25,6 +25,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.UUID;
 
 public class Vigorous extends CustomEnchant implements TriggerOnRegularIntervalsEnchantment, Listener {
     private final boolean cleanup;
@@ -186,11 +187,13 @@ public class Vigorous extends CustomEnchant implements TriggerOnRegularIntervals
 
         double healthBoost = healthBase + ((level - 1) * healthLv);
 
-        EntityUtils.addUniqueAttribute((LivingEntity) e, "es_vigorous", Attribute.GENERIC_MAX_HEALTH, healthBoost,
+        EntityUtils.addUniqueAttribute((LivingEntity) e, HEALTH_UUID, "es_vigorous", Attribute.GENERIC_MAX_HEALTH, healthBoost,
                 percentileIncrease ? AttributeModifier.Operation.ADD_SCALAR : AttributeModifier.Operation.ADD_NUMBER);
 
         if (cleanup && e instanceof Player) stripEnchantmentAttributesFromAllEquipment((Player) e);
     }
+
+    private final UUID HEALTH_UUID = UUID.fromString("a6bc900f-dee8-47ef-8363-4146f5735703");
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent e){

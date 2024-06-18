@@ -8,6 +8,7 @@ import me.athlaeos.enchantssquared.enchantments.LevelService;
 import me.athlaeos.enchantssquared.enchantments.LevelsFromMainHandAndEquipment;
 import me.athlaeos.enchantssquared.utility.BlockUtils;
 import me.athlaeos.enchantssquared.utility.ItemUtils;
+import me.athlaeos.enchantssquared.utility.PotionEffectMappings;
 import me.athlaeos.enchantssquared.utility.Utils;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -25,7 +26,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
 
@@ -261,8 +261,8 @@ public class Excavation extends CustomEnchant implements TriggerOnBlockBreakEnch
                 e.setCancelled(true);
                 Location o = e.getBlock().getLocation();
                 for (Location l : blocksToBreak){
-                    if (!EnchantsSquared.isWorldGuardAllowed(e.getPlayer(), l, getWorldGuardFlagName())) continue;
                     Location offset = o.clone().add(l.getBlockX(), l.getBlockY(), l.getBlockZ());
+                    if (!EnchantsSquared.isWorldGuardAllowed(e.getPlayer(), o, getWorldGuardFlagName())) continue;
                     if (breakableBlocks.contains(e.getPlayer().getWorld().getBlockAt(offset).getType())){
                         if (e.getPlayer().getGameMode() == GameMode.CREATIVE)
                             e.getPlayer().getWorld().getBlockAt(offset).setType(Material.AIR);
@@ -273,13 +273,13 @@ public class Excavation extends CustomEnchant implements TriggerOnBlockBreakEnch
                 excavatingPlayers.remove(e.getPlayer().getUniqueId());
 
                 if (nerfExcavationSpeed){
-                    PotionEffect existingEffect = e.getPlayer().getPotionEffect(PotionEffectType.SLOW_DIGGING);
+                    PotionEffect existingEffect = e.getPlayer().getPotionEffect(PotionEffectMappings.MINING_FATIGUE.getPotionEffectType());
                     if (existingEffect != null){
                         if (existingEffect.getAmplifier() <= fatigueAmplifier){
-                            e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, fatigueDuration, fatigueAmplifier, true, false, false));
+                            e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectMappings.MINING_FATIGUE.getPotionEffectType(), fatigueDuration, fatigueAmplifier, true, false, false));
                         }
                     } else {
-                        e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, fatigueDuration, fatigueAmplifier, true, false, false));
+                        e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectMappings.MINING_FATIGUE.getPotionEffectType(), fatigueDuration, fatigueAmplifier, true, false, false));
                     }
                 }
             }

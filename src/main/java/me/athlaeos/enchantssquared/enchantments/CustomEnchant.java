@@ -3,6 +3,7 @@ package me.athlaeos.enchantssquared.enchantments;
 import me.athlaeos.enchantssquared.EnchantsSquared;
 import me.athlaeos.enchantssquared.config.ConfigManager;
 import me.athlaeos.enchantssquared.domain.ExecutionPriority;
+import me.athlaeos.enchantssquared.domain.MinecraftVersion;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.utility.ChatUtils;
 import org.bukkit.Location;
@@ -208,7 +209,7 @@ public abstract class CustomEnchant {
             }
         });
         meta.setLore(lore);
-        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_POTION_EFFECTS, ItemFlag.HIDE_DYE);
+        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.valueOf(MinecraftVersion.currentVersionNewerThan(MinecraftVersion.MINECRAFT_1_20_5) ? "HIDE_ADDITIONAL_TOOLTIP" : "HIDE_POTION_EFFECTS"), ItemFlag.HIDE_DYE);
         icon.setItemMeta(meta);
         return icon;
     }

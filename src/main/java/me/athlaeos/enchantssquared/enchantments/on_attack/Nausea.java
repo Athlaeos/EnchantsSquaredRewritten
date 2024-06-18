@@ -10,6 +10,7 @@ import me.athlaeos.enchantssquared.enchantments.LevelsFromOffHandAndEquipment;
 import me.athlaeos.enchantssquared.managers.AnimationRegistry;
 import me.athlaeos.enchantssquared.utility.EntityUtils;
 import me.athlaeos.enchantssquared.utility.ItemUtils;
+import me.athlaeos.enchantssquared.utility.PotionEffectMappings;
 import me.athlaeos.enchantssquared.utility.Utils;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -68,7 +69,7 @@ public class Nausea extends CustomEnchant implements TriggerOnAttackEnchantment 
             int duration = durationBase + ((level - 1) * durationLv);
 
             EntityUtils.applyPotionEffectIfStronger(victim,
-                    new PotionEffect(PotionEffectType.CONFUSION, duration, 1, true, false, true)
+                    new PotionEffect(PotionEffectMappings.NAUSEA.getPotionEffectType(), duration, 1, true, false, true)
             );
 
             if (sound != null) victim.getWorld().playSound(victim.getLocation(), sound, 0.5f, 1f);

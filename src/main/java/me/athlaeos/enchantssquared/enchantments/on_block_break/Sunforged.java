@@ -5,12 +5,12 @@ import me.athlaeos.enchantssquared.domain.MaterialClassType;
 import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
 import me.athlaeos.enchantssquared.enchantments.LevelService;
 import me.athlaeos.enchantssquared.enchantments.LevelsFromMainHandAndEquipment;
+import me.athlaeos.enchantssquared.utility.EnchantmentMappings;
 import me.athlaeos.enchantssquared.utility.ItemUtils;
 import me.athlaeos.enchantssquared.utility.Utils;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Item;
@@ -52,7 +52,7 @@ public class Sunforged extends CustomEnchant implements TriggerOnBlockBreakEncha
         if (fortuneLessSection != null){
             for (String s : fortuneLessSection.getKeys(false)){
                 try{
-                    String recipeResult = smeltConfig.getString("fortune_ignored."+s);
+                    String recipeResult = smeltConfig.getString("fortune_ignored." + s);
                     if (recipeResult == null) continue;
                     fortuneLessDrops.put(Material.matchMaterial(s), Material.matchMaterial(recipeResult));
                 } catch (IllegalArgumentException | NullPointerException ignored){
@@ -65,6 +65,7 @@ public class Sunforged extends CustomEnchant implements TriggerOnBlockBreakEncha
                 try{
                     String recipeResult = smeltConfig.getString("fortune_affected."+s);
                     if (recipeResult == null) continue;
+
                     fortuneDrops.put(Material.matchMaterial(s), Material.matchMaterial(recipeResult));
                 } catch (IllegalArgumentException | NullPointerException ignored){
                 }
@@ -197,28 +198,25 @@ public class Sunforged extends CustomEnchant implements TriggerOnBlockBreakEncha
     public void onBlockDropItem(BlockDropItemEvent e, int level) {
         if (shouldEnchantmentCancel(level, e.getPlayer(), e.getBlock().getLocation())) return;
         ItemStack pickaxe = e.getPlayer().getInventory().getItemInMainHand();
-        boolean dropExp = false;
-        int fortuneLevel = pickaxe.getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS);
+        int fortuneLevel = pickaxe.getEnchantmentLevel(EnchantmentMappings.FORTUNE.getEnchantment());
         for (Item i : e.getItems()){
             ItemStack drop = i.getItemStack();
-            if (!drop.isSimilar(new ItemStack(drop.getType()))) continue; // if the item is not simple, don't do anything
+            if (!drop.isSimilar(new ItemStack(drop.getType()))) {
+                continue; // if the item is not simple, don't do anything
+            }
             if (fortuneLessDrops.containsKey(drop.getType())){
                 drop.setType(fortuneLessDrops.get(drop.getType()));
                 i.setItemStack(drop);
-                dropExp = true;
             } else if (fortuneDrops.containsKey(drop.getType())){
                 int extra = (Utils.getRandom().nextInt(fortuneLevel + 1));
                 drop.setType(fortuneDrops.get(drop.getType()));
                 drop.setAmount(drop.getAmount() + extra);
                 i.setItemStack(drop);
-                dropExp = true;
-            }
-            if (dropExp){
-                int expToDrop = Utils.excessChance(Math.min(1, fortuneLevel * avgExpDropped));
-                if (expToDrop <= 0) return;
-                ExperienceOrb orb = (ExperienceOrb) e.getBlock().getWorld().spawnEntity(e.getBlock().getLocation().add(0.5, 0.5, 0.5), EntityType.EXPERIENCE_ORB);
-                orb.setExperience(expToDrop);
-            }
+            } else continue;
+            int expToDrop = Utils.excessChance(Math.min(1, fortuneLevel * avgExpDropped));
+            if (expToDrop <= 0) return;
+            ExperienceOrb orb = (ExperienceOrb) e.getBlock().getWorld().spawnEntity(e.getBlock().getLocation().add(0.5, 0.5, 0.5), EntityType.EXPERIENCE_ORB);
+            orb.setExperience(expToDrop);
         }
     }
 }

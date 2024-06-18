@@ -21,6 +21,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.UUID;
 
 public class Strength extends CustomEnchant implements TriggerOnRegularIntervalsEnchantment, Listener {
     private final YamlConfiguration config;
@@ -179,9 +180,11 @@ public class Strength extends CustomEnchant implements TriggerOnRegularIntervals
 
         double damageBoost = damageBase + ((level - 1) * damageLv);
 
-        EntityUtils.addUniqueAttribute((LivingEntity) e, "es_strength", Attribute.GENERIC_ATTACK_DAMAGE, damageBoost,
+        EntityUtils.addUniqueAttribute((LivingEntity) e, STRENGTH_UUID, "es_strength", Attribute.GENERIC_ATTACK_DAMAGE, damageBoost,
                 percentileIncrease ? AttributeModifier.Operation.ADD_SCALAR : AttributeModifier.Operation.ADD_NUMBER);
     }
+
+    private final UUID STRENGTH_UUID = UUID.fromString("50795496-8f0e-4318-9f77-3e11b7e342c5");
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent e){

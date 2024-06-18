@@ -23,6 +23,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.UUID;
 
 public class FireResistance extends CustomEnchant implements TriggerOnRegularIntervalsEnchantment, Listener {
     private final YamlConfiguration config;
@@ -182,12 +183,14 @@ public class FireResistance extends CustomEnchant implements TriggerOnRegularInt
                 new PotionEffect(PotionEffectType.FIRE_RESISTANCE, duration, 0, true, false, false)
         );
         if (e.getFireTicks() > 0){
-            EntityUtils.addUniqueAttribute(entity, "es_fire_resistance_slow", Attribute.GENERIC_MOVEMENT_SPEED, -slow,
+            EntityUtils.addUniqueAttribute(entity, FIRE_RESISTANCE_SLOW_UUID, "es_fire_resistance_slow", Attribute.GENERIC_MOVEMENT_SPEED, -slow,
                     AttributeModifier.Operation.ADD_SCALAR);
         } else {
             EntityUtils.removeUniqueAttribute(entity, "es_fire_resistance_slow", Attribute.GENERIC_MOVEMENT_SPEED);
         }
     }
+
+    private final UUID FIRE_RESISTANCE_SLOW_UUID = UUID.fromString("47b66a8b-cd9e-4445-a2b8-8bf12e4f51de");
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent e){
