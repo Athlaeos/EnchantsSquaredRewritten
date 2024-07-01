@@ -1,0 +1,1520 @@
+metrics: true
+
+clean_old_enchantments: false # Some older enchantments used to apply an attribute on an item, but this caused some issues
+# with other plugins. Mainly plugins that interacted with or gave items custom attributes of their own.
+# If you have no such plugins, a cleanup is recommended and you should set this to "true". If you do have such plugins
+# it is likely you can attempt this cleanup, but you should know what happens then:
+# Setting this to true will remove the Max Health attribute from items enchanted with Vigorous, Knockback Resistance from
+# item with Steady, and Armor from items with Plating. If you have item that may have these attributes, but are also capable
+# of having these custom enchantments, your own custom attributes may be removed.
+
+# Level minimum in the enchantment table before custom enchants start appearing
+level_minimum: 30
+# If true, custom enchanted items will also receive a cosmetic glint enchantment. This causes items to glow as if they are
+# enchanted. With this enchantment, though, they cannot be put in the enchantment table any more since they are technically
+# now enchanted.
+enable_cosmetic_glint: true
+# If true, levels will be displayed as roman numerals, otherwise regular numbers will be used
+level_as_roman: true
+# If true, instead of consuming 1-3 levels on enchanting, an equal amount of levels as the enchantment strength will be consumed
+# (level 30 enchants will consume 30 levels)
+consume_all_levels: false
+
+# The amount of times the enchantment table will attempt to roll for custom enchantments
+# This means that the higher this number, the generally more enchantments will appear on an item
+# This also makes this amount the max amount of custom enchants that can appear on an item at once in an enchantment table
+enchantment_table_rolls: 3
+# The additional levels it'll cost to combine items with custom enchants in an anvil
+enchantment_extra_cost: 2
+
+# Disable certain core features of the plugin in case they severely clash with other plugins, or you just don't want to use them.
+disable_anvil: false # Disables custom enchantments from being able to be combined in an anvil
+disable_enchanting: false # Disables custom enchantments from appearing in the enchantment table
+disable_trading: false # Disables villagers from trading custom enchantments
+disable_fishing: false # Disables enchanted books obtained by fishing from receiving custom enchants
+disable_dungeonlootgen: false  # Disables enchanted books obtained from dungeon generated chests from receiving custom enchants
+
+# The maximum amount of enchantments you're allowed to put on a tool
+max_enchants: 5
+
+# The chance for custom enchantments to appear on an item while enchanting, in %
+custom_enchant_rate: 50
+# The chance for an enchanted book in a librarian trade to instead be of a random custom enchantment, in %
+# The enchantments appearing will appear at the same rate they would when enchanting a normal enchanted book, except
+# there will always be just 1 enchantment.
+custom_enchant_trade_rate_book: 33
+# The same as for librarians, but for armorers, toolsmiths, or weaponsmiths. Since these villagers sell items that
+# can contain several enchantments here you can configure the chance and how many custom enchants they may get.
+custom_enchant_trade_rate_other: 33 # Chance for a trade to contain custom enchants in %
+custom_enchant_trade_rolls_other: 2 # Max amount of times it will roll for enchants, will be at least 1.
+
+# You get the deal, when you fish up an enchanted book it may have enchants. Here you can decide if they should also have
+# custom enchants.
+custom_enchant_fish_rate: 33 # Chance for a fished up enchanted book to contain custom enchants
+custom_enchant_fish_rolls: 2 # Max amount of times it will roll for enchants, will be at least 1
+# Same deal but with dungeon generated enchanted books
+custom_enchant_dungeon_rate: 33 # Chance for a dungeon-generated enchanted book to also contain custom enchants
+custom_enchant_dungeon_rolls: 3 # Max amount of times it will roll for enchants, will be at least 1
+
+# If true, players require permissions for each individual enchant to be able to obtain them while enchanting.
+# The permission for each of these will be es.enchant.(enchantment name)
+# The enchantment name will be the name as written down in the config. Example: Curse of burdening will be es.enchant.curse_burden
+permission_required: false
+
+# Include rarity(weight) in /es list enchant descriptions
+eslist_include_weight: true
+# Include max level in /es list enchant descriptions
+eslist_include_max_level: true
+# Include compatible items in /es list enchant descriptions
+eslist_include_compatible_items: true
+
+# To save on performance, a player's equipment and enchantments are cached every x amount of time.
+# The shorter this time, the potentially more performance heavy the plugin becomes. The longer the time,
+# the less accurate equipment detection becomes. This means that with a time of, say, 10 seconds,
+# a player could potentially take off an armor piece with an enchantment and the plugin would still consider them
+# having said enchantment equipped for up to 10 seconds (depending on current cycle).
+# This cache pretty much exclusively applies to enchantments that trigger very frequently, which mainly excludes
+# held item enchantments.
+cache_refresh_time: 1950 # Time is in milliseconds, default little under 2 seconds
+# The cache also saves non-player entities, so if they die or despawn with equipment on the cache may get cluttered.
+# Every x amount of time, the cache will be cleaned up to get rid of all invalid entities in it
+cache_cleanup_delay: 600000 # Time is in milliseconds, default 10 minutes
+
+allow_grindstone_removal: true # If false, grindstones no longer remove custom enchantments
+
+# You may add the following properties to enchantments in case you want them to conflict with other enchantments
+# incompatible_vanilla_enchantments
+# incompatible_custom_enchantments
+# Some enchantments already have this property, look at sunforged or crushing for examples
+
+enchantment_configuration:
+  excavation:
+    description: '&8> Mines a &e2x1&8 - &e+ shaped&8 - &e3x3 area&8 instead of 1x1x1. Sneak while mining to stop this effect.'
+    enchant_name: '&7Excavation' # The lore applied on items, which is also used for determining item enchants
+    max_level: 3 # Maximum level for this enchantment, players will be able to reach this level through the anvil
+    max_level_table: 3 # Maximum level attainable through the enchantment table
+    enabled: true # If disabled, enchant will not be registered at all.
+    weight: 20 # The rarity of the item in weight, lower values mean less common
+    book_only: false # If true, enchant will only appear on books
+    sneak_disable: true # If true, players will be able to sneak to disable the excavation effect
+    nerf_excavation_speed: false # If true, players will be given mining fatigue when mining with excavation.
+    # This is to prevent the player from instant-mining stone with Haste II and Efficiency V
+    fatigue_amplifier: 0 # The strength of mining fatigue applied to the player if nerf_excavation_speed is true
+    fatigue_duration: 20 # The duration of mining fatigue applied to the player if nerf_excavation_speed is true
+    area_leveling: false # If true, the area excavation clears out will scale according to level. Otherwise, excavation mines a 3x3 area
+    # Level I will mine 2 blocks 1 additional block below the mined block
+    # Level II will mine 5 blocks in a + shaped area
+    # Level III will mine 9 blocks in a 3x3 area
+    # Any level higher than this will add a row around the 3x3 area (5x5, 7x7, 9x9, etc.)
+    durability_leveling: false # If true, the chance to consume durability will scale according to levels as defined below.
+    # Otherwise, only durability_decay will be considered.
+    # IF YOU ARE CHANGING THIS TO TRUE, ADJUST THE VALUE OF durability_decay TO 1.0
+    durability_decay: 0.333 # Chance to consume 1 durability per block broken.
+    durability_decay_lv: -0.333 # Additional chance per level to consume 1 durability per block broken IF durability_leveling is enabled
+    # Note: Excavation is severely unbalanced with a durability_decay value of less than 1.
+    # This is because lower values make the tool last significantly longer relatively speaking, being able to break
+    # a lot more blocks a lot faster than it normally would. However, from my experience, players tend to complain their
+    # tools break too fast if this value is set at 1, hence why it's set at 0.33 by default. If you have an economy on your
+    # server it is recommended to keep excavation in mind when balancing it, because players WILL get a LOT of resources.
+    trade_enabled: true # If true, custom enchantments will appear in villager trades
+    trade_cost_base_lower: 32 # Lowest emerald cost value for a level 1 enchantment, cost is random between lower and upper value
+    trade_cost_base_upper: 64 # Highest emerald cost value for a level 1 enchantment
+    trade_cost_lv_lower: 8
+    trade_cost_lv_upper: 16
+      # Example: If an enchant is configured as so:
+      # trade_cost_base_lower: 8
+      # trade_cost_base_upper: 16
+      # trade_cost_lv_lower: 4
+      # trade_cost_lv_upper: 8
+    # A level 1 enchant of this type would cost between 8-16 emeralds, a level 2 would cost 12-24, level 3 16-32, etc.
+    icon: TNT
+    is_treasure: false # If true, treasure enchantments cannot appear naturally during enchanting and only in loot, trades, and fishing.
+    compatible_with:
+      - AXES
+      - PICKAXES
+      - SHOVELS
+      - HOES
+    incompatible_custom_enchantments:
+      - tree_feller
+
+  telekinesis:
+    description: '&8> Any drops from mined blocks are transferred directly to your inventory'
+    enchant_name: '&7Telekinesis'
+    enabled: true
+    weight: 20
+    book_only: false
+    trade_enabled: true
+    trade_cost_base_lower: 32
+    trade_cost_base_upper: 64
+    icon: ENDER_PEARL
+    is_treasure: false
+    compatible_with:
+      - AXES
+      - PICKAXES
+      - SHOVELS
+      - HOES
+
+  tree_feller:
+    description: '&8> Mining a tree, while sneaking, destroys the whole tree instantly'
+    enchant_name: '&7Deforestation'
+    enabled: true
+    weight: 20
+    damage_multiplier: 0.5 # Durability damage multiplier while using tree feller
+    log_limit: 128 # Max amount of logs that can be broken
+    break_leaves: true
+    leaf_limit: 128 # Max amount of leaves that can be broken
+    book_only: false
+    trade_enabled: true
+    trade_cost_base_lower: 32
+    trade_cost_base_upper: 64
+    icon: ENDER_PEARL
+    is_treasure: false
+    incompatible_custom_enchantments:
+      - excavation
+
+  rejuvenation:
+    description: '&8> Slowly regenerates durability'
+    enchant_name: '&7Rejuvenation %lv_roman%' # For enchantments that have a max level higher than 0 you can use either
+    # %lv_roman% for roman numeral levels or %lv_number% for regular number levels, if you prefer lame virgin arabic numbers over epic chad roman numerals
+    enabled: true
+    weight: 80
+    book_only: false
+    max_level: 3
+    max_level_table: 3
+    durability_regeneration_base: 0.1 # Average durability regenerated per second at lv 1
+    durability_regeneration_lv: 0.1 # Additional average durability regenerated per second per level above 1
+    trade_enabled: true
+    trade_cost_base_lower: 12
+    trade_cost_base_upper: 24
+    trade_cost_lv_lower: 6 # Additional emerald cost per extra level added to the lower base cost of an enchant
+    trade_cost_lv_upper: 12 # Additional emerald cost per extra level added to the upper base cost of an enchant
+    icon: ANVIL
+    is_treasure: false
+    compatible_with:
+      - ALL
+    incompatible_vanilla_enchantments:
+      - mending
+
+  lava_walker:
+    description: '&8> Transforms lava under you within a radius of &e0&8-&e1&8-&e2&8 blocks into magma, at the cost of durability.'
+    enchant_name: '&7Lava Walker %lv_roman%'
+    enabled: true
+    weight: 20
+    book_only: false
+    max_level: 2
+    max_level_table: 2
+    durability_degeneration: 0.1 # Chance per block of lava transformed to reduce 1 durability
+    duration: 5000 # converted blocks last for this amount of time (in milliseconds), or -1 if infinite
+    transform_into: 'MAGMA_BLOCK' # The block lava will turn into when walked over
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 32
+    trade_cost_lv_lower: 8
+    trade_cost_lv_upper: 16
+    icon: LAVA_BUCKET
+    is_treasure: false
+    compatible_with:
+      - BOOTS
+    incompatible_vanilla_enchantments:
+      - frost_walker
+
+  shielding:
+    description: '&8> Has a &e20&8-&e40%&8 chance to deflect projectiles that would normally hit you'
+    enchant_name: '&7Shielding %lv_roman%'
+    enabled: true
+    weight: 40
+    book_only: false
+    max_level: 3
+    max_level_table: 3
+    deflect_chance_base: 0.2
+    deflect_chance_lv: 0.1 # Chance per level to deflect a projectile
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 32
+    trade_cost_lv_lower: 8
+    trade_cost_lv_upper: 16
+    icon: SHIELD
+    is_treasure: false
+    compatible_with:
+      - CHESTPLATES
+
+  chemical_shield:
+    description: '&8> While blocking, splash potions and potion effect clouds don''t affect you. Careful, as this also blocks beneficial effects.'
+    enchant_name: '&7Neutralizer'
+    enabled: true
+    weight: 40
+    book_only: false
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 32
+    is_treasure: false
+    icon: MILK_BUCKET
+
+  potion_potency_buff:
+    description: '&8> Most potions you drink will have their duration reduced by &e20&8-&e40%&8, but have their amplifiers increased by &e50&8-&e100%'
+    enchant_name: '&7Potency %lv_roman%'
+    enabled: true
+    weight: 10
+    book_only: false
+    max_level: 2
+    max_level_table: 2
+    amplifier_buff_base: 1.5 # The base multiplier of the amplifier of the potion effects applied on the wearer. Amplifiers are rounded downwards
+    amplifier_buff_lv: 0.5 # Additional multiplier added to the base per level (I = 1.5x, II = 2x, III = 2.5x)
+    duration_buff_base: 0.8 # The base duration bonus added onto the potion effect duration
+    duration_buff_lv: -0.2 # Additional duration per level added onto the potion effect duration
+    duration_minimum: 0.2 # Minimum fraction of the original potion duration. No matter how high the level, it can never go below this.
+    # Both duration_buff_base and duration_buff_lv can be decimal numbers, if whole numbers are used it will add this
+    # number onto the duration in game ticks (20 = 1 second). If decimal numbers are used it will multiply the potion
+    # effect duration with this number and round downwards. Ex: duration_buff_base of 1.5 will increase a buff
+    # duration from 6 seconds to 9 seconds with an enchant strength of I.
+    # With a duration_buff_lv of 0.5 this is added on top of 1.5 and will double the duration from 6 seconds to 12
+    # seconds with an enchant strength of II.
+    # If duration_buff_base is set to 40, it will add a flat 2 seconds to the potion effect duration.
+    # Both values have to be either decimals or whole numbers, if you use a mix of both an error will be shown on startup.
+    exceptions: # The following potion effects cannot be amplified
+      - RESISTANCE
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 32
+    trade_cost_lv_lower: 16
+    trade_cost_lv_upper: 32
+    icon: GLOWSTONE_DUST
+    is_treasure: false
+    compatible_with:
+      - CHESTPLATES
+      - ELYTRA
+
+  steady:
+    description: '&8> Reduces knockback taken by &e20&8-&e40%'
+    enchant_name: '&7Steady %lv_roman%'
+    enabled: true
+    weight: 40
+    book_only: false
+    max_level: 2
+    max_level_table: 2
+    knockback_reduction_lv: 0.2 # Knockback reduced per level
+    trade_enabled: true
+    trade_cost_base_lower: 12
+    trade_cost_base_upper: 24
+    trade_cost_lv_lower: 6
+    trade_cost_lv_upper: 12
+    icon: IRON_BOOTS
+    is_treasure: false
+    compatible_with:
+      - LEGGINGS
+
+  illuminated:
+    description: '&8> Shift-Right click with a pickaxe on an empty surface to place a torch at the cost of &e3 &8durability'
+    enchant_name: '&7Illuminated'
+    enabled: true
+    weight: 40
+    book_only: false
+    durability_cost: 9 # Durability consumed when a torch is placed
+    use_unbreaking: false # If false, the durability cost will always be deducted. If true, the chance to use durability
+    # is reduced.
+    cooldown: 100 # Cooldown in ticks
+    cooldown_message: '&cCooldown: {cooldown}s' # Message sent to player if torch placement is on cooldown
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 32
+    is_treasure: false
+    icon: TORCH
+
+  auto_replant:
+    description: '&8> Right click with a hoe on a fully grown crop to instantly harvest and replant it'
+    enchant_name: '&7Harvesting'
+    enabled: true
+    weight: 80
+    ignore_break_permission: false # If true, the player will not need break permissions to harvest a crop with this enchantment.
+    # Doing so may not produce accurate drops if you have plugins interacting with crop loot
+    book_only: false
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 48
+    is_treasure: false
+    icon: DIAMOND_HOE
+
+  kinship:
+    description: '&8> If the pickaxe matches the material of the ore you''re mining, some durability is restored. &estone:0.05-0.1-0.15&8, &eiron:1-2-3&8, &ediamond:10-20-30&8, &enetherite:50-100-150'
+    enchant_name: '&7Kinship %lv_roman%'
+    enabled: true
+    weight: 80
+    book_only: false
+    max_level: 3
+    max_level_table: 3
+    durability_regen_netherite: 50 # Durability regenerated when mining netherite ore with a netherite pickaxe per level
+    durability_regen_diamond: 10 # Durability regenerated when mining diamond ore with a diamond pickaxe per level
+    durability_regen_iron: 1 # Durability regenerated when mining iron ore with a iron pickaxe per level
+    durability_regen_gold: 3 # Durability regenerated when mining (probably nether) gold ore with a gold pickaxe per level
+    durability_regen_stone: 0.05 # Durability regenerated when mining stone with a stone pickaxe per level
+    fraction_regen: false # If true, kinship will repair a fraction of the durability instead of a flat amount
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 16
+    trade_cost_lv_lower: 4
+    trade_cost_lv_upper: 8
+    is_treasure: false
+    icon: DIAMOND_PICKAXE
+
+  metabolism:
+    description: '&8> Slowly regenerates hunger points while moving'
+    enchant_name: '&7Metabolism %lv_roman%'
+    enabled: true
+    weight: 80
+    book_only: false
+    max_level: 2
+    max_level_table: 2
+    saturation_limit: 5 # Maximum amount of saturation points regenerated if player has 10 full hunger bars
+    hunger_regeneration_base: 0.04 # chance per second to regenerate 1 hunger
+    hunger_regeneration_lv: 0.03 # additional chance per second to regenerate 1 hunger per level
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 32
+    trade_cost_lv_lower: 8
+    trade_cost_lv_upper: 16
+    icon: GOLDEN_CARROT
+    is_treasure: false
+    compatible_with:
+      - HELMETS
+      - CHESTPLATES
+      - LEGGINGS
+      - BOOTS
+
+  vigorous:
+    reset_health: false # Vigorous recently went through a significant technical change, meaning the extra health it
+    # provides no longer comes in the form of changing your max health attribute and now in the form of item attributes.
+    # This means players who still have their max hp altered will continue to have this max hp altered after the plugin
+    # updated, so they'll have more health than they're supposed to. This makes sure their health is reset to 20 while
+    # it's set to "true", after all players have their health reset it may be set back to false so you can do custom
+    # things with the player's health once more.
+    description: '&8> Adds &e1&8 per level extra max health to the wearer'
+    enchant_name: '&7Vigorous %lv_roman%'
+    enabled: true
+    weight: 40
+    book_only: false
+    max_level: 5
+    max_level_table: 5
+    percentile_increase: false
+    health_base: 1 # Extra half-hearts added to the wearer's max health at level 1
+    health_lv: 1 # Additional half-hearts added to the wearer's max health per level
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 16
+    trade_cost_lv_lower: 6
+    trade_cost_lv_upper: 12
+    icon: GOLDEN_APPLE
+    is_treasure: false
+    compatible_with:
+      - HELMETS
+      - CHESTPLATES
+      - LEGGINGS
+      - BOOTS
+
+  reinforced_plating:
+    description: '&8> Adds &e2&8 per level extra armor to the item'
+    enchant_name: '&7Plating %lv_roman%'
+    enabled: true
+    weight: 40
+    book_only: false
+    max_level: 3
+    max_level_table: 3
+    armor_base: 2
+    armor_lv: 2 # Extra armor added to the item per level
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 32
+    trade_cost_lv_lower: 8
+    trade_cost_lv_upper: 16
+    icon: IRON_INGOT
+    is_treasure: false
+    compatible_with:
+      - ELYTRA
+
+  sunforged:
+    description: '&8> Smelts blocks mined'
+    enchant_name: '&7Sunforged'
+    enabled: true
+    weight: 20
+    book_only: false
+    drop_exp_chance: 0.1 # Average exp dropped per block smelted, multiplied by level of fortune
+    # Blocks and recipes can be found in smeltblocksrecipes.yml
+    trade_enabled: true
+    trade_cost_base_lower: 32
+    trade_cost_base_upper: 48
+    icon: FURNACE
+    is_treasure: false
+    compatible_with:
+      - AXES
+      - PICKAXES
+      - SHOVELS
+      - HOES
+    incompatible_vanilla_enchantments:
+      - silk_touch
+
+  flight:
+    description: '&8> Allows the wearer temporary flight at the cost of durability for &e5&8-&e10&8-&e15&8 seconds at a time. Recharge your flight by standing on the ground at &e1&8-&e1.5&8-&e2x&8 speed'
+    enchant_name: '&7Wings %lv_roman%'
+    enabled: true
+    max_level: 3
+    max_level_table: 2
+    # If flight_duration_base is set to 0, flight will not run out (as long as they have durability, of course)
+    # If it's higher than 0, the next options determine how long a player can fly for before they have to
+    # go back to the ground to recharge and if they gain slow fall if it expires. Or if they have a fuel bar displayed.
+    flight_duration_base: 5000 # Base duration a player can fly in milliseconds
+    flight_duration_lv: 5000 # Additional duration per level a player will be able to fly
+    regeneration_base: 500 # Base speed at which your flight duration or "fuel" regenerates when on ground, in milliseconds per 0.5 seconds
+    regeneration_lv: 250 # Additional speed at which your flight duration or "fuel" regenerates when on ground
+    slowfall_duration: 200 # The duration of the slow falling buff in ticks (20 = 1 second)
+    flight_bar: false # If true, while in flight a small "fuel" bar will appear above your hotbar displaying
+    # how much flight you have left.
+    flight_bar_display: '&c%fuel%'
+    flight_bar_present: '&e' # Color used for present fuel
+    flight_bar_absent: '&c' # Color used for absent fuel
+    flight_bossbar: true
+    flight_bossbar_title: '&cFuel'
+    flight_bossbar_color: RED
+    flight_bossbar_shape: SEGMENTED_6
+    weight: 10
+    book_only: false
+    durability_decay: 1.0 # Average durability damage taken per half second (affected by unbreaking)
+    trade_enabled: true
+    trade_cost_base_lower: 48
+    trade_cost_base_upper: 64
+    icon: FEATHER
+    is_treasure: false
+    compatible_with:
+      - BOOTS
+
+  speed_boost:
+    description: '&8> Grants the wearer &e20&8-&e30%&8 increased movement speed while wearing'
+    enchant_name: '&7Fleeting %lv_roman%'
+    enabled: true
+    weight: 40
+    book_only: false
+    max_level: 2
+    max_level_table: 2
+    speed_base: 0.2 # Base % movement speed buff at level 1
+    speed_lv: 0.1 # % movement speed buff per level above 1
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 32
+    trade_cost_lv_lower: 16
+    trade_cost_lv_upper: 32
+    icon: SUGAR
+    is_treasure: false
+    compatible_with:
+      - BOOTS
+
+  fire_resistance:
+    description: '&8> Grants the wearer fire resistance while wearing, but applies a significant slow while on fire'
+    enchant_name: '&7Basalt Skin'
+    enabled: true
+    weight: 10
+    book_only: false
+    duration: 100 # Duration of fire resistance buff granted per movement packet (20 = 1 second)
+    slow: 0.25 # Slowness applied while the player is on fire
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 64
+    trade_cost_lv_lower: 0
+    trade_cost_lv_upper: 0
+    icon: MAGMA_CREAM
+    is_treasure: false
+    compatible_with:
+      - CHESTPLATES
+
+  jump_boost:
+    description: '&8> Grants the wearer jump boost &eI&8-&eII&8 while wearing'
+    enchant_name: '&7Leaping %lv_roman%'
+    enabled: true
+    weight: 40
+    book_only: false
+    max_level: 2
+    max_level_table: 2
+    amplifier: 0 # Base strength of jump boost buff (an amplifier of 0 means the effect is applied at level I, 1 is II, etc.)
+    amplifier_lv: 1 # Additional strength of jump buff per level
+    duration: 100 # Duration of jump boost buff granted per movement packet (20 = 1 second)
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 16
+    trade_cost_lv_lower: 8
+    trade_cost_lv_upper: 16
+    icon: RABBIT_FOOT
+    is_treasure: false
+    compatible_with:
+      - BOOTS
+
+  luck:
+    description: '&8> Grants the player &e1&8-&e2&8-&e3&8 luck while wearing'
+    enchant_name: '&7Blessing %lv_roman%'
+    enabled: true
+    weight: 40
+    book_only: false
+    max_level: 3
+    max_level_table: 3
+    percentile_increase: false
+    luck_base: 1 # Base luck granted at level 1
+    luck_lv: 1 # Additional luck granted per level
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 32
+    trade_cost_lv_lower: 8
+    trade_cost_lv_upper: 16
+    icon: GOLD_INGOT
+    is_treasure: false
+    compatible_with:
+      - CHESTPLATES
+
+  scale:
+    description: '&8> Makes you &e25&8-&e50%&8 smaller, &calso affecting your block- and attack reach'
+    enchant_name: '&9Pact of the Faerie %lv_roman%'
+    enabled: true
+    weight: 20
+    book_only: false
+    max_level: 2
+    max_level_table: 2
+    scale_base: -0.25 # Base scale granted at level 1
+    scale_lv: -0.25 # Additional scale granted per level
+    affects_reach: true # If true, the scale modifications also affect entity and block range
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 32
+    trade_cost_lv_lower: 8
+    trade_cost_lv_upper: 16
+    icon: SLIME_BLOCK
+    is_treasure: false
+    compatible_with:
+      - CHESTPLATES
+      - ELYTRAS
+    incompatible_custom_enchantments:
+      - scale2
+
+  scale2:
+    description: '&8> Increases your block- and attack reach by &e25&8-&e50%&8, &cbut also makes you &425&8-&450%&8 bigger'
+    enchant_name: '&9Pact of the Jotunn %lv_roman%'
+    enabled: true
+    weight: 20
+    book_only: false
+    max_level: 2
+    max_level_table: 2
+    scale_base: 0.25 # Base scale granted at level 1
+    scale_lv: 0.25 # Additional scale granted per level
+    affects_reach: true # If true, the scale modifications also affect entity and block range
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 32
+    trade_cost_lv_lower: 8
+    trade_cost_lv_upper: 16
+    icon: ZOMBIE_HEAD
+    is_treasure: false
+    compatible_with:
+      - CHESTPLATES
+    incompatible_custom_enchantments:
+      - scale
+
+  step_height:
+    description: '&8> Allows you to step up full blocks'
+    enchant_name: '&7Strider'
+    enabled: true
+    weight: 40
+    book_only: false
+    max_level: 1
+    max_level_table: 1
+    step_height_base: 0.5 # Base step height granted at level 1
+    step_height_lv: 0 # Additional step height granted per level
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 32
+    trade_cost_lv_lower: 8
+    trade_cost_lv_upper: 16
+    icon: SADDLE
+    is_treasure: false
+    compatible_with:
+      - LEGGINGS
+
+  block_reach:
+    description: '&8> Allows you to reach blocks &e2&8-&e4&8-&26 &8blocks further'
+    enchant_name: '&7Aspect of the Enderman %lv_roman%'
+    enabled: true
+    weight: 20
+    book_only: false
+    max_level: 3
+    max_level_table: 3
+    block_reach_base: 2 # Base block reach granted at level 1
+    block_reach_lv: 2 # Additional block reach granted per level
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 32
+    trade_cost_lv_lower: 8
+    trade_cost_lv_upper: 16
+    icon: PISTON
+    is_treasure: false
+    compatible_with:
+      - CHESTPLATES
+
+  trident_sharpness:
+    description: '&8> Tridents do &e0.75&8-&e1.5&8-&e2.25&8-&e3.0&8-&e3.75&8 more damage'
+    enchant_name: '&7Piercing %lv_roman%'
+    enabled: true
+    weight: 40
+    book_only: false
+    max_level: 5
+    max_level_table: 4
+    damage_base: 0.75 # Base strength of jump boost buff (an amplifier of 0 means the effect is applied at level I, 1 is II, etc.)
+    damage_lv: 0.75 # Additional strength of jump buff per level
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 12
+    trade_cost_lv_lower: 8
+    trade_cost_lv_upper: 12
+    icon: TRIDENT
+    is_treasure: false
+
+  grappling:
+    description: '&8> Turns fishing rods into grappling hooks. The hook must be connected to a surface to be able to grapple to it'
+    enchant_name: '&7Grappling %lv_roman%'
+    enabled: true
+    weight: 40
+    book_only: false
+    cooldown: 60 # Cooldown, in ticks
+    cooldown_message: '&cCooldown: %cooldown%s'
+    require_hooking: true # Hook needs to be stuck on a surface for you to be able to grapple to it
+    max_level: 2
+    max_level_table: 1
+    force_base: 0.07 # Base strength of jump boost buff (an amplifier of 0 means the effect is applied at level I, 1 is II, etc.)
+    force_lv: 0.05 # Additional strength of jump buff per level
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 12
+    trade_cost_lv_lower: 8
+    trade_cost_lv_upper: 12
+    icon: FISHING_ROD
+    is_treasure: false
+
+  night_vision:
+    description: '&8> Grants the player night vision while wearing'
+    enchant_name: '&7Nightvision'
+    enabled: true
+    weight: 20
+    book_only: false
+    duration: 300 # Duration of night vision buff granted per movement packet (20 = 1 second)
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 48
+    icon: GOLDEN_CARROT
+    is_treasure: false
+    compatible_with:
+      - HELMETS
+
+  water_breathing:
+    description: '&8> Grants the player water breathing while wearing'
+    enchant_name: '&7Gills'
+    enabled: true
+    weight: 80
+    book_only: false
+    duration: 100 # Duration of water breathing buff granted per movement packet (20 = 1 second)
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 48
+    icon: PUFFERFISH
+    is_treasure: false
+    compatible_with:
+      - HELMETS
+
+  haste:
+    description: '&8> Grants the player haste &eI&8-&eII&8 while holding'
+    enchant_name: '&7Quickened %lv_roman%'
+    enabled: true
+    weight: 10
+    book_only: false
+    max_level: 2
+    max_level_table: 2
+    amplifier: 0 # Base strength of haste buff (an amplifier of 0 means the effect is applied at level I, 1 is II, etc.)
+    amplifier_lv: 1 # Additional strength of haste buff per level
+    duration: 100 # Duration of haste buff granted per movement packet (20 = 1 second)
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 32
+    trade_cost_lv_lower: 16
+    trade_cost_lv_upper: 32
+    icon: GOLDEN_PICKAXE
+    is_treasure: false
+    compatible_with:
+      - SWORDS
+      - PICKAXES
+      - SHOVELS
+      - AXES
+      - HOES
+
+  strength:
+    description: '&8> Grants the player &e+3&8-&e6&8 attack damage while holding'
+    enchant_name: '&7Barbarian %lv_roman%'
+    enabled: true
+    weight: 40
+    book_only: false
+    max_level: 2
+    max_level_table: 2
+    percentile_increase: false # If true, barbarian instead applies a % boost to damage. 0.2 for example is +20%, simply replace
+    # damage_base and damage_lv with such numbers to get the amounts you want
+    damage_base: 3
+    damage_lv: 3
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 32
+    trade_cost_lv_lower: 8
+    trade_cost_lv_upper: 16
+    icon: BLAZE_POWDER
+    is_treasure: false
+    compatible_with:
+      - AXES
+
+  vitality:
+    description: '&8> Increases the wearer/holder''s healing by &e5%&8 per level, adding up all vitality you have on all pieces of armor up to &e100%.'
+    enchant_name: '&7Vitality %lv_roman%'
+    enabled: true
+    weight: 80
+    book_only: false
+    max_level: 5
+    max_level_table: 4
+    extra_healing_base: 5 # base healing in % at level 1
+    extra_healing_lv: 5 # additional healing in % per level per piece of armor.
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 16
+    trade_cost_lv_lower: 6
+    trade_cost_lv_upper: 12
+    icon: ENCHANTED_GOLDEN_APPLE
+    is_treasure: false
+    compatible_with:
+      - HELMETS
+      - CHESTPLATES
+      - LEGGINGS
+      - BOOTS
+
+  withering:
+    description: '&8> Has a &e5&8-&e10&8-&e15%&8 chance to inflict the entity you''re damaging with Wither'
+    enchant_name: '&7Withering %lv_roman%'
+    enabled: true
+    weight: 120
+    book_only: false
+    max_level: 3
+    max_level_table: 3
+    apply_chance: 0.05 # The base chance the damaged target is inflicted with withering
+    apply_chance_lv: 0.05 # The additional chance per level the damaged target is inflicted with withering
+    amplifier: 0 # Base amplitude of the debuff
+    amplifier_lv: 1 # Additional amplitude debuff strength per level
+    duration: 20 # Base duration of the debuff (20 = 1 second)
+    duration_lv: 20 # Additional duration of the debuff per level
+    animation: splash-#212121 # valid particle animations are: splash
+    sound: ENTITY_WITHER_SKELETON_DEATH
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 16
+    trade_cost_lv_lower: 4
+    trade_cost_lv_upper: 8
+    icon: WITHER_SKELETON_SKULL
+    is_treasure: false
+    compatible_with:
+      - SWORDS
+      - BOWS
+      - CROSSBOWS
+
+  poisoning:
+    description: '&8> Has a &e5&8-&e10&8-&e15%&8 chance to inflict the entity you''re damaging with Poison'
+    enchant_name: '&7Poisoning %lv_roman%'
+    enabled: true
+    weight: 120
+    book_only: false
+    max_level: 3
+    max_level_table: 3
+    apply_chance: 0.05 # The base chance the damaged target is inflicted with poisoning
+    apply_chance_lv: 0.05 # The additional chance per level the damaged target is inflicted with poisoning
+    amplifier: 0 # Base amplitude of the debuff
+    amplifier_lv: 1 # Additional amplitude debuff strength per level
+    duration: 20 # Base duration of the debuff (20 = 1 second)
+    duration_lv: 20 # Additional duration of the debuff per level
+    sound: ENTITY_GENERIC_EXTINGUISH_FIRE
+    animation: splash-#325231
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 16
+    trade_cost_lv_lower: 4
+    trade_cost_lv_upper: 8
+    icon: SPIDER_EYE
+    is_treasure: false
+    compatible_with:
+      - SWORDS
+      - BOWS
+      - CROSSBOWS
+
+  lightning:
+    description: '&8> Has a &e5&8-&e10&8-&e15%&8 chance to strike the enemy with lightning'
+    enchant_name: '&7Ionizing %lv_roman%'
+    enabled: true
+    weight: 40
+    book_only: false
+    max_level: 3
+    max_level_table: 3
+    apply_chance: 0.05 # The base chance the damaged target is inflicted with poisoning
+    apply_chance_lv: 0.05 # The additional chance per level the damaged target is inflicted with poisoning
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 16
+    trade_cost_lv_lower: 4
+    trade_cost_lv_upper: 8
+    icon: DIAMOND
+    is_treasure: false
+    compatible_with:
+      - BOWS
+      - CROSSBOWS
+
+  weakening:
+    description: '&8> Has a &e5&8-&e10%&8 chance to inflict the entity you''re damaging with Weakness'
+    enchant_name: '&7Weakening %lv_roman%'
+    enabled: true
+    weight: 40
+    book_only: false
+    max_level: 2
+    max_level_table: 2
+    apply_chance: 0.05 # The base chance the damaged target is inflicted with weakening
+    apply_chance_lv: 0.05 # The additional chance per level the damaged target is inflicted with weakening
+    amplifier: 0 # Base amplitude of the debuff
+    amplifier_lv: 0 # Additional amplitude debuff strength per level
+    duration: 40 # Base duration of the debuff (20 = 1 second)
+    duration_lv: 20 # Additional duration of the debuff per level
+    sound: ENTITY_ITEM_BREAK
+    animation: splash-#3b3b3b
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 16
+    trade_cost_lv_lower: 4
+    trade_cost_lv_upper: 8
+    icon: FERMENTED_SPIDER_EYE
+    is_treasure: false
+    compatible_with:
+      - SWORDS
+      - BOWS
+      - CROSSBOWS
+
+  stunning:
+    description: '&8> Has a &e2&8-&e4%&8 chance to inflict the entity you''re damaging with a stun. Axes are twice as potent'
+    # A stun is a combination of 5 very strong debuffs, mining fatigue, slowness, weakness, blindness, and jump boost (to cancel jumping)
+    enchant_name: '&7Blunt %lv_roman%'
+    enabled: true
+    weight: 20
+    book_only: false
+    max_level: 2
+    max_level_table: 2
+    apply_chance: 0.02 # The base chance the damaged target is inflicted with several debuffs removing all mobility
+    apply_chance_lv: 0.02 # The additional chance per level the damaged target is inflicted with a stun
+    duration: 20 # Base duration of the debuff (20 = 1 second)
+    duration_lv: 20 # Additional duration of the debuff per level
+    buffed_axe_potency: 2.0 # (pick)axes multiply the chance to stun targets by the given amount over swords or (cross)bows
+    animation: flash-1
+    sound: ENCHANT_THORNS_HIT
+    trade_enabled: true
+    trade_cost_base_lower: 12
+    trade_cost_base_upper: 24
+    trade_cost_lv_lower: 6
+    trade_cost_lv_upper: 12
+    icon: IRON_BLOCK
+    is_treasure: false
+    compatible_with:
+      - SWORDS
+      - BOWS
+      - CROSSBOWS
+      - AXES
+      - PICKAXES
+
+  slowness:
+    description: '&8> Has a &e4&8-&e8%&8 chance to inflict the entity you''re damaging with Slowness'
+    enchant_name: '&7Crippling %lv_roman%'
+    enabled: true
+    weight: 40
+    book_only: false
+    max_level: 2
+    max_level_table: 2
+    apply_chance: 0.04 # The base chance the damaged target is inflicted with slowing
+    apply_chance_lv: 0.04 # The additional chance per level the damaged target is inflicted with slowing
+    amplifier: 0 # Base amplitude of the debuff
+    amplifier_lv: 1 # Additional amplitude debuff strength per level
+    duration: 40 # Base duration of the debuff (20 = 1 second)
+    duration_lv: 20 # Additional duration of the debuff per level
+    sound: splash-#2d4f52
+    animation: none
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 16
+    trade_cost_lv_lower: 4
+    trade_cost_lv_upper: 8
+    icon: ICE
+    is_treasure: false
+    compatible_with:
+      - SWORDS
+      - BOWS
+      - CROSSBOWS
+
+  blinding:
+    description: '&8> Has a &e2&8-&e4&8-&e6%&8 chance to inflict the entity you''re damaging with Blindness'
+    enchant_name: '&7Blinding %lv_roman%'
+    enabled: true
+    weight: 40
+    book_only: false
+    max_level: 3
+    max_level_table: 3
+    apply_chance: 0.02 # The base chance the damaged target is inflicted with blindness
+    apply_chance_lv: 0.02 # The additional chance per level the damaged target is inflicted with blindness
+    duration: 20 # Base duration of the debuff (20 = 1 second)
+    duration_lv: 10 # Additional duration of the debuff per level
+    sound: NONE
+    animation: splash-#000000
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 16
+    trade_cost_lv_lower: 4
+    trade_cost_lv_upper: 8
+    icon: OBSIDIAN
+    is_treasure: false
+    compatible_with: # Limited to weapons
+      - SWORDS
+      - BOWS
+      - CROSSBOWS
+      - AXES
+
+  shield_downer:
+    description: '&8> Has a &e20&8-&e40&8-&e60%&8 chance to disable a shield for &e2&8-&e3&8-&e4&8 seconds'
+    enchant_name: '&7Splintering %lv_roman%'
+    enabled: true
+    weight: 40
+    book_only: false
+    max_level: 3
+    max_level_table: 3
+    apply_chance: 0.2 # The base chance the damaged player's shield gets disabled
+    apply_chance_lv: 0.2 # The additional chance per level the damaged player's shield gets disabled
+    duration: 40 # Base duration of the debuff (20 = 1 second)
+    duration_lv: 20 # Additional duration of the debuff per level
+    sound: ENTITY_ZOMBIE_BREAK_WOODEN_DOOR
+    animation: none
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 16
+    trade_cost_lv_lower: 4
+    trade_cost_lv_upper: 8
+    icon: IRON_AXE
+    is_treasure: false
+    compatible_with:
+      - AXES
+
+  nausea:
+    description: '&8> Has a &e3&8-&e5%&8 chance to inflict the entity you''re damaging with Nausea'
+    enchant_name: '&7Concussion %lv_roman%'
+    enabled: true
+    weight: 80
+    book_only: false
+    max_level: 2
+    max_level_table: 2
+    apply_chance: 0.03 # The base chance the damaged target is inflicted with nausea
+    apply_chance_lv: 0.02 # The additional chance per level the damaged target is inflicted with nausea
+    duration: 60 # Base duration of the debuff (20 = 1 second)
+    sound: NONE
+    animation: flash-1
+    duration_lv: 20 # Additional duration of the debuff per level
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 16
+    trade_cost_lv_lower: 4
+    trade_cost_lv_upper: 8
+    icon: IRON_SHOVEL
+    is_treasure: false
+    compatible_with: # Limited to weapons
+      - SWORDS
+      - BOWS
+      - CROSSBOWS
+
+  streak_damage:
+    description: '&8> Reduces your damage by &c20&8-&c40%&8, &cbut &8grants you &e5&8-&e10%&8 increased damage per hit up to &e+50&8-&e100% &8damage. You lose this damage bonus when you take damage yourself. Damage penalty and bonus are halved with ranged hits'
+    enchant_name: '&9Pact of the Perfectionist %lv_roman%'
+    enabled: true
+    weight: 20
+    book_only: false
+    max_level: 2
+    max_level_table: 2
+    max_stacks_base: 14
+    max_stacks_lv: 0
+    damage_bonus_base: -0.2
+    damage_bonus_lv: -0.2
+    damage_stack_base: 0.05
+    damage_stack_lv: 0.05
+    stacks_fraction_lost_base: 1
+    stacks_fraction_lost_lv: 0
+    ranged_damage_penalty: 0.5
+    stacks_message_format: "&eHit steak! &7(&6%stacks%&7)"
+    stacks_message_max: "&eHit steak! &7(&6&lMAX&7)"
+    stacks_lost_message: "&cLost streak &7(&4%stacks%&7)"
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 32
+    trade_cost_lv_lower: 16
+    trade_cost_lv_upper: 32
+    icon: DIAMOND
+    is_treasure: false
+    compatible_with: # Limited to weapons
+      - SWORDS
+      - AXES
+      - BOWS
+      - CROSSBOWS
+
+  ground_stomping:
+    description: '&8> Immunity to fall damage. Landing after great falls deals damage in a radius. Damage and radius increase with distance, scaling &e60&8-&e100% &8faster. While sneaking, you fall &e2.5x &8faster. Effect has a &e20&8-&e10 second &8cooldown'
+    enchant_name: '&7Mass %lv_roman%'
+    enabled: true
+    weight: 5
+    book_only: false
+    max_level: 2
+    max_level_table: 2
+    damage_block_base: 0.6 # Damage dealt per block fallen at lv1
+    damage_block_lv: 0.4 # Damage dealt per block fallen for each level above 1
+    radius_block_base: 0.3 # Explosion radius per block fallen at lv1
+    radius_block_lv: 0.2 # Explosion radius per block fallen for each level above 1
+    minimum_falling_distance: 10 # Minimum falling distance required to cause explosion
+    radius_max: 20 # Maximum radius for fall explosion. Should not be too big, or it can cause lag
+    damage_max: 40 # Maximum damage dealt in explosion
+    sweet_spot_dropoff: 0.5 # Damage decreases the further away the target is from the explosion. This value represents the fraction of damage taken at the very edge of the explosion. The closer to the center, the more damage dealt
+    elytra_multiplier: 5 # Colliding with walls while gliding also causes this effect, but with an elytra you typically don't fly fast enough to cause major damage. So both damage and radius are multiplied by this value if gliding with an elytra
+    gravity_multiplier: 1.5 # Gravity multiplier while sneaking
+    cooldown_base: 400 # Base cooldown of effect (in game ticks)
+    cooldown_lv: -200
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 32
+    trade_cost_lv_lower: 16
+    trade_cost_lv_upper: 32
+    icon: ANVIL
+    is_treasure: false
+    compatible_with: # Limited to boots
+      - BOOTS
+      - ELYTRAS
+
+  exploding:
+    description: '&8> Killing an entity causes a fiery explosion in a &e2&8-&23&8-&e4 &8block radius, dealing &e2&8-&e4&8-&e6 &8immediate damage and &e4&8-&e6&8-&e8 &8burn damage'
+    enchant_name: '&7Will ''o'' Wisp %lv_roman%'
+    enabled: true
+    weight: 20
+    book_only: false
+    max_level: 3
+    max_level_table: 3
+    radius_base: 2
+    radius_lv: 1
+    damage_base: 2
+    damage_lv: 2
+    duration_base: 100
+    duration_lv: 40
+    pulse: true # If true, a pulse animation will play when an entity explodes
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 32
+    trade_cost_lv_lower: 16
+    trade_cost_lv_upper: 32
+    icon: MAGMA_CREAM
+    is_treasure: false
+    compatible_with: # Limited to boots
+      - CHESTPLATES
+
+  toxic:
+    description: '&8> Hitting an entity reduces its healing received by &e40&8-&e60&8-&e80%&8 for &e4&8-&e5&8-&e6&8 seconds'
+    enchant_name: '&7Toxic %lv_roman%'
+    enabled: true
+    weight: 80
+    book_only: false
+    max_level: 3
+    max_level_table: 3
+    healing_reduction_base: 0.4 # Base healing reduction at lv 1
+    healing_reduction_lv: 0.2 # Additional healing reduction for each additional level
+    duration_base: 80 # Base duration in ticks
+    duration_lv: 20 # Additional duration per level in ticks
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 16
+    trade_cost_lv_lower: 4
+    trade_cost_lv_upper: 8
+    icon: BARRIER
+    is_treasure: false
+    compatible_with: # Limited to weapons
+      - CROSSBOWS
+      - BOWS
+      - SWORDS
+
+  crushing:
+    description: '&8> For each piece of heavy armor the enemy is wearing(gold, iron, netherite), you deal &e2.5&8-&e3.75&8-&e5%&8 more damage'
+    enchant_name: '&7Crushing %lv_roman%'
+    enabled: true
+    weight: 20
+    book_only: false
+    max_level: 3
+    max_level_table: 3
+    damage_base: 2.5 # Base additional damage dealt per piece of iron/gold/netherite armor at enchantment level 1
+    damage_lv: 1.25 # Additional damage dealt per piece of iron/gold/netherite armor per extra level
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 24
+    trade_cost_lv_lower: 8
+    trade_cost_lv_upper: 12
+    icon: IRON_CHESTPLATE
+    is_treasure: false
+    compatible_with:
+      - CROSSBOWS
+      - AXES
+    incompatible_custom_enchantments:
+      - perforating
+
+  perforating:
+    description: '&8> For each piece of light armor the enemy is wearing(leather, chain, diamond), you deal &e2.5&8-&e3.75&8-&e5%&8 more damage'
+    enchant_name: '&7Perforating %lv_roman%'
+    enabled: true
+    weight: 20
+    book_only: false
+    max_level: 3
+    max_level_table: 3
+    damage_base: 2.5 # Base additional damage dealt per piece of leather/chainmail/diamond armor at enchantment level 1
+    damage_lv: 1.25 # Additional damage dealt per piece of leather/chainmail/diamond armor per extra level
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 24
+    trade_cost_lv_lower: 8
+    trade_cost_lv_upper: 12
+    icon: CHAINMAIL_CHESTPLATE
+    is_treasure: false
+    compatible_with:
+      - CROSSBOWS
+      - AXES
+    incompatible_custom_enchantments:
+      - crushing
+
+  aoe_arrows:
+    description: '&8> Hitting an arrow on an entity deals &e50&8-&e70&8-&e90%&8 of the damage to all enemies in a &e1.5&8-&e2&8-&e2.5&8 block radius around that initial entity'
+    enchant_name: '&7Scattershot %lv_roman%'
+    enabled: true
+    weight: 20
+    book_only: false
+    max_level: 3
+    max_level_table: 3
+    aoe_damage_base: 0.5 # Fraction of the damage dealt to the main entity hit that's inflicted on mobs around it
+    aoe_damage_lv: 0.2 # Additional damage per level dealt to mobs around the main mob hit.
+    # Example: level I will deal 50% of the main damage dealt in an AOE, level II will increase this to 70%, III to 90%, etc.
+    radius_base: 1.5 # Base radius of AOE around mob damaged
+    radius_lv: 0.5 # Additional radius per level of AOE around mob damaged
+    explosion: true # Displays and plays the sound of an explosion when the arrow hits a target
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 16
+    trade_cost_lv_lower: 4
+    trade_cost_lv_upper: 8
+    icon: TIPPED_ARROW
+    is_treasure: false
+    compatible_with: # Not limited to ranged weapons
+      - CROSSBOWS
+      - BOWS
+
+  pulling:
+    description: '&8> Hitting an arrow on an entity has a &e20&8-&e40&8-&e60%&8 chance to pull it closer. The pulling effect becomes stronger per level as well.'
+    enchant_name: '&7Rope Dart %lv_roman%'
+    enabled: true
+    weight: 10
+    book_only: false
+    max_level: 3
+    max_level_table: 3
+    pull_chance_base: 0.2
+    pull_chance_lv: 0.2
+    pull_strength_base: 0.2 # Pulling force at level 1, this force is relative to the attacker and becomes stronger with distance.
+    pull_strength_lv: 0.2
+    pull_strength_max_base: 0.3 # If the distance is big enough for the pulling force to exceed this maximum, it is capped at this maximum
+    pull_strength_max_lv: 0.3
+    # This pulling force equates to 2/10th (0.2) of the distance between the shooter and target per level, up to 15 blocks (0.3/0.2 = 1.5, 0.2 being 2 every 10 blocks, so 15)
+    # Meaning the pulling force does not become stronger after 15 blocks
+    proc_sound: ITEM_TRIDENT_HIT # Sound both the victim and attacker hear if an attack will cause a pull after the given delay
+    pull_sound: ENTITY_FISHING_BOBBER_RETRIEVE # Sound both the victim and attacker hear when the victim is pulled in
+    pull_delay: 20 # Delay (in ticks) after which the hit target will be pulled towards the attacker
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 16
+    trade_cost_lv_lower: 4
+    trade_cost_lv_upper: 8
+    icon: STRING
+    is_treasure: false
+    compatible_with: # Not limited to ranged weapons
+      - CROSSBOWS
+      - BOWS
+
+  rapid_shot:
+    description: '&8> Grants a &e20&8-&e40&8-&e60%&8 chance to shoot &e2&8-&e3&8-&e4&8 arrows in quick succession. These arrows, except the last one, remove immunity frames from the hit target, but deal only &e50&8-&e45&8-&e40%&8 damage.'
+    enchant_name: '&7Rapid Shot %lv_roman%'
+    enabled: true
+    weight: 10
+    book_only: false
+    max_level: 3
+    max_level_table: 3
+    chance_base: 0.2
+    chance_lv: 0.2
+    count_base: 2
+    count_lv: 1
+    damage_multiplier_base: 0.5 # Damage multiplier of the arrows shot at lv 1
+    damage_multiplier_lv: -0.05 # Added damage multiplier per level above 1
+    shot_delay: 3 # Delay (in ticks) between each shot. Should probably not be lower than 2, because immunity frames can only be removed 1 tick after removal. If people are hit while still immune the arrow will just not do damage
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 16
+    trade_cost_lv_lower: 4
+    trade_cost_lv_upper: 8
+    icon: TIPPED_ARROW
+    is_treasure: false
+    compatible_with: # Limited to bows and crossbows
+      - CROSSBOWS
+      - BOWS
+
+  sapping:
+    description: '&8> Killing an entity adds &e1&8-&e1.5&8-&e2&8 more EXP'
+    enchant_name: '&7Sapping %lv_roman%'
+    enabled: true
+    weight: 20
+    book_only: false
+    max_level: 3
+    max_level_table: 3
+    exp_base: 1 # Additional exp per mob killed
+    exp_lv: 0.5 # Additional exp per level per mob killed
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 32
+    trade_cost_lv_lower: 8
+    trade_cost_lv_upper: 16
+    icon: EXPERIENCE_BOTTLE
+    is_treasure: false
+    compatible_with:
+      - SWORDS
+      - AXES
+
+  vampiric:
+    description: '&8> Damaging non-passive entities heals you for &e5%&8-&e10%&8 of the damage dealt (up to 2 points max), and an additional &e2&8-&e4&8 points when you kill it'
+    enchant_name: '&7Soul Eater %lv_roman%'
+    enabled: true
+    weight: 80
+    book_only: false
+    max_level: 2
+    max_level_table: 2
+    lifesteal_base: 0.05 # Base fraction of damage dealt converted to healing
+    lifesteal_lv: 0.05 # Additional fraction of damage dealt converted to healing per level
+    lifesteal_max: 2.0 # Maximum health healed from lifesteal
+    healing_base: 2.0 # Base amount healed when killing an entity
+    healing_lv: 2.0 # Additional amount healed when killing an entity
+    hunger_base: 2.0 # Hunger points restored when killing an entity (saturation if full hunger)
+    hunger_lv: 2.0 # Additional hunger points restored when killing an entity per level
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 16
+    trade_cost_lv_lower: 8
+    trade_cost_lv_upper: 16
+    icon: ENDER_EYE
+    is_treasure: false
+    compatible_with:
+      - SWORDS
+      - AXES
+
+  beheading:
+    description: '&8> Killing an entity adds a &e1&8-&e2%&8 chance of dropping its head. Works with creepers, skeletons, players, etc. Axes are twice as potent'
+    enchant_name: '&7Executioner %lv_roman%'
+    enabled: true
+    weight: 10
+    book_only: false
+    max_level: 2
+    max_level_table: 2
+    beheading_base: 0.01 # Base chance for a killed enemy to drop a head
+    beheading_lv: 0.01 # Additional chance per level for a killed enemy to drop a head
+    axe_buff: 2.0 # Chance multiplier if using an axe
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 16
+    trade_cost_lv_lower: 8
+    trade_cost_lv_upper: 16
+    icon: IRON_AXE
+    is_treasure: false
+    compatible_with: # Limited to weapons
+      - SWORDS
+      - AXES
+
+  soulbound:
+    description: '&8> Dying with a soulbound item prevents it from being dropped, instead, you respawn with it in your inventory'
+    # Warning: If the player doesn't have enough space in their inventory, their excessive soulbound items are dropped
+    enchant_name: '&7Soulbound %lv_roman%'
+    enabled: true
+    max_level: 1
+    max_level_table: 1
+    weight: 40
+    book_only: false
+    single_use: true # Soulbound disappears off the item upon death
+    chance_base: 1 # Chance for soulbound to preserve an item on death (by default 1, which is 100%)
+    chance_lv: 0 # Added chance per level to preserve an item on death
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 32
+    icon: NETHER_STAR
+    is_treasure: false
+    compatible_with:
+      - ALL
+
+  shockwave:
+    description: '&8> Right clicking on the upper surface of a block causes a shockwave that sends entities flying backwards in a radius of &e3&8-&e4&8 blocks, with a strength of &e0.5&8-&e0.7'
+    enchant_name: '&7Shockwave %lv_roman%'
+    enabled: true
+    weight: 10
+    book_only: false
+    max_level: 2
+    max_level_table: 2
+    radius_base: 3.0 # Base amount healed when killing an entity
+    radius_lv: 1.0 # Additional amount healed when killing an entity
+    force_base: 0.5
+    force_lv: 0.2
+    cooldown: 20
+    cooldown_message: '&cCooldown: {cooldown}s'
+    explode: true # If true, plays an explosion sound effect and visual on usage
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 32
+    trade_cost_lv_lower: 8
+    trade_cost_lv_upper: 16
+    icon: GUNPOWDER
+    is_treasure: false
+    compatible_with: # Limited to weapons
+      - SWORDS
+      - AXES
+
+  damage_reduction:
+    description: '&8> Grants the wearer &e10&8-&e15&8-&e20%&8 damage reduction while wearing'
+    enchant_name: '&7Dragonhide %lv_roman%'
+    enabled: false
+    weight: 1
+    book_only: false
+    max_level: 3
+    max_level_table: 3
+    reduction_base: 0.1 # Base % movement speed buff at level 1
+    reduction_lv: 0.05 # % movement speed buff per level above 1
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 32
+    trade_cost_lv_lower: 16
+    trade_cost_lv_upper: 32
+    icon: SUGAR
+    is_treasure: true
+    compatible_with:
+      - CHESTPLATES
+
+  curse_brittle:
+    description: '&8> Curse enchant that causes items to break &c2&8-&c3&8-&c4x&8 quicker'
+    enchant_name: '&cBrittle %lv_roman%'
+    enabled: true
+    weight: 5
+    book_only: false
+    max_level: 3
+    max_level_table: 3
+    damage_multiplier_base: 2 # Durability damage multiplier at level 1
+    damage_multiplier_lv: 1 # Additional durability damage multiplier per level
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 16
+    trade_cost_lv_lower: 4
+    trade_cost_lv_upper: 8
+    icon: WOODEN_SWORD
+    is_treasure: false
+    compatible_with:
+      - ALL
+
+  curse_heavy:
+    description: '&8> Curse enchant that, while holding/wearing, slows the user down by &c10&8-&c20%&8'
+    enchant_name: '&cBurden %lv_roman%'
+    enabled: true
+    weight: 5
+    book_only: false
+    max_level: 2
+    max_level_table: 2
+    slow_base: 0.1 # Base movement speed slow at level 1
+    slow_lv: 0.1 # Additional movement speed slow per level
+    fatigue: false # Determines whether or not this curse should also apply mining fatigue
+    amplifier_fatigue: 0 # base strength of mining fatigue debuff (an amplifier of 0 means the effect is applied at level I, 1 is II, etc.)
+    amplifier_lv_fatigue: 1 # additional strength of mining fatigue per level
+    duration: 40 # duration of mining fatigue applied per second (20 ticks = 1 second duration)
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 16
+    trade_cost_lv_lower: 4
+    trade_cost_lv_upper: 8
+    icon: PACKED_ICE
+    is_treasure: false
+    compatible_with: # Not limited to tools
+      - ALL
+
+  curse_hunger:
+    description: '&8> Curse enchant that slowly eats away at your hunger'
+    enchant_name: '&cParasitic %lv_roman%'
+    enabled: true
+    weight: 5
+    book_only: false
+    max_level: 2
+    max_level_table: 2
+    hunger_degeneration_base: 0.05 # base hunger loss per second at level 1
+    hunger_degeneration_lv: 0.05 # additional hunger loss per second per level
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 16
+    trade_cost_lv_lower: 4
+    trade_cost_lv_upper: 8
+    icon: POISONOUS_POTATO
+    is_treasure: false
+    compatible_with: # Not limited to armor
+      - HELMETS
+      - CHESTPLATES
+      - LEGGINGS
+      - BOOTS
+
+  curse_berserk:
+    description: '&8> You deal &e20&8-&e35&8-&e50%&8 more damage, but you also take &e30&8-&e50&8-&e70%&8 more damage'
+    enchant_name: '&9Pact of the Berserker %lv_roman%'
+    enabled: true
+    weight: 5
+    book_only: false
+    max_level: 3
+    max_level_table: 3
+    damage_dealt_base: 1.2 # Base damage dealt multiplier at level I
+    damage_dealt_lv: 0.15 # Additional damage multiplier at levels higher than I, added onto the base multiplier
+    # Example: Curse of Rage level III will have a damage multiplier of 1.2 + 0.15 * 2 = 1.5, which means you deal 50% more damage
+    damage_taken_base: 1.3 # Base damage taken multiplier at level I
+    damage_taken_lv: 0.2 # Additional damage multiplier at levels higher than I, added onto the base multiplier
+    # Example: Curse of Rage level III will have a damage multiplier of 1.3 + 0.2 * 2 = 1.7, which means you take 70% more damage
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 16
+    trade_cost_lv_lower: 4
+    trade_cost_lv_upper: 8
+    icon: BLAZE_ROD
+    is_treasure: false
+    compatible_with: # Not limited to ranged weapons
+      - ALL
+
+# All usable compatible_with values, editing these values does not change anything
+compatible_with_values:
+  - SWORDS
+  - BOWS
+  - CROSSBOWS
+  - TRIDENTS
+  - HELMETS
+  - CHESTPLATES
+  - LEGGINGS
+  - BOOTS
+  - SHEARS
+  - FLINTANDSTEEL
+  - FISHINGROD
+  - ELYTRA
+  - PICKAXES
+  - AXES
+  - SHOVELS
+  - HOES
+  - SHIELDS
+  - TRINKETS
+  - ALL
