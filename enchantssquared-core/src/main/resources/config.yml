@@ -654,7 +654,7 @@ enchantment_configuration:
 
   trident_sharpness:
     description: '&8> Tridents do &e0.75&8-&e1.5&8-&e2.25&8-&e3.0&8-&e3.75&8 more damage'
-    enchant_name: '&7Piercing %lv_roman%'
+    enchant_name: '&7Harpooning %lv_roman%'
     enabled: true
     weight: 40
     book_only: false

@@ -3,6 +3,7 @@ package me.athlaeos.enchantssquared.hooks;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.flags.Flags;
 import com.sk89q.worldguard.protection.flags.StateFlag;
@@ -62,8 +63,8 @@ public class WorldGuardHook {
 
     public boolean isPVPDenied(Player p){
         if (!EnchantsSquared.isWorldGuardHooked()) return false;
-        RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
-        RegionQuery query = container.createQuery();
-        return !query.testState(BukkitAdapter.adapt(p.getLocation()), WorldGuardPlugin.inst().wrapPlayer(p), Flags.PVP);
+        ApplicableRegionSet set = WorldGuard.getInstance().getPlatform().getRegionContainer().createQuery().getApplicableRegions(BukkitAdapter.adapt(p.getLocation()));
+        StateFlag.State state = set.queryState(null, Flags.PVP);
+        return state == StateFlag.State.DENY;
     }
 }

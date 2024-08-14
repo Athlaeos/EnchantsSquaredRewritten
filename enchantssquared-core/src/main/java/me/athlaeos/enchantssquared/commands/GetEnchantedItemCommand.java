@@ -163,10 +163,10 @@ public class GetEnchantedItemCommand implements Command {
 				}
 				giveItem.setItemMeta(eMeta);
 			} else {
+				giveItem.setItemMeta(itemMeta);
 				for (Enchantment e : vanillaEnchantments.keySet()){
 					giveItem.addUnsafeEnchantment(e, vanillaEnchantments.get(e));
 				}
-				giveItem.setItemMeta(itemMeta);
 			}
 
 			if (!customEnchantments.isEmpty()){

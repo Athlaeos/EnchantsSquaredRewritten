@@ -13,6 +13,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -27,7 +28,6 @@ public class TridentSharpness extends CustomEnchant implements TriggerOnAttackEn
     public TridentSharpness(int id, String type) {
         super(id, type);
         this.config = ConfigManager.getInstance().getConfig("config.yml").get();
-        this.naturallyCompatibleWith = new HashSet<>(config.getStringList("enchantment_configuration.trident_sharpness.compatible_with"));
         this.incompatibleVanillaEnchantments = new HashSet<>(config.getStringList("enchantment_configuration.trident_sharpness.incompatible_vanilla_enchantments"));
         this.incompatibleCustomEnchantments = new HashSet<>(config.getStringList("enchantment_configuration.trident_sharpness.incompatible_custom_enchantments"));
 
@@ -80,10 +80,9 @@ public class TridentSharpness extends CustomEnchant implements TriggerOnAttackEn
         return incompatibleCustomEnchantments.contains(enchantment) || incompatibleVanillaEnchantments.contains(enchantment);
     }
 
-    private final Collection<String> naturallyCompatibleWith;
     @Override
     public boolean isNaturallyCompatible(Material material) {
-        return MaterialClassType.isMatchingClass(material, naturallyCompatibleWith);
+        return material == Material.TRIDENT;
     }
 
     @Override
@@ -154,6 +153,6 @@ public class TridentSharpness extends CustomEnchant implements TriggerOnAttackEn
 
     @Override
     public Collection<String> getCompatibleItems() {
-        return naturallyCompatibleWith;
+        return new HashSet<>(Arrays.asList("TRIDENT"));
     }
 }

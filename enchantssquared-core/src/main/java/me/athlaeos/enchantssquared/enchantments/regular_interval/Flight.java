@@ -222,7 +222,8 @@ public class Flight extends CustomEnchant implements TriggerOnRegularIntervalsEn
         Player p = (Player) e;
         boolean allowFlightNaturally = p.getGameMode() == GameMode.CREATIVE || p.getGameMode() == GameMode.SPECTATOR
                 || p.hasPermission("essentials.fly");
-        if (!shouldEnchantmentCancel(level, (LivingEntity) e, e.getLocation())){
+        boolean shouldCancel = shouldEnchantmentCancel(level, (LivingEntity) e, e.getLocation());
+        if (!shouldCancel){
             // player doesn't have the enchantment, or is not allowed in this area
 //            if (!allowFlightNaturally && (p.isFlying() || p.getAllowFlight())){
 //                // if the player isn't allowed to fly naturally, so if they're in survival/adventure mode and are also flying currently, disallow flight
@@ -306,7 +307,7 @@ public class Flight extends CustomEnchant implements TriggerOnRegularIntervalsEn
         }
         // the following code runs regardless if the player has the enchantment or not, to later test if they're still supposed to fly
         if (allowFlightNaturally) return;
-        if (level <= 0 && playersGivenFlight.contains(p.getUniqueId())){
+        if ((shouldCancel || level <= 0) && playersGivenFlight.contains(p.getUniqueId())){
             // only if the player previously was allowed to fly, check if they're still allowed to fly
             playersGivenFlight.remove(p.getUniqueId());
             p.setFlying(false);

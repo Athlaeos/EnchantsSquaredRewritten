@@ -6,6 +6,8 @@ import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.utility.ChatUtils;
 import me.athlaeos.enchantssquared.utility.EntityUtils;
 import me.athlaeos.enchantssquared.utility.ItemUtils;
+import me.athlaeos.valhallammo.utility.Utils;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -43,6 +45,8 @@ public class EnchantCommand implements Command {
 			targets.add((Player) sender);
 		}
 		String chosenEnchant = args[1].toUpperCase();
+		CustomEnchant en = CustomEnchantManager.getInstance().getEnchantmentFromType(chosenEnchant);
+		if (en == null) en = fromName(chosenEnchant);
 
 		int chosenLevel = 1;
 		if (args.length >= 3){
@@ -64,8 +68,8 @@ public class EnchantCommand implements Command {
 				if (inHandItem.getType() == Material.BOOK){
 					inHandItem.setType(Material.ENCHANTED_BOOK);
 				}
-				CustomEnchantManager.getInstance().removeEnchant(inHandItem, chosenEnchant);
-				CustomEnchantManager.getInstance().addEnchant(inHandItem, chosenEnchant, chosenLevel);
+				CustomEnchantManager.getInstance().removeEnchant(inHandItem, en.getType());
+				CustomEnchantManager.getInstance().addEnchant(inHandItem, en.getType(), chosenLevel);
 				success = true;
 			}
 			p.updateInventory();
@@ -98,8 +102,7 @@ public class EnchantCommand implements Command {
 	public List<String> getSubcommandArgs(CommandSender sender, String[] args) {
 		if (args.length == 2){
 			List<String> returns = new ArrayList<>();
-			for (String c : CustomEnchantManager.getInstance().getAllEnchants().values().stream().map(CustomEnchant::getType).collect(Collectors
-					.toList())){
+			for (String c : CustomEnchantManager.getInstance().getAllEnchants().values().stream().map(CustomEnchant::getType).toList()){
 				returns.add(c.toLowerCase());
 			}
 			return returns;
@@ -112,5 +115,11 @@ public class EnchantCommand implements Command {
 					"...");
 		}
 		return null;
+	}
+
+	private CustomEnchant fromName(String name){
+		return CustomEnchantManager.getInstance().getAllEnchants().values().stream().filter(e ->
+				ChatColor.stripColor(Utils.chat(e.getDisplayEnchantment().replace("%lv_roman%", "").replace("%lv_normal%", ""))).trim().equalsIgnoreCase(name)
+		).findFirst().orElse(null);
 	}
 }

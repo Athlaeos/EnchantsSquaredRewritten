@@ -44,7 +44,7 @@ public class EntityDamageListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onEntityDamagedByEntity(EntityDamageByEntityEvent e){
         if (e.getDamager() instanceof Player && e.getEntity() instanceof Player &&
-                EnchantsSquared.isWorldGuardHooked() && WorldGuardHook.getHook().isPVPDenied((Player) e.getDamager())) return;
+                (EnchantsSquared.isWorldGuardHooked() && WorldGuardHook.getHook().isPVPDenied((Player) e.getEntity()))) return;
         // Listener may only proceed if event is not cancelled, if the attacked entity is a living entity, and if this entity isn't
         // an unalive entity such as ARMOR_STAND
         if (!e.isCancelled() && e.getDamage() > 0 &&

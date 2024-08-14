@@ -198,7 +198,7 @@ public class PlaceTorch extends CustomEnchant implements TriggerOnInteractEnchan
                     EquipmentSlot.HAND
             );
             EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(event);
-            if (!event.isCancelled()){
+            if (!event.isCancelled() && event.canBuild()){
                 if (e.getBlockFace() == BlockFace.UP || e.getBlockFace() == BlockFace.DOWN){
                     torchBlock.setType(Material.TORCH);
                 } else {
