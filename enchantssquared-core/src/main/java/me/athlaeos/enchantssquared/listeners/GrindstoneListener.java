@@ -42,7 +42,7 @@ public class GrindstoneListener implements Listener {
                 if (item != null){
                     Map<CustomEnchant, Integer> enchantments = CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(item);
                     for (CustomEnchant enchant : new HashSet<>(enchantments.keySet())){
-                        if (!enchant.isCurse()) enchantments.remove(enchant);
+                        enchantments.remove(enchant);
                     }
                     CustomEnchantManager.getInstance().setItemEnchants(item, enchantments);
                 }

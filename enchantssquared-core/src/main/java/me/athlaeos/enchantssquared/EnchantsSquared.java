@@ -157,7 +157,8 @@ public final class EnchantsSquared extends JavaPlugin {
     public void onDisable() {
         // Plugin shutdown logic
         for (CustomEnchant e : CustomEnchantManager.getInstance().getAllEnchants().values()){
-            if (e instanceof AttributeEnchantment attributeEnchantment){
+            if (e instanceof AttributeEnchantment){
+                AttributeEnchantment attributeEnchantment = (AttributeEnchantment) e;
                 for (Player p : getServer().getOnlinePlayers()){
                     attributeEnchantment.cleanAttribute(p);
                 }
@@ -283,13 +284,16 @@ public final class EnchantsSquared extends JavaPlugin {
     private boolean setupNMS() {
         try {
             String nmsVersion = MinecraftVersion.getServerVersion().getNmsVersion();
-            if (nmsVersion == null) return false;
+            if (nmsVersion == null) {
+                System.out.println("no nms version");
+                return false;
+            }
             Class<?> clazz = Class.forName("me.athlaeos.NMS_" + nmsVersion);
 
             if (NMS.class.isAssignableFrom(clazz)) {
                 nms = (NMS) clazz.getDeclaredConstructor().newInstance();
             }
-
+            System.out.println("nms version found: " + (nms != null));
             return nms != null;
         } catch (Exception | Error ignored) {
             return false;
@@ -297,18 +301,18 @@ public final class EnchantsSquared extends JavaPlugin {
     }
 
     public static void logInfo(String info){
-        plugin.getServer().getLogger().info("[ValhallaMMO] " + info);
+        plugin.getServer().getLogger().info("[EnchantsSquared] " + info);
     }
 
     public static void logWarning(String warning){
-        plugin.getServer().getLogger().warning("[ValhallaMMO] " + warning);
+        plugin.getServer().getLogger().warning("[EnchantsSquared] " + warning);
     }
     public static void logFine(String message){
-        plugin.getServer().getLogger().fine("[ValhallaMMO] " + message);
-        plugin.getServer().getConsoleSender().sendMessage(ChatUtils.chat("&a[ValhallaMMO] " + message));
+        plugin.getServer().getLogger().fine("[EnchantsSquared] " + message);
+        plugin.getServer().getConsoleSender().sendMessage(ChatUtils.chat("&a[EnchantsSquared] " + message));
     }
 
     public static void logSevere(String disaster){
-        plugin.getServer().getLogger().severe("[ValhallaMMO] " + disaster);
+        plugin.getServer().getLogger().severe("[EnchantsSquared] " + disaster);
     }
 }

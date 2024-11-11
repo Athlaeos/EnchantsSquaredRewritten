@@ -76,8 +76,11 @@ public class StreakDamage extends CustomEnchant implements TriggerOnAttackEnchan
         LivingEntity victim = (LivingEntity) e.getEntity();
         // stacks are valid if the player is melee attacking with a fully charged melee attack, or in the case of a projectile it must have a velocity of at least 2.5
         // which is a bit less than a typical fully charged bow attack (velocity 3)
-        if (shouldEnchantmentCancel(level, realAttacker, victim.getLocation()) || (e.getDamager() instanceof Player p && p.getAttackCooldown() < 0.9F) ||
-                e.getCause() == EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK || (e.getDamager() instanceof Projectile pr && pr.getVelocity().lengthSquared() < 6.25D)) return;
+        if (shouldEnchantmentCancel(level, realAttacker, victim.getLocation()) ||
+                e.getCause() == EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK) return;
+        if (e.getDamager() instanceof Player) {
+            if (((Player) e.getDamager()).getAttackCooldown() < 0.9F) return;
+        } else if (e.getDamager() instanceof Projectile && e.getDamager().getVelocity().lengthSquared() < 6.25D) return;
 
         int currentStacks = stacks.getOrDefault(realAttacker.getUniqueId(), 0);
         int maxStacks = maxStacksBase + ((level - 1) * maxStacksLv);
@@ -89,8 +92,8 @@ public class StreakDamage extends CustomEnchant implements TriggerOnAttackEnchan
         }
         e.setDamage(Math.max(0, e.getDamage() * (1 + damageBonus)));
         stacks.put(realAttacker.getUniqueId(), Math.min(maxStacks, currentStacks + 1));
-        if (stackMessageFormat != null && !stackMessageFormat.isEmpty() && realAttacker instanceof Player p){
-            p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatUtils.chat((stacks.get(realAttacker.getUniqueId()) >= maxStacks ? stackMessageMax : stackMessageFormat).replace("%stacks%", String.valueOf(stacks.get(p.getUniqueId()))))));
+        if (stackMessageFormat != null && !stackMessageFormat.isEmpty() && realAttacker instanceof Player){
+            ((Player) realAttacker).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatUtils.chat((stacks.get(realAttacker.getUniqueId()) >= maxStacks ? stackMessageMax : stackMessageFormat).replace("%stacks%", String.valueOf(stacks.get(realAttacker.getUniqueId()))))));
         }
     }
 
@@ -102,8 +105,8 @@ public class StreakDamage extends CustomEnchant implements TriggerOnAttackEnchan
             currentStacks -= stacksLost;
             if (currentStacks <= 0) stacks.remove(e.getEntity().getUniqueId());
             else stacks.put(e.getEntity().getUniqueId(), currentStacks);
-            if (e.getEntity() instanceof Player p){
-                p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatUtils.chat(stacksLostMessage.replace("%stacks%", String.valueOf(stacks.get(p.getUniqueId()))))));
+            if (e.getEntity() instanceof Player){
+                ((Player) e.getEntity()).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatUtils.chat(stacksLostMessage.replace("%stacks%", String.valueOf(stacks.get(e.getEntity().getUniqueId()))))));
             }
         }
     }

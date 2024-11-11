@@ -69,7 +69,7 @@ public class EnchantCommand implements Command {
 					inHandItem.setType(Material.ENCHANTED_BOOK);
 				}
 				CustomEnchantManager.getInstance().removeEnchant(inHandItem, en.getType());
-				CustomEnchantManager.getInstance().addEnchant(inHandItem, en.getType(), chosenLevel);
+				if (chosenLevel > 0) CustomEnchantManager.getInstance().addEnchant(inHandItem, en.getType(), chosenLevel);
 				success = true;
 			}
 			p.updateInventory();

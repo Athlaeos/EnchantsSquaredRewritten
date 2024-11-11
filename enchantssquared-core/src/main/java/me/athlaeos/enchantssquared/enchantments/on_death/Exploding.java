@@ -197,7 +197,9 @@ public class Exploding extends CustomEnchant implements TriggerOnDeathEnchantmen
         }
         Map<UUID, Double> healthTracker = new HashMap<>();
         for (Entity entity : e.getEntity().getNearbyEntities(radius, radius, radius)){
-            if (!(entity instanceof LivingEntity l) || EntityClassificationType.isMatchingClassification(l.getType(), EntityClassificationType.UNALIVE) ||
+            if (!(entity instanceof LivingEntity)) continue;
+            LivingEntity l = (LivingEntity) entity;
+            if (EntityClassificationType.isMatchingClassification(l.getType(), EntityClassificationType.UNALIVE) ||
                     l.equals(killer) || l.equals(e.getEntity()) || l.isDead() || !l.isValid()) continue;
             healthTracker.put(l.getUniqueId(), l.getHealth());
             l.damage(damage, killer);

@@ -23,7 +23,7 @@ public class CommandManager implements TabExecutor {
 		warning_no_permission = ConfigManager.getInstance().getConfig("translations.yml").get().getString("warning_no_permission");
 
 		commands.put("help", new HelpCommand());
-		commands.put("reload", new ReloadCommand());
+		// commands.put("reload", new ReloadCommand());
 		commands.put("enchant", new EnchantCommand());
 		commands.put("remove", new RemoveEnchantCommand());
 		commands.put("list", new GetEnchantListCommand());

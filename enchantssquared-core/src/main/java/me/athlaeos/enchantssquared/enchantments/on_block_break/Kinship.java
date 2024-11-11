@@ -11,6 +11,7 @@ import me.athlaeos.valhallammo.item.CustomDurabilityManager;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
@@ -188,21 +189,7 @@ public class Kinship extends CustomEnchant implements TriggerOnBlockBreakEnchant
         ItemStack pickaxe = e.getPlayer().getInventory().getItemInMainHand();
         int durabilityToRepair = Utils.excessChance(getDurabilityRegeneration(pickaxe.getType(), e.getBlock().getType())
         * (fractionRegen ? pickaxe.getType().getMaxDurability() : 1));
-
-        ItemMeta pickaxeMeta = pickaxe.getItemMeta();
-        if (pickaxeMeta instanceof Damageable && pickaxe.getType().getMaxDurability() > 0){
-            PlayerItemDamageEvent event = new PlayerItemDamageEvent(e.getPlayer(), pickaxe, -durabilityToRepair);
-            EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(event);
-            if (EnchantsSquared.isValhallaHooked()) {
-                // if ValhallaMMO is active, it handles custom durability itself
-                if (CustomDurabilityManager.hasCustomDurability(pickaxeMeta)) return;
-            }
-            if (!event.isCancelled()){
-                Damageable toolMeta = (Damageable) pickaxeMeta;
-                toolMeta.setDamage(toolMeta.getDamage() + event.getDamage());
-                pickaxe.setItemMeta(toolMeta);
-            }
-        }
+        ItemUtils.damageItem((Player) e, pickaxe, -durabilityToRepair);
     }
 
     @Override

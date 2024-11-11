@@ -192,9 +192,13 @@ public class GroundStomper extends CustomEnchant implements TriggerOnDamagedEnch
 
     @Override
     public void onDamaged(EntityDamageEvent e, int level) {
-        if (!(e.getEntity() instanceof LivingEntity entity) || (e.getCause() != EntityDamageEvent.DamageCause.FALL && e.getCause() != EntityDamageEvent.DamageCause.FLY_INTO_WALL)) return;
-        if (shouldEnchantmentCancel(level, entity, e.getEntity().getLocation()) || (entity instanceof Player p && !p.isSneaking()) ||
+        if (!(e.getEntity() instanceof LivingEntity) || (e.getCause() != EntityDamageEvent.DamageCause.FALL && e.getCause() != EntityDamageEvent.DamageCause.FLY_INTO_WALL)) return;
+        LivingEntity entity = (LivingEntity) e.getEntity();
+        if (shouldEnchantmentCancel(level, entity, e.getEntity().getLocation()) ||
                 !CooldownManager.getInstance().isCooldownPassed(entity.getUniqueId(), "cooldown_groundstompers")) return;
+        if (entity instanceof Player){
+            if (!((Player) entity).isSneaking()) return;
+        }
         e.setCancelled(true); // damage is cancelled regardless if effect lands
         if (e.getCause() == EntityDamageEvent.DamageCause.FALL && entity.getFallDistance() < minFallingDistance) return;
 
@@ -212,8 +216,9 @@ public class GroundStomper extends CustomEnchant implements TriggerOnDamagedEnch
         entity.getWorld().playSound(entity.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1F, 1F);
         for (Entity inRange : entity.getNearbyEntities(radius, radius, radius)){
             if (inRange.equals(entity) ||
-                    !(inRange instanceof LivingEntity l) ||
+                    !(inRange instanceof LivingEntity) ||
                     EntityClassificationType.isMatchingClassification(inRange.getType(), EntityClassificationType.UNALIVE)) continue;
+            LivingEntity l = (LivingEntity) inRange;
             double radiusFraction = l.getLocation().distanceSquared(entity.getLocation()) / (radius * radius);
             double damageFraction = ((1 - damageSweetSpotFalloff) * (1 - radiusFraction)) + damageSweetSpotFalloff;
             l.damage(damageFraction * damage, entity);

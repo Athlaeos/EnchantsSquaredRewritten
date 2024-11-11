@@ -96,7 +96,7 @@ public class ItemUtils {
                 Damageable toolMeta = (Damageable) i.getItemMeta();
                 if (toolMeta == null) return false;
                 toolMeta.setDamage(Math.max(0, toolMeta.getDamage() + damage));
-                if (toolMeta.getDamage() >= i.getType().getMaxDurability() && i.getType() != Material.ELYTRA) {
+                if (slot != null && toolMeta.getDamage() >= i.getType().getMaxDurability() && i.getType() != Material.ELYTRA) {
                     switch(slot){
                         case HAND: {
                             damager.playEffect(EntityEffect.BREAK_EQUIPMENT_MAIN_HAND);

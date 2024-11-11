@@ -24,11 +24,13 @@ public class Telekinesis extends CustomEnchant implements TriggerOnBlockBreakEnc
     private final YamlConfiguration config;
     private final Collection<String> incompatibleVanillaEnchantments;
     private final Collection<String> incompatibleCustomEnchantments;
+    private final boolean preventItemOwnership;
 
     public Telekinesis(int id, String type) {
         super(id, type);
         this.priority = ExecutionPriority.LAST;
         this.config = ConfigManager.getInstance().getConfig("config.yml").get();
+        this.preventItemOwnership = config.getBoolean("enchantment_configuration.telekinesis.prevent_item_ownership", false);
         this.naturallyCompatibleWith = new HashSet<>(config.getStringList("enchantment_configuration.telekinesis.compatible_with"));
         this.incompatibleVanillaEnchantments = new HashSet<>(config.getStringList("enchantment_configuration.telekinesis.incompatible_vanilla_enchantments"));
         this.incompatibleCustomEnchantments = new HashSet<>(config.getStringList("enchantment_configuration.telekinesis.incompatible_custom_enchantments"));
@@ -160,7 +162,7 @@ public class Telekinesis extends CustomEnchant implements TriggerOnBlockBreakEnc
         if (shouldEnchantmentCancel(level, e.getPlayer(), e.getBlock().getLocation())) return;
 
         for (Item i : e.getItems()){
-            ItemUtils.addItem(e.getPlayer(), i.getItemStack(), true);
+            ItemUtils.addItem(e.getPlayer(), i.getItemStack(), !preventItemOwnership);
         }
 
         e.getItems().clear();

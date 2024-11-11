@@ -20,7 +20,8 @@ public class LeaveJoinListener implements Listener {
     @EventHandler
     public void onLeave(PlayerQuitEvent e){
         for (CustomEnchant enchant : CustomEnchantManager.getInstance().getAllEnchants().values()){
-            if (enchant instanceof AttributeEnchantment attributeEnchantment){
+            if (enchant instanceof AttributeEnchantment){
+                AttributeEnchantment attributeEnchantment = (AttributeEnchantment) enchant;
                 attributeEnchantment.cleanAttribute(e.getPlayer());
             }
         }

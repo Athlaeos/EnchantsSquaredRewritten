@@ -40,10 +40,11 @@ public class AnvilListener implements Listener {
         ItemStack result = e.getResult();
         AnvilCombinationResult output = CustomEnchantManager.getInstance().combineItems(item1, item2, result, entity.getGameMode());
         AnvilInventory inventory = e.getInventory();
+        System.out.println("state: " + output.getState());
         switch (output.getState()){
             case SUCCESSFUL:{
                 Player p;
-                if (e.getInventory().getViewers().size() > 0){
+                if (!e.getInventory().getViewers().isEmpty()){
                     int cost = inventory.getRepairCost() + extra_cost;
                     inventory.setRepairCost(cost);
                     p = (Player) e.getInventory().getViewers().get(0);

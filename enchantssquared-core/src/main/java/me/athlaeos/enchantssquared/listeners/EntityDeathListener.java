@@ -93,5 +93,12 @@ public class EntityDeathListener implements Listener {
         responsibilityTracker.put(victim, new DeathResponsibility(aggressor, System.currentTimeMillis() + responsibleDuration));
     }
 
-    private record DeathResponsibility(UUID responsible, long until){}
+    private static class DeathResponsibility{
+        private final UUID responsible;
+        private final long until;
+        public DeathResponsibility(UUID responsible, long until){
+            this.responsible = responsible;
+            this.until = until;
+        }
+    }
 }

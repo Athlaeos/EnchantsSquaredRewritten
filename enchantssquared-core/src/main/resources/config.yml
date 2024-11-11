@@ -90,9 +90,9 @@ allow_grindstone_removal: true # If false, grindstones no longer remove custom e
 enchantment_configuration:
   excavation:
     description: '&8> Mines a &e2x1&8 - &e+ shaped&8 - &e3x3 area&8 instead of 1x1x1. Sneak while mining to stop this effect.'
-    enchant_name: '&7Excavation' # The lore applied on items, which is also used for determining item enchants
-    max_level: 3 # Maximum level for this enchantment, players will be able to reach this level through the anvil
-    max_level_table: 3 # Maximum level attainable through the enchantment table
+    enchant_name: '&7Excavation %lv_roman%' # The lore applied on items, which is also used for determining item enchants
+    max_level: 1 # Maximum level for this enchantment, players will be able to reach this level through the anvil
+    max_level_table: 1 # Maximum level attainable through the enchantment table
     enabled: true # If disabled, enchant will not be registered at all.
     weight: 20 # The rarity of the item in weight, lower values mean less common
     book_only: false # If true, enchant will only appear on books
@@ -101,16 +101,16 @@ enchantment_configuration:
     # This is to prevent the player from instant-mining stone with Haste II and Efficiency V
     fatigue_amplifier: 0 # The strength of mining fatigue applied to the player if nerf_excavation_speed is true
     fatigue_duration: 20 # The duration of mining fatigue applied to the player if nerf_excavation_speed is true
-    area_leveling: false # If true, the area excavation clears out will scale according to level. Otherwise, excavation mines a 3x3 area
+    area_leveling: true # If true, the area excavation clears out will scale according to level. Otherwise, excavation mines a 3x3 area
     # Level I will mine 2 blocks 1 additional block below the mined block
     # Level II will mine 5 blocks in a + shaped area
     # Level III will mine 9 blocks in a 3x3 area
     # Any level higher than this will add a row around the 3x3 area (5x5, 7x7, 9x9, etc.)
-    durability_leveling: false # If true, the chance to consume durability will scale according to levels as defined below.
+    durability_leveling: true # If true, the chance to consume durability will scale according to levels as defined below.
     # Otherwise, only durability_decay will be considered.
     # IF YOU ARE CHANGING THIS TO TRUE, ADJUST THE VALUE OF durability_decay TO 1.0
-    durability_decay: 0.333 # Chance to consume 1 durability per block broken.
-    durability_decay_lv: -0.333 # Additional chance per level to consume 1 durability per block broken IF durability_leveling is enabled
+    durability_decay: 0.33 # Chance to consume 1 durability per block broken.
+    durability_decay_lv: 0 # Additional chance per level to consume 1 durability per block broken IF durability_leveling is enabled
     # Note: Excavation is severely unbalanced with a durability_decay value of less than 1.
     # This is because lower values make the tool last significantly longer relatively speaking, being able to break
     # a lot more blocks a lot faster than it normally would. However, from my experience, players tend to complain their
@@ -140,6 +140,7 @@ enchantment_configuration:
   telekinesis:
     description: '&8> Any drops from mined blocks are transferred directly to your inventory'
     enchant_name: '&7Telekinesis'
+    prevent_item_ownership: false # If false, dropped items will only be able to be picked up by the person who mined the block. If true, they can be picked up by everyone
     enabled: true
     weight: 20
     book_only: false

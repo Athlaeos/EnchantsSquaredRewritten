@@ -13,10 +13,7 @@ import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.managers.EntityEquipmentCacheManager;
 import me.athlaeos.enchantssquared.utility.EntityUtils;
 import me.athlaeos.enchantssquared.utility.ItemUtils;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
-import org.bukkit.entity.Trident;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -28,8 +25,9 @@ public class EntityDamageListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onEntityTakeDamage(EntityDamageEvent e){
         if (!e.isCancelled() && e.getDamage() > 0 &&
-                e.getEntity() instanceof LivingEntity entity &&
+                e.getEntity() instanceof LivingEntity &&
                 !EntityClassificationType.isMatchingClassification(e.getEntity().getType(), EntityClassificationType.UNALIVE)){
+            LivingEntity entity = (LivingEntity) e.getEntity();
             if (EnchantsSquared.isWorldGuardAllowed(entity, entity.getLocation(), "es-deny-all")){
                 // fetch equipment enchantments only if attacker isn't in a region blocking all enchantments
                 EntityEquipment equipment = EntityEquipmentCacheManager.getInstance().getAndCacheEquipment(entity); // EntityUtils.getEntityEquipment(victim);
