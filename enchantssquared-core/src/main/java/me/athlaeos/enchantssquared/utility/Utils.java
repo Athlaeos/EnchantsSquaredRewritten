@@ -31,7 +31,7 @@ public class Utils {
         if (sound == null) return def;
         try {
             return Sound.valueOf(sound);
-        } catch (IllegalArgumentException ignored){
+        } catch (Exception ignored){
             return def;
         }
     }

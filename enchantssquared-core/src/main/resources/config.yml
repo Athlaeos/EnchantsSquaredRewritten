@@ -941,8 +941,8 @@ enchantment_configuration:
     amplifier_lv: 1 # Additional amplitude debuff strength per level
     duration: 40 # Base duration of the debuff (20 = 1 second)
     duration_lv: 20 # Additional duration of the debuff per level
-    sound: splash-#2d4f52
-    animation: none
+    sound: BLOCK_BELL_RESONATE
+    animation: splash-#2d4f52
     trade_enabled: true
     trade_cost_base_lower: 8
     trade_cost_base_upper: 16

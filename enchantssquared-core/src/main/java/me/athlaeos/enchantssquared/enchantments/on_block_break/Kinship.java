@@ -187,9 +187,8 @@ public class Kinship extends CustomEnchant implements TriggerOnBlockBreakEnchant
     public void onBlockBreak(BlockBreakEvent e, int level) {
         if (shouldEnchantmentCancel(level, e.getPlayer(), e.getBlock().getLocation())) return;
         ItemStack pickaxe = e.getPlayer().getInventory().getItemInMainHand();
-        int durabilityToRepair = Utils.excessChance(getDurabilityRegeneration(pickaxe.getType(), e.getBlock().getType())
-        * (fractionRegen ? pickaxe.getType().getMaxDurability() : 1));
-        ItemUtils.damageItem((Player) e, pickaxe, -durabilityToRepair);
+        int durabilityToRepair = Utils.excessChance(getDurabilityRegeneration(pickaxe.getType(), e.getBlock().getType()) * (fractionRegen ? pickaxe.getType().getMaxDurability() : 1));
+        ItemUtils.damageItem(e.getPlayer(), pickaxe, -durabilityToRepair);
     }
 
     @Override
