@@ -176,7 +176,7 @@ public abstract class CustomEnchant {
     public abstract String getWorldGuardFlagName();
 
     public boolean shouldEnchantmentCancel(int level, LivingEntity actor, Location worldGuardLocation){
-        return level <= 0 || !EnchantsSquared.isWorldGuardAllowed(actor, worldGuardLocation, getWorldGuardFlagName()) || (getRequiredPermission() != null && CustomEnchantManager.getInstance().isRequirePermissions() && !actor.hasPermission(getRequiredPermission()));
+        return level <= 0 || !EnchantsSquared.isWorldGuardAllowed(actor, worldGuardLocation, getWorldGuardFlagName());
     }
 
     public abstract Collection<String> getCompatibleItems();
@@ -218,6 +218,6 @@ public abstract class CustomEnchant {
     public boolean hasPermission(Permissible p){
         boolean required = CustomEnchantManager.getInstance().isRequirePermissions();
         if (!required) return true;
-        return p.hasPermission("es.enchant.*") || (!p.hasPermission(getRequiredPermission()));
+        return p.hasPermission("es.enchant.*") || p.hasPermission(getRequiredPermission());
     }
 }

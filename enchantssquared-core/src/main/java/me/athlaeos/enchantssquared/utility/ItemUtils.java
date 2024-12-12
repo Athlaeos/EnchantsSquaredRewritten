@@ -13,6 +13,7 @@ import org.bukkit.event.player.PlayerItemMendEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 
@@ -78,7 +79,9 @@ public class ItemUtils {
     }
 
     public static boolean damageItem(Player damager, ItemStack i, int damage, EquipmentSlot slot){
-        if (i.getItemMeta() instanceof Damageable && i.getType().getMaxDurability() > 0){
+        ItemMeta meta = i.getItemMeta();
+        if (meta instanceof Damageable && i.getType().getMaxDurability() > 0){
+            Damageable toolMeta = (Damageable) meta;
             if (damage > 0 && i.getItemMeta().isUnbreakable()) return false;
             boolean cancelled = false;
             if (damage > 0){
@@ -89,12 +92,18 @@ public class ItemUtils {
             }
 
             if (EnchantsSquared.isValhallaHooked()) {
+                toolMeta = (Damageable) me.athlaeos.valhallammo.utility.ItemUtils.getItemMeta(i);
                 // if ValhallaMMO is active, it handles custom durability itself
-                if (CustomDurabilityManager.hasCustomDurability(me.athlaeos.valhallammo.utility.ItemUtils.getItemMeta(i))) return false;
+                if (CustomDurabilityManager.hasCustomDurability(toolMeta)){
+                    if (damage > 0) return false;
+                    else if (damage < 0) {
+                        CustomDurabilityManager.damage(toolMeta, damage);
+                        me.athlaeos.valhallammo.utility.ItemUtils.setItemMeta(i, toolMeta);
+                        return false;
+                    }
+                }
             }
             if (!cancelled){
-                Damageable toolMeta = (Damageable) i.getItemMeta();
-                if (toolMeta == null) return false;
                 toolMeta.setDamage(Math.max(0, toolMeta.getDamage() + damage));
                 if (slot != null && toolMeta.getDamage() >= i.getType().getMaxDurability() && i.getType() != Material.ELYTRA) {
                     switch(slot){

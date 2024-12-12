@@ -19,6 +19,16 @@
         </dependency>
         <dependency>
             <groupId>me.athlaeos</groupId>
+            <artifactId>enchantssquared-1.21.4</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>me.athlaeos</groupId>
+            <artifactId>enchantssquared-1.21.3</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>me.athlaeos</groupId>
             <artifactId>enchantssquared-1.21</artifactId>
             <version>${project.version}</version>
         </dependency>

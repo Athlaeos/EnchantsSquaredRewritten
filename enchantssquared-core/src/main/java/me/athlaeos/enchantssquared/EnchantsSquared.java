@@ -58,7 +58,7 @@ public final class EnchantsSquared extends JavaPlugin {
         plugin = this;
         super.onLoad();
 
-        saveAndUpdateConfig("config.yml");
+        saveConfig("config.yml");
 
         valhallaHooked = hasPlugin("ValhallaMMO");
         if (valhallaHooked){

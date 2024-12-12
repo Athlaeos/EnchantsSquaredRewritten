@@ -6,7 +6,6 @@ import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.utility.ChatUtils;
 import me.athlaeos.enchantssquared.utility.EntityUtils;
 import me.athlaeos.enchantssquared.utility.ItemUtils;
-import me.athlaeos.valhallammo.utility.Utils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -14,7 +13,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class EnchantCommand implements Command {
 	private final String enchant_success;
@@ -119,7 +117,7 @@ public class EnchantCommand implements Command {
 
 	private CustomEnchant fromName(String name){
 		return CustomEnchantManager.getInstance().getAllEnchants().values().stream().filter(e ->
-				ChatColor.stripColor(Utils.chat(e.getDisplayEnchantment().replace("%lv_roman%", "").replace("%lv_normal%", ""))).trim().equalsIgnoreCase(name)
+				ChatColor.stripColor(ChatUtils.chat(e.getDisplayEnchantment().replace("%lv_roman%", "").replace("%lv_normal%", ""))).trim().equalsIgnoreCase(name)
 		).findFirst().orElse(null);
 	}
 }
