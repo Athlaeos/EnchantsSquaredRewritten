@@ -49,16 +49,6 @@ public class Config {
 
         this.config = YamlConfiguration.loadConfiguration(file);
 
-        Reader defConfigStream;
-        try {
-            defConfigStream = new InputStreamReader(plugin.getResource(this.name), StandardCharsets.UTF_8);
-
-            if (defConfigStream != null) {
-                YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-                this.config.setDefaults(defConfig);
-            }
-        } catch (NullPointerException ignored) {
-        }
         return this;
     }
 

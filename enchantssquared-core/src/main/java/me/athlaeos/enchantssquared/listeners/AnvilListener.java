@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.ItemStack;
@@ -29,7 +30,19 @@ public class AnvilListener implements Listener {
         message = ConfigManager.getInstance().getConfig("translations.yml").get().getString("warning_allowed_enchants_exceeded");
     }
 
-    @EventHandler (priority = EventPriority.LOW)
+    @EventHandler(priority = EventPriority.LOW)
+    public void onAnvilTake(InventoryClickEvent e){
+        if (!(e.getClickedInventory() instanceof AnvilInventory a)) return;
+        ItemStack item1 = a.getItem(0);
+        ItemStack item2 = a.getItem(1);
+        ItemStack result = a.getItem(2);
+        if (ItemUtils.isAirOrNull(item1) || ItemUtils.isAirOrNull(item2) || ItemUtils.isAirOrNull(result) || e.getRawSlot() != 2) return;
+        EnchantsSquared.getPlugin().getServer().getScheduler().runTaskLater(EnchantsSquared.getPlugin(), () -> {
+            a.setItem(1, null);
+        }, 1L);
+    }
+
+    @EventHandler(priority = EventPriority.LOW)
     public void onAnvilUse(PrepareAnvilEvent e) {
         ItemStack item1 = e.getInventory().getItem(0);
         ItemStack item2 = e.getInventory().getItem(1);
@@ -40,7 +53,7 @@ public class AnvilListener implements Listener {
         ItemStack result = e.getResult();
         AnvilCombinationResult output = CustomEnchantManager.getInstance().combineItems(item1, item2, result, entity.getGameMode());
         AnvilInventory inventory = e.getInventory();
-        System.out.println("state: " + output.getState());
+
         switch (output.getState()){
             case SUCCESSFUL:{
                 Player p;

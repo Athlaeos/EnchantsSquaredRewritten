@@ -193,11 +193,13 @@ public final class EnchantsSquared extends JavaPlugin {
 
 
     public void saveConfig(String name){
-        File config = new File(this.getDataFolder(), name);
-        if (!config.exists()){
-            this.saveResource(name, false);
-            ConfigManager.getInstance().saveConfig(name);
-        }
+        save(name);
+        ConfigManager.getInstance().saveConfig(name);
+    }
+
+    public void save(String name){
+        File file = new File(this.getDataFolder(), name);
+        if (!file.exists()) this.saveResource(name, false);
     }
 
     private void updateConfig(String name){
@@ -285,7 +287,6 @@ public final class EnchantsSquared extends JavaPlugin {
         try {
             String nmsVersion = MinecraftVersion.getServerVersion().getNmsVersion();
             if (nmsVersion == null) {
-                System.out.println("no nms version");
                 return false;
             }
             Class<?> clazz = Class.forName("me.athlaeos.NMS_" + nmsVersion);
@@ -293,7 +294,6 @@ public final class EnchantsSquared extends JavaPlugin {
             if (NMS.class.isAssignableFrom(clazz)) {
                 nms = (NMS) clazz.getDeclaredConstructor().newInstance();
             }
-            System.out.println("nms version found: " + (nms != null));
             return nms != null;
         } catch (Exception | Error ignored) {
             return false;

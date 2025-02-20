@@ -24,6 +24,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TreeFeller extends CustomEnchant implements TriggerOnBlockBreakEnchantment, Listener {
     private final YamlConfiguration config;
@@ -168,25 +169,15 @@ public class TreeFeller extends CustomEnchant implements TriggerOnBlockBreakEnch
     private final Map<UUID, Double> fellingPlayers = new HashMap<>(); // this map is used to track when players are using
     // tree feller, and should take the double value as fraction item durability damage while doing so
 
-    private final Collection<Material> logs = ItemUtils.getMaterialList(Arrays.asList("OAK_LOG", "SPRUCE_LOG",
-            "BIRCH_LOG", "ACACIA_LOG", "JUNGLE_LOG", "DARK_OAK_LOG", "MANGROVE_LOG", "CHERRY_LOG",
-            "OAK_WOOD", "SPRUCE_WOOD", "BIRCH_WOOD", "ACACIA_WOOD", "JUNGLE_WOOD", "DARK_OAK_WOOD", "MANGROVE_WOOD",
-            "CHERRY_WOOD", "WARPED_STEM", "CRIMSON_STEM", "WARPED_HYPHAE", "CRIMSON_HYPHAE",
-            "STRIPPED_OAK_LOG", "STRIPPED_SPRUCE_LOG", "STRIPPED_BIRCH_LOG", "STRIPPED_ACACIA_LOG", "STRIPPED_JUNGLE_LOG",
-            "STRIPPED_DARK_OAK_LOG", "STRIPPED_MANGROVE_LOG", "STRIPPED_CHERRY_LOG",
-            "STRIPPED_OAK_WOOD", "STRIPPED_SPRUCE_WOOD", "STRIPPED_BIRCH_WOOD", "STRIPPED_ACACIA_WOOD", "STRIPPED_JUNGLE_WOOD",
-            "STRIPPED_DARK_OAK_WOOD", "STRIPPED_MANGROVE_WOOD", "STRIPPED_CHERRY_WOOD", "STRIPPED_WARPED_STEM", "STRIPPED_CRIMSON_STEM",
-            "STRIPPED_WARPED_HYPHAE", "STRIPPED_CRIMSON_HYPHAE"));
-    private final Collection<Material> leaves = ItemUtils.getMaterialList(Arrays.asList("OAK_LEAVES", "SPRUCE_LEAVES",
-            "BIRCH_LEAVES", "ACACIA_LEAVES", "JUNGLE_LEAVES", "DARK_OAK_LEAVES", "MANGROVE_LEAVES", "AZALEA_LEAVES", "FLOWERING_AZALEA_LEAVES",
-            "CHERRY_LEAVES", "NETHER_WART_BLOCK", "WARPED_WART_BLOCK"));
+    private final Collection<Material> logs = Arrays.stream(Material.values()).filter(this::isWood).collect(Collectors.toSet());
+    private final Collection<Material> leaves = Arrays.stream(Material.values()).filter(this::isLeaves).collect(Collectors.toSet());
 
     @Override
     public void onBlockBreak(BlockBreakEvent e, int level) {
         if (shouldEnchantmentCancel(level, e.getPlayer(), e.getBlock().getLocation())) return;
         if (!e.getPlayer().isSneaking() || fellingPlayers.containsKey(e.getPlayer().getUniqueId())) return;
 
-        if (logs.contains(e.getBlock().getType())) {
+        if (isWood(e.getBlock().getType())) {
             if (isTree(e.getBlock())){
                 fellingPlayers.put(e.getPlayer().getUniqueId(), durabilityMultiplier);
                 ItemStack heldItem = e.getPlayer().getInventory().getItemInMainHand();
@@ -232,6 +223,15 @@ public class TreeFeller extends CustomEnchant implements TriggerOnBlockBreakEnch
         }
     }
 
+    private boolean isWood(Material m){
+        String s = m.toString();
+        return s.endsWith("_WOOD") || s.endsWith("_LOG") || s.endsWith("_HYPHAE") || s.endsWith("_STEM");
+    }
+
+    private boolean isLeaves(Material m){
+        String s = m.toString();
+        return s.endsWith("_LEAVES") || s.endsWith("_WART_BLOCK");
+    }
 
     private boolean isTree(Block b){
         Block currentBlock;
@@ -239,16 +239,13 @@ public class TreeFeller extends CustomEnchant implements TriggerOnBlockBreakEnch
         for (int i = 1; i < 48; i++){
             if (b.getLocation().getY() + i >= b.getWorld().getMaxHeight()) break;
             currentBlock = b.getLocation().add(0, i, 0).getBlock();
-            if (i < 4 && !logs.contains(currentBlock.getType())) return false; // at least 4 log blocks must be found before a leaf or air block
-            if (leaves.contains(currentBlock.getType())) return true; // if leaf blocks are found, it is a tree
-            if (!currentBlock.getType().isAir()){
-                if (!logs.contains(currentBlock.getType())) break;
-            }
+            if (!isLeaves(currentBlock.getType()) && !currentBlock.getType().isAir() && !isWood(currentBlock.getType())) return false; // not air or wood or leaves
+            if (isLeaves(currentBlock.getType())) return true; // if leaf blocks are found, it is a tree
             // from bottom to up, L = log, V = leaves, A = air
             // LLLAAVV is not considered a tree
             // LLLVVAA is considered a tree (AA not scanned)
         }
-        return false;
+        return true;
     }
 
     private List<Block> getTreeLeaves(Block b){

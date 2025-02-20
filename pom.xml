@@ -11,7 +11,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <revision>2.5.14</revision>
+        <revision>2.5.16</revision>
         <javaVersion>17</javaVersion>
         <testServerPath>C:\Users\Athlaeos\Desktop\Minecraft Servers\1.21.4\plugins</testServerPath>
         <shadedPackage>me.athlaeos.enchantssquared.shaded</shadedPackage>
