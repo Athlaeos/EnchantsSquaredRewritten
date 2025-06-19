@@ -1049,8 +1049,8 @@ enchantment_configuration:
     stacks_fraction_lost_base: 1
     stacks_fraction_lost_lv: 0
     ranged_damage_penalty: 0.5
-    stacks_message_format: "&eHit steak! &7(&6%stacks%&7)"
-    stacks_message_max: "&eHit steak! &7(&6&lMAX&7)"
+    stacks_message_format: "&eHit streak! &7(&6%stacks%&7)"
+    stacks_message_max: "&eHit streak! &7(&6&lMAX&7)"
     stacks_lost_message: "&cLost streak &7(&4%stacks%&7)"
     trade_enabled: true
     trade_cost_base_lower: 16
