@@ -3,13 +3,13 @@ package me.athlaeos.enchantssquared.utility;
 import me.athlaeos.enchantssquared.EnchantsSquared;
 import me.athlaeos.enchantssquared.managers.EntityEquipmentCacheManager;
 import me.athlaeos.valhallammo.item.CustomDurabilityManager;
+import me.athlaeos.valhallammo.item.ItemBuilder;
 import org.bukkit.EntityEffect;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerItemDamageEvent;
-import org.bukkit.event.player.PlayerItemMendEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
@@ -92,13 +92,14 @@ public class ItemUtils {
             }
 
             if (EnchantsSquared.isValhallaHooked()) {
-                toolMeta = (Damageable) me.athlaeos.valhallammo.utility.ItemUtils.getItemMeta(i);
+                ItemBuilder builder = new ItemBuilder(i);
+                toolMeta = (Damageable) builder.getMeta();
                 // if ValhallaMMO is active, it handles custom durability itself
                 if (CustomDurabilityManager.hasCustomDurability(toolMeta)){
                     if (damage > 0) return false;
                     else if (damage < 0) {
-                        CustomDurabilityManager.damage(toolMeta, damage);
-                        me.athlaeos.valhallammo.utility.ItemUtils.setItemMeta(i, toolMeta);
+                        CustomDurabilityManager.damage(builder, damage);
+                        me.athlaeos.valhallammo.utility.ItemUtils.setItemMeta(i, me.athlaeos.valhallammo.utility.ItemUtils.getItemMeta(builder.get()));
                         return false;
                     }
                 }

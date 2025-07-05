@@ -9,6 +9,7 @@ import me.athlaeos.enchantssquared.utility.EnchantmentMappings;
 import me.athlaeos.enchantssquared.utility.ItemUtils;
 import me.athlaeos.enchantssquared.utility.Utils;
 import org.bukkit.Material;
+import org.bukkit.block.Container;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
@@ -196,7 +197,7 @@ public class Sunforged extends CustomEnchant implements TriggerOnBlockBreakEncha
     private final Map<Material, Material> fortuneDrops = new HashMap<>();
     @Override
     public void onBlockDropItem(BlockDropItemEvent e, int level) {
-        if (shouldEnchantmentCancel(level, e.getPlayer(), e.getBlock().getLocation())) return;
+        if (shouldEnchantmentCancel(level, e.getPlayer(), e.getBlock().getLocation()) || e.getBlockState() instanceof Container) return;
         ItemStack pickaxe = e.getPlayer().getInventory().getItemInMainHand();
         int fortuneLevel = pickaxe.getEnchantmentLevel(EnchantmentMappings.FORTUNE.getEnchantment());
         for (Item i : e.getItems()){

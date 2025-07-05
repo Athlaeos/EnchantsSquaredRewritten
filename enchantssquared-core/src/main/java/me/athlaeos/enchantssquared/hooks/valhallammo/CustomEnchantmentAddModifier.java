@@ -3,14 +3,13 @@ package me.athlaeos.enchantssquared.hooks.valhallammo;
 import me.athlaeos.enchantssquared.enchantments.CustomEnchant;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.valhallammo.crafting.dynamicitemmodifiers.DynamicItemModifier;
-import me.athlaeos.valhallammo.crafting.dynamicitemmodifiers.ModifierCategoryRegistry;
+import me.athlaeos.valhallammo.crafting.dynamicitemmodifiers.ModifierContext;
 import me.athlaeos.valhallammo.item.ItemBuilder;
 import me.athlaeos.valhallammo.utility.ItemUtils;
 import me.athlaeos.valhallammo.utility.StringUtils;
 import me.athlaeos.valhallammo.utility.Utils;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -103,11 +102,11 @@ public class CustomEnchantmentAddModifier extends DynamicItemModifier {
     }
 
     @Override
-    public void processItem(Player player, ItemBuilder itemBuilder, boolean b, boolean b1, int i) {
-        ItemStack item = itemBuilder.getItem();
+    public void processItem(ModifierContext modifierContext) {
+        ItemStack item = modifierContext.getItem().getItem();
         if (level > 0) CustomEnchantManager.getInstance().addEnchant(item, enchantment, level);
         else CustomEnchantManager.getInstance().removeEnchant(item, enchantment);
-        itemBuilder.setItem(item);
-        itemBuilder.setMeta(ItemUtils.getItemMeta(item));
+        modifierContext.getItem().setItem(item);
+        modifierContext.getItem().setMeta(ItemUtils.getItemMeta(item));
     }
 }
