@@ -41,7 +41,7 @@ public class Sunforged extends CustomEnchant implements TriggerOnBlockBreakEncha
     public Sunforged(int id, String type) {
         super(id, type);
         this.config = ConfigManager.getInstance().getConfig("config.yml").get();
-        this.naturallyCompatibleWith = new HashSet<>(config.getStringList("enchantment_configuration.excavation.compatible_with"));
+        this.naturallyCompatibleWith = new HashSet<>(config.getStringList("enchantment_configuration.sunforged.compatible_with"));
         this.incompatibleVanillaEnchantments = new HashSet<>(config.getStringList("enchantment_configuration.sunforged.incompatible_vanilla_enchantments"));
         this.incompatibleCustomEnchantments = new HashSet<>(config.getStringList("enchantment_configuration.sunforged.incompatible_custom_enchantments"));
 
